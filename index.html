@@ -13,11 +13,12 @@
 <h2>🏦 ABM Bank</h2>
 
 <div id="auth">
-<input type="email" id="email" placeholder="البريد">
-<input type="password" id="password" placeholder="كلمة المرور">
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+<button type="button" onclick="register()">تسجيل</button>
 
-<button type="button" id="registerBtn">تسجيل</button>
-<button type="button" id="loginBtn">دخول</button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bank.js"></script>
 </div>
 
 <div id="dashboard" style="display:none;">
@@ -48,6 +49,7 @@
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
