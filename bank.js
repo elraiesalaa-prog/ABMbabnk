@@ -2,7 +2,7 @@ const supabase = window.supabase.createClient(
   "https://rahqhfowbphaipiadlkh.supabase.co",
   "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9"
 );
-
+console.log("bank.js loaded");
 async function register() {
 
   const email = document.getElementById("email").value;
@@ -25,3 +25,4 @@ async function register() {
 
   alert("تم التسجيل بنجاح ✅");
 }
+
