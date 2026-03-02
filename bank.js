@@ -24,14 +24,18 @@ async function login() {
   const password = document.getElementById("password").value;
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password
+    email,
+    password
   });
 
-  if (error) return alert(error.message);
+  console.log(data, error);
 
-  currentUser = data.user;
-  showDashboard();
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("تم تسجيل الدخول بنجاح");
 }
 
 async function showDashboard() {
@@ -115,4 +119,5 @@ async function loadTransactions() {
 async function logout() {
   await supabase.auth.signOut();
   location.reload();
+
 }
