@@ -4,7 +4,7 @@ const supabase = window.supabase.createClient(
 );
 
 let currentUser = null;
-
+document.addEventListener("DOMContentLoaded", initUser);
 async function register() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -127,4 +127,5 @@ async function logout() {
   location.reload();
 
 }
+
 
