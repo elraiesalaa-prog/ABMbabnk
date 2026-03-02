@@ -9,12 +9,20 @@ let currentAccountId = null;
 // ============================
 // عند تحميل الصفحة
 // ============================
-document.addEventListener("DOMContentLoaded", async () => {
-  const { data } = await supabase.auth.getUser();
-  if (data.user) {
-    currentUser = data.user;
-    await loadAccount();
-    showDashboard();
+document.addEventListener("DOMContentLoaded", () => {
+
+  const registerBtn = document.getElementById("registerBtn");
+  const loginBtn = document.getElementById("loginBtn");
+
+  if (registerBtn) {
+    registerBtn.addEventListener("click", register);
+  }
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", login);
+  }
+
+});
   }
 });
 
@@ -25,14 +33,17 @@ async function register() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const { data, error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password
   });
 
-  if (error) return alert(error.message);
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
-  alert("تم إنشاء الحساب ✅ يرجى تسجيل الدخول");
+  alert("تم إنشاء الحساب بنجاح ✅");
 }
 
 // ============================
@@ -47,9 +58,14 @@ async function login() {
     password
   });
 
-  if (error) return alert(error.message);
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
   currentUser = data.user;
+
+  alert("تم تسجيل الدخول بنجاح ✅");
 
   await loadAccount();
   showDashboard();
@@ -228,3 +244,4 @@ async function logout() {
   await supabase.auth.signOut();
   location.reload();
 }
+
