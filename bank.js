@@ -4,128 +4,227 @@ const supabase = window.supabase.createClient(
 );
 
 let currentUser = null;
-document.addEventListener("DOMContentLoaded", initUser);
+let currentAccountId = null;
+
+// ============================
+// عند تحميل الصفحة
+// ============================
+document.addEventListener("DOMContentLoaded", async () => {
+  const { data } = await supabase.auth.getUser();
+  if (data.user) {
+    currentUser = data.user;
+    await loadAccount();
+    showDashboard();
+  }
+});
+
+// ============================
+// تسجيل حساب
+// ============================
 async function register() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password
+    email,
+    password
   });
 
   if (error) return alert(error.message);
 
-  alert("تم إنشاء الحساب بنجاح");
+  alert("تم إنشاء الحساب ✅ يرجى تسجيل الدخول");
 }
 
-/* =========================
-   تهيئة المستخدم (Supabase Auth)
-========================= */
-async function initUser() {
+// ============================
+// تسجيل دخول
+// ============================
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
-  if (error || !data.user) {
-    document.getElementById("auth").style.display = "block";
-    document.getElementById("dashboard").style.display = "none";
-    return;
-  }
+  if (error) return alert(error.message);
 
   currentUser = data.user;
 
-  // تحميل الحساب البنكي
   await loadAccount();
-
-  // إظهار لوحة التحكم
-  document.getElementById("auth").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-
-  loadTransactions();
+  showDashboard();
 }
 
-async function showDashboard() {
-  document.getElementById("authSection").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-
-  await loadBalance();
-  await loadTransactions();
-}
-
-async function loadBalance() {
-  const { data } = await supabase
+// ============================
+// إنشاء حساب بنكي إذا لم يوجد
+// ============================
+async function loadAccount() {
+  const { data: account } = await supabase
     .from("accounts")
-    .select("balance")
+    .select("*")
     .eq("user_id", currentUser.id)
     .single();
 
-  document.getElementById("balance").innerText = data?.balance || 0;
+  if (!account) {
+    const accountNumber = "AC" + Math.floor(Math.random() * 100000000);
+
+    const { data: newAccount } = await supabase
+      .from("accounts")
+      .insert([{
+        user_id: currentUser.id,
+        account_number: accountNumber
+      }])
+      .select()
+      .single();
+
+    currentAccountId = newAccount.id;
+    document.getElementById("accountNumber").innerText = accountNumber;
+    document.getElementById("balance").innerText = 0;
+  } else {
+    currentAccountId = account.id;
+    document.getElementById("accountNumber").innerText = account.account_number;
+    document.getElementById("balance").innerText = account.balance;
+  }
 }
 
-async function deposit() {
-  const amount = parseFloat(document.getElementById("amount").value);
-  if (!amount) return;
-
-  await supabase.rpc("deposit_money", {
-    user_id_input: currentUser.id,
-    amount_input: amount
-  });
-
-  await loadBalance();
+// ============================
+// عرض لوحة التحكم
+// ============================
+function showDashboard() {
+  document.getElementById("auth").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  loadTransactions();
 }
 
-async function withdraw() {
-  const amount = parseFloat(document.getElementById("amount").value);
-  if (!amount) return;
-
-  await supabase.rpc("withdraw_money", {
-    user_id_input: currentUser.id,
-    amount_input: amount
-  });
-
-  await loadBalance();
-}
-
-async function transfer() {
-  const receiverEmail = document.getElementById("receiver").value;
-  const amount = parseFloat(document.getElementById("transferAmount").value);
-
-  const { data: receiver } = await supabase
-    .from("users_view")
-    .select("id")
-    .eq("email", receiverEmail)
+// ============================
+// تحديث الرصيد
+// ============================
+async function refreshBalance() {
+  const { data } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("id", currentAccountId)
     .single();
 
-  await supabase.rpc("transfer_money", {
-    sender_id: currentUser.id,
-    receiver_id: receiver.id,
+  document.getElementById("balance").innerText = data.balance;
+}
+
+// ============================
+// إيداع
+// ============================
+async function deposit() {
+  const amount = parseFloat(document.getElementById("amount").value);
+  if (!amount || amount <= 0) return alert("أدخل مبلغ صحيح");
+
+  const { error } = await supabase.rpc("deposit_money", {
     amount_input: amount
   });
 
-  await loadBalance();
+  if (error) return alert(error.message);
+
+  await refreshBalance();
+  loadTransactions();
 }
 
+// ============================
+// سحب
+// ============================
+async function withdraw() {
+  const amount = parseFloat(document.getElementById("amount").value);
+  if (!amount || amount <= 0) return alert("أدخل مبلغ صحيح");
+
+  const { error } = await supabase.rpc("withdraw_money", {
+    amount_input: amount
+  });
+
+  if (error) return alert(error.message);
+
+  await refreshBalance();
+  loadTransactions();
+}
+
+// ============================
+// تحويل
+// ============================
+async function transfer() {
+  const receiverAccount = document.getElementById("receiverAccount").value;
+  const amount = parseFloat(document.getElementById("transferAmount").value);
+
+  if (!receiverAccount || !amount) return alert("أدخل البيانات كاملة");
+
+  const { error } = await supabase.rpc("transfer_money", {
+    receiver_account: receiverAccount,
+    amount_input: amount
+  });
+
+  if (error) return alert(error.message);
+
+  alert("تم التحويل بنجاح ✅");
+  await refreshBalance();
+  loadTransactions();
+}
+
+// ============================
+// عرض العمليات
+// ============================
 async function loadTransactions() {
   const { data } = await supabase
     .from("transactions")
     .select("*")
-    .eq("user_id", currentUser.id)
+    .eq("account_id", currentAccountId)
     .order("created_at", { ascending: false });
 
   const list = document.getElementById("transactions");
   list.innerHTML = "";
 
-  data?.forEach(t => {
+  data?.forEach(tx => {
     const li = document.createElement("li");
-    li.innerText = `${t.type} - ${t.amount}`;
+
+    li.innerText =
+      tx.type + " | " +
+      tx.amount + " جنيه | " +
+      new Date(tx.created_at).toLocaleString();
+
     list.appendChild(li);
   });
 }
 
+// ============================
+// كشف الحساب بالفترة
+// ============================
+async function loadStatement() {
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
+
+  if (!fromDate || !toDate) return alert("حدد الفترة");
+
+  const { data } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("account_id", currentAccountId)
+    .gte("created_at", fromDate)
+    .lte("created_at", toDate)
+    .order("created_at", { ascending: false });
+
+  const list = document.getElementById("transactions");
+  list.innerHTML = "";
+
+  data?.forEach(tx => {
+    const li = document.createElement("li");
+
+    li.innerText =
+      tx.type + " | " +
+      tx.amount + " جنيه | " +
+      new Date(tx.created_at).toLocaleString();
+
+    list.appendChild(li);
+  });
+}
+
+// ============================
+// تسجيل خروج
+// ============================
 async function logout() {
   await supabase.auth.signOut();
   location.reload();
-
 }
-
-
