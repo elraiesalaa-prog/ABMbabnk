@@ -19,23 +19,29 @@ async function register() {
   alert("تم إنشاء الحساب بنجاح");
 }
 
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+/* =========================
+   تهيئة المستخدم (Supabase Auth)
+========================= */
+async function initUser() {
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { data, error } = await supabase.auth.getUser();
 
-  console.log(data, error);
-
-  if (error) {
-    alert(error.message);
+  if (error || !data.user) {
+    document.getElementById("auth").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
     return;
   }
 
-  alert("تم تسجيل الدخول بنجاح");
+  currentUser = data.user;
+
+  // تحميل الحساب البنكي
+  await loadAccount();
+
+  // إظهار لوحة التحكم
+  document.getElementById("auth").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+
+  loadTransactions();
 }
 
 async function showDashboard() {
@@ -121,3 +127,4 @@ async function logout() {
   location.reload();
 
 }
+
