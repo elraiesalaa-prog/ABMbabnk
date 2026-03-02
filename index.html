@@ -3,40 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام البنكي</title>
+<title>Pro Bank</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<div class="container">
+<div class="card">
+<h2>🏦 Pro Bank</h2>
 
-<h2>النظام البنكي</h2>
-
-<div id="authSection">
-  <input type="email" id="email" placeholder="البريد الإلكتروني">
-  <input type="password" id="password" placeholder="كلمة المرور">
-  <button onclick="register()">تسجيل حساب</button>
-  <button onclick="login()">تسجيل دخول</button>
+<div id="auth">
+<input type="email" id="email" placeholder="البريد">
+<input type="password" id="password" placeholder="كلمة المرور">
+<button onclick="register()">تسجيل</button>
+<button onclick="login()">دخول</button>
 </div>
 
 <div id="dashboard" style="display:none;">
-  <h3>مرحباً بك</h3>
-  <p>الرصيد: <span id="balance">0</span> جنيه</p>
+<h3>رقم الحساب: <span id="accountNumber"></span></h3>
+<h2>الرصيد: <span id="balance"></span> جنيه</h2>
 
-  <input type="number" id="amount" placeholder="المبلغ">
-  <button onclick="deposit()">إيداع</button>
-  <button onclick="withdraw()">سحب</button>
+<input type="number" id="amount" placeholder="المبلغ">
+<button onclick="deposit()">إيداع</button>
+<button onclick="withdraw()">سحب</button>
 
-  <h4>تحويل</h4>
-  <input type="email" id="receiver" placeholder="بريد المستلم">
-  <input type="number" id="transferAmount" placeholder="المبلغ">
-  <button onclick="transfer()">تحويل</button>
+<h3>تحويل</h3>
+<input type="text" id="receiverAccount" placeholder="رقم حساب المستلم">
+<input type="number" id="transferAmount" placeholder="المبلغ">
+<button onclick="transfer()">تحويل</button>
 
-  <h4>سجل العمليات</h4>
-  <ul id="transactions"></ul>
+<h3>كشف الحساب</h3>
+<input type="date" id="fromDate">
+<input type="date" id="toDate">
+<button onclick="loadStatement()">عرض</button>
 
-  <button onclick="logout()">تسجيل خروج</button>
+<ul id="transactions"></ul>
+
+<button onclick="logout()">خروج</button>
 </div>
 
 </div>
