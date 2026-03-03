@@ -73,6 +73,94 @@ input:hover{
   font-weight:bold;
   letter-spacing:0.5px;
 }
+  
+/* الأزرار */
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+  font-size:14px;
+}
+
+#registerBtn{
+  background:#1e88e5;
+  color:white;
+}
+
+#loginBtn{
+  background:#43a047;
+  color:white;
+}
+
+#depositBtn{
+  background:#2ecc71;
+  color:white;
+}
+
+#withdrawBtn{
+  background:#e74c3c;
+  color:white;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
+}
+
+button:disabled{
+  background:gray;
+  cursor:not-allowed;
+}
+
+/* الرصيد */
+.balance{
+  font-size:24px;
+  text-align:center;
+  margin:15px 0;
+  font-weight:bold;
+  color:#243b55;
+}
+
+/* المعاملات */
+.transactions{
+  max-height:170px;
+  overflow:auto;
+  background:#f8f9fa;
+  padding:12px;
+  border-radius:10px;
+  margin-top:15px;
+  font-size:14px;
+}
+
+.transactions div{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px solid #eee;
+}
+
+.transactions div:last-child{
+  border-bottom:none;
+}
+
+.loading{
+  text-align:center;
+  display:none;
+  margin-top:10px;
+  font-size:14px;
+  color:#243b55;
+}
+
+/* حركة دخول */
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
 </style>
 </head>
 
@@ -107,5 +195,6 @@ input:hover{
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
