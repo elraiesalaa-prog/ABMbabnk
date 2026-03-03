@@ -29,21 +29,18 @@ async function register() {
     return;
   }
 
-  const fakeEmail = makeFakeEmail(username);
+  function makeFakeEmail(username) {
 
-  const { data, error } = await supabase.auth.signUp({
-    email: fakeEmail,
-    password: password
-  });
+  // إزالة المسافات
+  username = username.trim();
 
-  console.log("REGISTER:", data, error);
+  // تحويل إلى أحرف صغيرة
+  username = username.toLowerCase();
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+  // السماح فقط بحروف إنجليزية وأرقام
+  username = username.replace(/[^a-z0-9]/g, "");
 
-  alert("تم إنشاء الحساب بنجاح ✅");
+  return username + "@bankapp.com";
 }
 
 // =========================
@@ -73,3 +70,4 @@ async function login() {
   alert("تم تسجيل الدخول بنجاح ✅");
   location.reload();
 }
+
