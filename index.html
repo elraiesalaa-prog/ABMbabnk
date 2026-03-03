@@ -2,32 +2,36 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>النظام البنكي الاحترافي</title>
+<title>نظام البنك</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 body{
-  font-family: Arial;
-  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
   margin:0;
+  direction: rtl;
 }
 
 .card{
   background:white;
   padding:30px;
-  border-radius:15px;
-  width:350px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+  border-radius:20px;
+  width:380px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.3);
 }
+
+h2{text-align:center;}
 
 input{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin:8px 0;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid #ddd;
 }
 
@@ -36,57 +40,74 @@ button{
   padding:12px;
   margin-top:10px;
   border:none;
-  border-radius:8px;
-  background:#2a5298;
-  color:white;
+  border-radius:10px;
   font-weight:bold;
   cursor:pointer;
-  transition:0.3s;
 }
 
-button:hover{
-  background:#1e3c72;
-}
+.deposit-btn{ background:#2ecc71; color:white; }
+.withdraw-btn{ background:#e74c3c; color:white; }
+.logout-btn{ background:#34495e; color:white; }
+.auth-btn{ background:#2c5364; color:white; }
 
-.balance{
-  font-size:22px;
-  font-weight:bold;
+.balance-box{
+  background:#f5f7fa;
+  padding:15px;
+  border-radius:12px;
   text-align:center;
-  margin:15px 0;
+  margin-bottom:15px;
 }
+
+.balance-amount{
+  font-size:26px;
+  font-weight:bold;
+  color:#2c5364;
+}
+
+.transaction{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+.deposit{ color:#2ecc71; }
+.withdraw{ color:#e74c3c; }
+
+#authLoading{ display:none; text-align:center; margin-top:10px; }
 </style>
-
 </head>
-
 <body>
 
+<!-- بطاقة تسجيل -->
 <div class="card" id="authCard">
-<h2>تسجيل / دخول</h2>
-
-<input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
-<input type="password" id="password" placeholder="كلمة المرور">
-
-<button id="registerBtn" onclick="register()">إنشاء حساب</button>
-<button id="loginBtn" onclick="login()">تسجيل الدخول</button>
-
-<div class="loading" id="authLoading">جاري المعالجة...</div>
+  <h2>نظام البنك</h2>
+  <input id="username" placeholder="اسم الحساب">
+  <input id="password" type="password" placeholder="كلمة المرور">
+  <button class="auth-btn" onclick="register()">إنشاء حساب</button>
+  <button class="auth-btn" onclick="login()">تسجيل دخول</button>
+  <div id="authLoading">جاري المعالجة...</div>
 </div>
 
-<div class="card" id="bankCard" style="display:none">
-<h2>حسابي البنكي</h2>
+<!-- بطاقة البنك -->
+<div class="card" id="bankCard" style="display:none;">
+  <h2>لوحة الحساب</h2>
 
-<div class="balance">الرصيد: <span id="balance">0</span></div>
+  <div class="balance-box">
+    <div>الرصيد الحالي</div>
+    <div id="balance" class="balance-amount">0.00 SDG</div>
+  </div>
 
-<input type="number" id="amount" placeholder="المبلغ">
-<button id="depositBtn" onclick="deposit()">إيداع</button>
-<button id="withdrawBtn" onclick="withdraw()">سحب</button>
+  <input id="amount" type="number" placeholder="أدخل المبلغ">
 
-<div class="transactions" id="transactions"></div>
+  <button class="deposit-btn" onclick="deposit()">إيداع</button>
+  <button class="withdraw-btn" onclick="withdraw()">سحب</button>
 
-<button onclick="logout()">تسجيل خروج</button>
+  <div id="transactions"></div>
+
+  <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
 </div>
 
 <script src="bank.js"></script>
 </body>
 </html>
-
