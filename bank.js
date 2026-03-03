@@ -1,32 +1,23 @@
-// ===============================
-// إنشاء اتصال Supabase
-// ===============================
-const supabase = window.supabase.createClient(
+// منع تكرار التعريف نهائياً
+var supabase = window.supabase.createClient(
   "https://rahqhfowbphaipiadlkh.supabase.co",
   "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9"
 );
 
-// ===============================
-// عند تحميل الصفحة اربط الأزرار
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
+// ربط الأزرار بعد تحميل الصفحة
+document.addEventListener("DOMContentLoaded", function () {
 
-  const registerBtn = document.getElementById("registerBtn");
-  const loginBtn = document.getElementById("loginBtn");
+  document.getElementById("registerBtn")
+    .addEventListener("click", register);
 
-  if (registerBtn) {
-    registerBtn.addEventListener("click", register);
-  }
-
-  if (loginBtn) {
-    loginBtn.addEventListener("click", login);
-  }
+  document.getElementById("loginBtn")
+    .addEventListener("click", login);
 
 });
 
-// ===============================
+// =======================
 // دالة التسجيل
-// ===============================
+// =======================
 async function register() {
 
   const email = document.getElementById("email").value;
@@ -52,9 +43,9 @@ async function register() {
   alert("تم إنشاء الحساب بنجاح ✅");
 }
 
-// ===============================
+// =======================
 // دالة تسجيل الدخول
-// ===============================
+// =======================
 async function login() {
 
   const email = document.getElementById("email").value;
