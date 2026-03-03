@@ -53,12 +53,14 @@ async function register(){
 
   const user = loginData.user;
 
-  // 3️⃣ إنشاء الحساب البنكي (الآن auth.uid يعمل)
+  // 3️⃣ إنشاء الحساب البنكي
   const { error: accError } = await supabase
     .from("accounts")
     .insert({
       user_id: user.id,
-      balance: 0
+      balance: 0,
+      full_name: document.getElementById("fullName").value,
+      account_name: document.getElementById("accountName").value
     });
 
   setLoading(false);
@@ -123,7 +125,6 @@ async function deposit(){
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  // جلب الحساب الحالي
   const { data: account } = await supabase
     .from("accounts")
     .select("*")
@@ -132,7 +133,6 @@ async function deposit(){
 
   const newBalance = account.balance + amount;
 
-  // تحديث الرصيد
   const { error } = await supabase
     .from("accounts")
     .update({ balance: newBalance })
@@ -143,11 +143,12 @@ async function deposit(){
     return;
   }
 
-  // تسجيل العملية
+  // تسجيل العملية مع البيان
   await supabase.from("transactions").insert({
     user_id: user.id,
     type: "deposit",
-    amount: amount
+    amount: amount,
+    description: document.getElementById("description").value
   });
 
   loadAccount();
@@ -156,7 +157,10 @@ async function deposit(){
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0) return;
+  if(amount <= 0){
+    alert("أدخل مبلغ صحيح");
+    return;
+  }
 
   const user = (await supabase.auth.getUser()).data.user;
 
@@ -186,7 +190,8 @@ async function withdraw(){
   await supabase.from("transactions").insert({
     user_id: user.id,
     type: "withdraw",
-    amount: amount
+    amount: amount,
+    description: document.getElementById("description").value
   });
 
   loadAccount();
@@ -204,12 +209,16 @@ async function loadTransactions(){
     .order("created_at",{ascending:false});
 
   let html="";
+
   data.forEach(t=>{
     html += `
       <div class="transaction">
-        <span class="${t.type}">
-          ${t.type === "deposit" ? "إيداع" : "سحب"}
-        </span>
+        <div>
+          <strong>${t.type === "deposit" ? "إيداع" : "سحب"}</strong>
+          <div style="font-size:12px;color:gray">
+            ${t.description || ""}
+          </div>
+        </div>
         <span>${t.amount} SDG</span>
       </div>
     `;
@@ -231,6 +240,7 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
 
 
