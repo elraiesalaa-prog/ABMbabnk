@@ -1,6 +1,6 @@
 var supabase = window.supabase.createClient(
-  "https://rahqhfowbphaipiadlkh.supabase.co",
-  "YOUR_PUBLIC_ANON_KEY"
+  https://rahqhfowbphaipiadlkh.supabase.co
+sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9
 );
 
 function makeEmail(username){
@@ -191,3 +191,4 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
