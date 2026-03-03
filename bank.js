@@ -108,7 +108,11 @@ async function loadAccount(){
     .select("*")
     .eq("user_id", user.id)
     .single();
+document.getElementById("welcomeName").innerText =
+  "مرحباً " + (data.full_name || "");
 
+document.getElementById("accountNameDisplay").innerText =
+  "الحساب: " + (data.account_name || "");
   document.getElementById("balance").innerText =
     parseFloat(data.balance).toFixed(2) + " SDG";
 
@@ -290,6 +294,7 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
 
 
