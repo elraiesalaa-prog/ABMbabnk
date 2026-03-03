@@ -1,16 +1,16 @@
 var supabase = window.supabase.createClient(
-  https://rahqhfowbphaipiadlkh.supabase.co
-sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9
+  "https://rahqhfowbphaipiadlkh.supabase.co",
+  "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9"
 );
 
-// توليد بريد وهمي
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
 
-// تحميل مؤشر الانتظار
 function setLoading(state){
   document.getElementById("authLoading").style.display = state ? "block" : "none";
+  document.getElementById("registerBtn").disabled = state;
+  document.getElementById("loginBtn").disabled = state;
 }
 
 // ================= تسجيل =================
@@ -26,10 +26,8 @@ async function register(){
 
   setLoading(true);
 
-  const email = makeEmail(username);
-
-  const { error } = await supabase.auth.signUp({
-    email: email,
+  const { data, error } = await supabase.auth.signUp({
+    email: makeEmail(username),
     password: password
   });
 
@@ -39,20 +37,8 @@ async function register(){
     return;
   }
 
-  const { data: loginData, error: loginError } =
-    await supabase.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
-
-  if(loginError){
-    setLoading(false);
-    alert("فشل تسجيل الدخول بعد الإنشاء");
-    return;
-  }
-
   await supabase.from("accounts").insert({
-    user_id: loginData.user.id,
+    user_id: data.user.id,
     balance: 0
   });
 
@@ -82,7 +68,6 @@ async function login(){
   setLoading(false);
   loadAccount();
 }
-
 // ================= تحميل الحساب =================
 async function loadAccount(){
 
@@ -221,4 +206,5 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
