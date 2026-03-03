@@ -14,10 +14,14 @@
 
 <div id="auth">
   <div id="authSection">
-  <input type="email" id="email" placeholder="البريد الإلكتروني">
-  <input type="password" id="password" placeholder="كلمة المرور">
-  <button onclick="register()">تسجيل حساب</button>
-  <button onclick="login()">تسجيل دخول</button>
+  <input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+
+<button type="button" id="registerBtn">تسجيل</button>
+<button type="button" id="loginBtn">دخول</button>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="bank.js"></script>
 </div>
 
 <button type="button" onclick="alert('الزر يعمل')">اختبار الزر</button>
@@ -53,6 +57,7 @@
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
