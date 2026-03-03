@@ -1,46 +1,8 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام البنكي</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
 
-<div class="container">
+<button type="button" id="registerBtn">تسجيل</button>
+<button type="button" id="loginBtn">دخول</button>
 
-<h2>النظام البنكي</h2>
-
-<div id="authSection">
-  <input type="email" id="email" placeholder="البريد الإلكتروني">
-  <input type="password" id="password" placeholder="كلمة المرور">
-  <button onclick="register()">تسجيل حساب</button>
-  <button onclick="login()">تسجيل دخول</button>
-</div>
-
-<div id="dashboard" style="display:none;">
-  <h3>مرحباً بك</h3>
-  <p>الرصيد: <span id="balance">0</span> جنيه</p>
-
-  <input type="number" id="amount" placeholder="المبلغ">
-  <button onclick="deposit()">إيداع</button>
-  <button onclick="withdraw()">سحب</button>
-
-  <h4>تحويل</h4>
-  <input type="email" id="receiver" placeholder="بريد المستلم">
-  <input type="number" id="transferAmount" placeholder="المبلغ">
-  <button onclick="transfer()">تحويل</button>
-
-  <h4>سجل العمليات</h4>
-  <ul id="transactions"></ul>
-
-  <button onclick="logout()">تسجيل خروج</button>
-</div>
-
-</div>
-
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="bank.js"></script>
-</body>
-</html>
