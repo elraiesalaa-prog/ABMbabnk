@@ -83,34 +83,36 @@ async function loadAccount(){
     .eq("user_id", user.id)
     .single();
 
-  document.getElementById("balance").innerText = data.balance;
+  document.getElementById("balance").innerText =
+    parseFloat(data.balance).toFixed(2) + " SDG";
 
   loadTransactions();
 }
-
 // ================= إيداع =================
 async function deposit(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-
-  const { data: account } = await supabase
-    .from("accounts")
-    .select("*")
-    .single();
-
-  const newBalance = account.balance + amount;
-
-  const { error } = await supabase
-    .from("accounts")
-    .update({ balance: newBalance })
-    .eq("user_id", account.user_id);
-
-  if(error){
-    alert(error.message);
+  if(amount <= 0){
+    alert("أدخل مبلغ صحيح");
     return;
   }
 
-  loadBalance(); // تحديث العرض
+  const user = (await supabase.auth.getUser()).data.user;
+
+  // تسجيل العملية
+  await supabase.from("transactions").insert({
+    user_id: user.id,
+    type: "deposit",
+    amount: amount
+  });
+
+  // تحديث الرصيد عبر rpc
+  await supabase.rpc("increment_balance", {
+    uid: user.id,
+    amt: amount
+  });
+
+  loadAccount(); // تحديث كامل
 }
 // ================= سحب =================
 async function withdraw(){
@@ -135,24 +137,16 @@ async function withdraw(){
 }
 
 // ================= كشف الحساب =================
-async function loadTransactions(){
-
-  const user = (await supabase.auth.getUser()).data.user;
-
-  const { data } = await supabase
-    .from("transactions")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at",{ascending:false});
-
-  let html="";
-  data.forEach(t=>{
-    html += `<div>${t.type} - ${t.amount}</div>`;
-  });
-
-  document.getElementById("transactions").innerHTML = html;
-}
-
+data.forEach(t=>{
+  const color = t.type === "deposit" ? "green" : "red";
+  html += `
+    <div style="display:flex;justify-content:space-between;
+                padding:8px;border-bottom:1px solid #eee;">
+      <span style="color:${color}">${t.type}</span>
+      <span>${t.amount}</span>
+    </div>
+  `;
+});
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -166,4 +160,5 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
