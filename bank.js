@@ -20,26 +20,38 @@ document.addEventListener("DOMContentLoaded", function () {
 // =======================
 async function register() {
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   if (!email || !password) {
     alert("أدخل البريد وكلمة المرور");
     return;
   }
 
-  const { data, error } = await supabase.auth.signUp({
+  if (password.length < 6) {
+    alert("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+    return;
+  }
+
+  const response = await supabase.auth.signUp({
     email: email,
     password: password
   });
 
-  console.log("REGISTER:", data, error);
+  console.log("REGISTER RESPONSE:", response);
 
-  if (error) {
-    alert(error.message);
+  if (response.error) {
+    alert("خطأ: " + response.error.message);
     return;
   }
 
+  if (!response.data.user) {
+    alert("لم يتم إنشاء الحساب");
+    return;
+  }
+
+  alert("تم إنشاء الحساب بنجاح ✅");
+}
   alert("تم إنشاء الحساب بنجاح ✅");
 }
 
@@ -65,3 +77,4 @@ async function login() {
 
   alert("تم تسجيل الدخول بنجاح ✅");
 }
+
