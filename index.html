@@ -2,38 +2,14 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>النظام البنكي</title>
+<title>Test</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<style>
-body { font-family: Arial; text-align: center; background:#f5f5f5 }
-.box { background:white; padding:20px; margin:20px auto; width:300px; border-radius:10px }
-input,button { width:100%; padding:10px; margin:5px 0 }
-button { cursor:pointer }
-</style>
 </head>
 <body>
 
-<div class="box" id="authBox">
-<h3>تسجيل / دخول</h3>
-<input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
+<input type="text" id="username" placeholder="اسم الحساب">
 <input type="password" id="password" placeholder="كلمة المرور">
 <button onclick="register()">إنشاء حساب</button>
-<button onclick="login()">تسجيل الدخول</button>
-</div>
-
-<div class="box" id="bankBox" style="display:none">
-<h3>حسابي البنكي</h3>
-<p>الرصيد: <span id="balance">0</span></p>
-
-<input type="number" id="amount" placeholder="المبلغ">
-<button onclick="deposit()">إيداع</button>
-<button onclick="withdraw()">سحب</button>
-
-<h4>كشف الحساب</h4>
-<div id="transactions"></div>
-
-<button onclick="logout()">تسجيل خروج</button>
-</div>
 
 <script src="bank.js"></script>
 </body>
