@@ -92,24 +92,26 @@ async function loadAccount(){
 async function deposit(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0) return;
 
-  const user = (await supabase.auth.getUser()).data.user;
+  const { data: account } = await supabase
+    .from("accounts")
+    .select("*")
+    .single();
 
-  await supabase.from("transactions").insert({
-    user_id: user.id,
-    type: "deposit",
-    amount: amount
-  });
+  const newBalance = account.balance + amount;
 
-  await supabase.rpc("increment_balance", {
-    uid: user.id,
-    amt: amount
-  });
+  const { error } = await supabase
+    .from("accounts")
+    .update({ balance: newBalance })
+    .eq("user_id", account.user_id);
 
-  loadAccount();
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  loadBalance(); // تحديث العرض
 }
-
 // ================= سحب =================
 async function withdraw(){
 
@@ -164,3 +166,4 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
