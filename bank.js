@@ -26,24 +26,49 @@ async function register(){
 
   setLoading(true);
 
-  const { data, error } = await supabase.auth.signUp({
+  // 1️⃣ إنشاء المستخدم
+  const { error: signUpError } = await supabase.auth.signUp({
     email: makeEmail(username),
     password: password
   });
 
-  if(error){
+  if(signUpError){
     setLoading(false);
-    alert(error.message);
+    alert(signUpError.message);
     return;
   }
 
-  await supabase.from("accounts").insert({
-    user_id: data.user.id,
-    balance: 0
-  });
+  // 2️⃣ تسجيل الدخول مباشرة
+  const { data: loginData, error: loginError } =
+    await supabase.auth.signInWithPassword({
+      email: makeEmail(username),
+      password: password
+    });
+
+  if(loginError){
+    setLoading(false);
+    alert("تم إنشاء الحساب لكن فشل تسجيل الدخول");
+    return;
+  }
+
+  const user = loginData.user;
+
+  // 3️⃣ إنشاء الحساب البنكي (الآن auth.uid يعمل)
+  const { error: accError } = await supabase
+    .from("accounts")
+    .insert({
+      user_id: user.id,
+      balance: 0
+    });
 
   setLoading(false);
-  alert("تم إنشاء الحساب بنجاح ✅");
+
+  if(accError){
+    alert("خطأ إنشاء الحساب البنكي: " + accError.message);
+    return;
+  }
+
+  alert("تم إنشاء الحساب بالكامل ✅");
 }
 
 // ================= دخول =================
@@ -206,5 +231,6 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
 
