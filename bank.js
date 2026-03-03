@@ -41,6 +41,27 @@ async function register() {
   }
 
   alert("تم إنشاء الحساب بنجاح ✅");
+  async function login() {
+
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("username", username)
+    .eq("password", password)
+    .single();
+
+  if (error || !data) {
+    alert("بيانات الدخول غير صحيحة");
+    return;
+  }
+
+  localStorage.setItem("uid", data.id);
+  alert("تم تسجيل الدخول بنجاح ✅");
+  location.reload();
+}
 }
 // =======================
 // دالة التسجيل
@@ -102,6 +123,7 @@ async function login() {
 
   alert("تم تسجيل الدخول بنجاح ✅");
 }
+
 
 
 
