@@ -7,7 +7,7 @@ if (!window.supabaseClient) {
 }
 
 const supabase = window.supabaseClient;
-console.log("bank.js loaded");
+
 async function register() {
 
   const email = document.getElementById("email").value;
@@ -30,6 +30,7 @@ async function register() {
 
   alert("تم التسجيل بنجاح ✅");
 }
+
 
 
 
