@@ -115,7 +115,17 @@ async function withdraw(){
 
   initBank();
 }
-
+create or replace function increment_balance(uid uuid, amt numeric)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update accounts
+  set balance = balance + amt
+  where user_id = uid;
+end;
+$$;
 // ================= كشف الحساب =================
 async function loadTransactions(){
 
@@ -140,3 +150,4 @@ async function logout(){
   await supabase.auth.signOut();
   location.reload();
 }
+
