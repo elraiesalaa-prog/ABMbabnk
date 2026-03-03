@@ -1,8 +1,26 @@
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABM Bank</title>
 
-<button type="button" id="registerBtn">تسجيل</button>
-<button type="button" id="loginBtn">دخول</button>
+  <!-- تحميل Supabase مرة واحدة فقط -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="bank.js"></script>
+<body style="font-family: Arial; text-align:center; margin-top:50px; direction:rtl;">
+
+  <h2>النظام البنكي</h2>
+
+  <input type="email" id="email" placeholder="البريد الإلكتروني"><br><br>
+  <input type="password" id="password" placeholder="كلمة المرور"><br><br>
+
+  <button type="button" id="registerBtn">تسجيل حساب</button>
+  <button type="button" id="loginBtn">تسجيل دخول</button>
+
+  <!-- تحميل ملفنا مرة واحدة فقط -->
+  <script src="bank.js"></script>
+
+</body>
+</html>
