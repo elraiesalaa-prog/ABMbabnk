@@ -2,14 +2,105 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Test</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<title>النظام البنكي الاحترافي</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+  font-family: Arial;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  width:350px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h2{ text-align:center }
+
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border:none;
+  border-radius:8px;
+  background:#2a5298;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:disabled{
+  background:gray;
+  cursor:not-allowed;
+}
+
+.balance{
+  font-size:22px;
+  text-align:center;
+  margin:10px 0;
+  font-weight:bold;
+}
+
+.transactions{
+  max-height:150px;
+  overflow:auto;
+  background:#f3f3f3;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+.loading{
+  text-align:center;
+  display:none;
+}
+</style>
 </head>
+
 <body>
 
-<input type="text" id="username" placeholder="اسم الحساب">
+<div class="card" id="authCard">
+<h2>تسجيل / دخول</h2>
+
+<input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
 <input type="password" id="password" placeholder="كلمة المرور">
-<button onclick="register()">إنشاء حساب</button>
+
+<button id="registerBtn" onclick="register()">إنشاء حساب</button>
+<button id="loginBtn" onclick="login()">تسجيل الدخول</button>
+
+<div class="loading" id="authLoading">جاري المعالجة...</div>
+</div>
+
+<div class="card" id="bankCard" style="display:none">
+<h2>حسابي البنكي</h2>
+
+<div class="balance">الرصيد: <span id="balance">0</span></div>
+
+<input type="number" id="amount" placeholder="المبلغ">
+<button id="depositBtn" onclick="deposit()">إيداع</button>
+<button id="withdrawBtn" onclick="withdraw()">سحب</button>
+
+<div class="transactions" id="transactions"></div>
+
+<button onclick="logout()">تسجيل خروج</button>
+</div>
 
 <script src="bank.js"></script>
 </body>
