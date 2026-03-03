@@ -118,85 +118,135 @@ async function loadAccount(){
 async function deposit(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0){
+  const description = document.getElementById("description").value.trim();
+
+  if(isNaN(amount) || amount <= 0){
     alert("أدخل مبلغ صحيح");
     return;
   }
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  const { data: account } = await supabase
+  // جلب الحساب
+  const { data: account, error: accFetchError } = await supabase
     .from("accounts")
     .select("*")
     .eq("user_id", user.id)
     .single();
 
-  const newBalance = account.balance + amount;
+  if(accFetchError){
+    alert("خطأ جلب الحساب");
+    return;
+  }
 
-  const { error } = await supabase
+  const newBalance = parseFloat(account.balance) + amount;
+
+  // تحديث الرصيد
+  const { error: updateError } = await supabase
     .from("accounts")
     .update({ balance: newBalance })
     .eq("user_id", user.id);
 
-  if(error){
-    alert(error.message);
+  if(updateError){
+    alert("خطأ تحديث الرصيد: " + updateError.message);
     return;
   }
 
-  // تسجيل العملية مع البيان
-  await supabase.from("transactions").insert({
-    user_id: user.id,
-    type: "deposit",
-    amount: amount,
-    description: document.getElementById("description").value
-  });
+  // تسجيل العملية
+  const { error: insertError } = await supabase
+    .from("transactions")
+    .insert({
+      user_id: user.id,
+      type: "deposit",
+      amount: amount,
+      description: description
+    });
 
-  loadAccount();
+  if(insertError){
+    alert("خطأ تسجيل العملية: " + insertError.message);
+    return;
+  }
+
+  // تحديث الرصيد فوراً في الواجهة
+  document.getElementById("balance").innerText =
+    newBalance.toFixed(2) + " SDG";
+
+  // تنظيف الحقول
+  document.getElementById("amount").value = "";
+  document.getElementById("description").value = "";
+
+  // تحديث كشف الحساب
+  loadTransactions();
 }
 // ================= سحب =================
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0){
+  const description = document.getElementById("description").value.trim();
+
+  if(isNaN(amount) || amount <= 0){
     alert("أدخل مبلغ صحيح");
     return;
   }
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  const { data: account } = await supabase
+  // جلب الحساب
+  const { data: account, error: accFetchError } = await supabase
     .from("accounts")
     .select("*")
     .eq("user_id", user.id)
     .single();
+
+  if(accFetchError){
+    alert("خطأ جلب الحساب");
+    return;
+  }
 
   if(account.balance < amount){
     alert("الرصيد غير كافٍ");
     return;
   }
 
-  const newBalance = account.balance - amount;
+  const newBalance = parseFloat(account.balance) - amount;
 
-  const { error } = await supabase
+  // تحديث الرصيد
+  const { error: updateError } = await supabase
     .from("accounts")
     .update({ balance: newBalance })
     .eq("user_id", user.id);
 
-  if(error){
-    alert(error.message);
+  if(updateError){
+    alert("خطأ تحديث الرصيد: " + updateError.message);
     return;
   }
 
-  await supabase.from("transactions").insert({
-    user_id: user.id,
-    type: "withdraw",
-    amount: amount,
-    description: document.getElementById("description").value
-  });
+  // تسجيل العملية
+  const { error: insertError } = await supabase
+    .from("transactions")
+    .insert({
+      user_id: user.id,
+      type: "withdraw",
+      amount: amount,
+      description: description
+    });
 
-  loadAccount();
+  if(insertError){
+    alert("خطأ تسجيل العملية: " + insertError.message);
+    return;
+  }
+
+  // تحديث الرصيد فوراً
+  document.getElementById("balance").innerText =
+    newBalance.toFixed(2) + " SDG";
+
+  // تنظيف الحقول
+  document.getElementById("amount").value = "";
+  document.getElementById("description").value = "";
+
+  // تحديث العمليات
+  loadTransactions();
 }
-
 // ================= كشف الحساب =================
 async function loadTransactions(){
 
@@ -240,6 +290,7 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
 
 
