@@ -3,10 +3,12 @@ var supabase = window.supabase.createClient(
 sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9
 );
 
+// توليد بريد وهمي
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
 
+// تحميل مؤشر الانتظار
 function setLoading(state){
   document.getElementById("authLoading").style.display = state ? "block" : "none";
 }
@@ -24,8 +26,10 @@ async function register(){
 
   setLoading(true);
 
-  const { data, error } = await supabase.auth.signUp({
-    email: makeEmail(username),
+  const email = makeEmail(username);
+
+  const { error } = await supabase.auth.signUp({
+    email: email,
     password: password
   });
 
@@ -35,8 +39,20 @@ async function register(){
     return;
   }
 
+  const { data: loginData, error: loginError } =
+    await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if(loginError){
+    setLoading(false);
+    alert("فشل تسجيل الدخول بعد الإنشاء");
+    return;
+  }
+
   await supabase.from("accounts").insert({
-    user_id: data.user.id,
+    user_id: loginData.user.id,
     balance: 0
   });
 
@@ -91,7 +107,10 @@ async function loadAccount(){
 async function deposit(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0) return;
+  if(amount <= 0){
+    alert("أدخل مبلغ صحيح");
+    return;
+  }
 
   const user = (await supabase.auth.getUser()).data.user;
 
@@ -103,10 +122,15 @@ async function deposit(){
 
   const newBalance = account.balance + amount;
 
-  await supabase
+  const { error } = await supabase
     .from("accounts")
     .update({ balance: newBalance })
     .eq("user_id", user.id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
 
   await supabase.from("transactions").insert({
     user_id: user.id,
@@ -121,7 +145,10 @@ async function deposit(){
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0) return;
+  if(amount <= 0){
+    alert("أدخل مبلغ صحيح");
+    return;
+  }
 
   const user = (await supabase.auth.getUser()).data.user;
 
@@ -138,10 +165,15 @@ async function withdraw(){
 
   const newBalance = account.balance - amount;
 
-  await supabase
+  const { error } = await supabase
     .from("accounts")
     .update({ balance: newBalance })
     .eq("user_id", user.id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
 
   await supabase.from("transactions").insert({
     user_id: user.id,
@@ -191,4 +223,3 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
-
