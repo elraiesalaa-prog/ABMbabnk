@@ -1,3 +1,4 @@
+// إنشاء اتصال Supabase بشكل آمن
 if (!window.supabaseClient) {
   window.supabaseClient = window.supabase.createClient(
     "https://rahqhfowbphaipiadlkh.supabase.co",
@@ -6,7 +7,6 @@ if (!window.supabaseClient) {
 }
 
 const supabase = window.supabaseClient;
-);
 console.log("bank.js loaded");
 async function register() {
 
@@ -30,5 +30,6 @@ async function register() {
 
   alert("تم التسجيل بنجاح ✅");
 }
+
 
 
