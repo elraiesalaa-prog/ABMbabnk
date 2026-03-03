@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>النظام البنكي الاحترافي</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 body{
   font-family: Arial;
@@ -18,60 +17,45 @@ body{
 
 .card{
   background:white;
-  padding:25px;
-  width:350px;
+  padding:30px;
   border-radius:15px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  width:350px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
 }
-
-h2{ text-align:center }
 
 input{
   width:100%;
   padding:10px;
   margin:8px 0;
   border-radius:8px;
-  border:1px solid #ccc;
+  border:1px solid #ddd;
 }
 
 button{
   width:100%;
-  padding:10px;
-  margin-top:8px;
+  padding:12px;
+  margin-top:10px;
   border:none;
   border-radius:8px;
   background:#2a5298;
   color:white;
   font-weight:bold;
   cursor:pointer;
+  transition:0.3s;
 }
 
-button:disabled{
-  background:gray;
-  cursor:not-allowed;
+button:hover{
+  background:#1e3c72;
 }
 
 .balance{
   font-size:22px;
-  text-align:center;
-  margin:10px 0;
   font-weight:bold;
-}
-
-.transactions{
-  max-height:150px;
-  overflow:auto;
-  background:#f3f3f3;
-  padding:10px;
-  border-radius:8px;
-  margin-top:10px;
-}
-
-.loading{
   text-align:center;
-  display:none;
+  margin:15px 0;
 }
 </style>
+
 </head>
 
 <body>
@@ -105,3 +89,4 @@ button:disabled{
 <script src="bank.js"></script>
 </body>
 </html>
+
