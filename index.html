@@ -3,52 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ABM Bank</title>
+<title>النظام البنكي</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<div class="card">
-<h2>🏦 ABM Bank</h2>
+<div class="container">
 
-<div id="auth">
-  <div id="authSection">
-  <input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
+<h2>النظام البنكي</h2>
 
-<button type="button" id="registerBtn">تسجيل</button>
-<button type="button" id="loginBtn">دخول</button>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="bank.js"></script>
-</div>
-
-
-
+<div id="authSection">
+  <input type="email" id="email" placeholder="البريد الإلكتروني">
+  <input type="password" id="password" placeholder="كلمة المرور">
+  <button onclick="register()">تسجيل حساب</button>
+  <button onclick="login()">تسجيل دخول</button>
 </div>
 
 <div id="dashboard" style="display:none;">
-<h3>رقم الحساب: <span id="accountNumber"></span></h3>
-<h2>الرصيد: <span id="balance"></span> جنيه</h2>
+  <h3>مرحباً بك</h3>
+  <p>الرصيد: <span id="balance">0</span> جنيه</p>
 
-<input type="number" id="amount" placeholder="المبلغ">
-<button onclick="deposit()">إيداع</button>
-<button onclick="withdraw()">سحب</button>
+  <input type="number" id="amount" placeholder="المبلغ">
+  <button onclick="deposit()">إيداع</button>
+  <button onclick="withdraw()">سحب</button>
 
-<h3>تحويل</h3>
-<input type="text" id="receiverAccount" placeholder="رقم حساب المستلم">
-<input type="number" id="transferAmount" placeholder="المبلغ">
-<button onclick="transfer()">تحويل</button>
+  <h4>تحويل</h4>
+  <input type="email" id="receiver" placeholder="بريد المستلم">
+  <input type="number" id="transferAmount" placeholder="المبلغ">
+  <button onclick="transfer()">تحويل</button>
 
-<h3>كشف الحساب</h3>
-<input type="date" id="fromDate">
-<input type="date" id="toDate">
-<button onclick="loadStatement()">عرض</button>
+  <h4>سجل العمليات</h4>
+  <ul id="transactions"></ul>
 
-<ul id="transactions"></ul>
-
-<button onclick="logout()">خروج</button>
+  <button onclick="logout()">تسجيل خروج</button>
 </div>
 
 </div>
@@ -56,15 +44,3 @@
 <script src="bank.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
