@@ -102,7 +102,6 @@ async function loadAccount(){
 
   loadTransactions();
 }
-
 // ================= إيداع =================
 async function deposit(){
 
@@ -114,6 +113,7 @@ async function deposit(){
 
   const user = (await supabase.auth.getUser()).data.user;
 
+  // جلب الحساب الحالي
   const { data: account } = await supabase
     .from("accounts")
     .select("*")
@@ -122,6 +122,7 @@ async function deposit(){
 
   const newBalance = account.balance + amount;
 
+  // تحديث الرصيد
   const { error } = await supabase
     .from("accounts")
     .update({ balance: newBalance })
@@ -132,6 +133,7 @@ async function deposit(){
     return;
   }
 
+  // تسجيل العملية
   await supabase.from("transactions").insert({
     user_id: user.id,
     type: "deposit",
@@ -140,15 +142,11 @@ async function deposit(){
 
   loadAccount();
 }
-
 // ================= سحب =================
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
-  if(amount <= 0){
-    alert("أدخل مبلغ صحيح");
-    return;
-  }
+  if(amount <= 0) return;
 
   const user = (await supabase.auth.getUser()).data.user;
 
@@ -223,3 +221,4 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
