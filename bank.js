@@ -116,7 +116,9 @@ async function loadAccount(){
     .single();
 
   if(!data) return;
-
+// حفظ الحساب الحالي في متغير عام
+currentAccount = data;
+currentBalance = parseFloat(data.balance || 0);
   const welcomeName = document.getElementById("welcomeName");
   const accountNameDisplay = document.getElementById("accountNameDisplay");
   const balanceEl = document.getElementById("balance");
@@ -296,7 +298,11 @@ async function loadTransactions() {
     const row = document.createElement("tr");
 
     const date = new Date(tx.created_at).toLocaleString("ar-EG");
-    const typeText = tx.type === "deposit" ? "إيداع" : "سحب";
+   let typeText = "عملية";
+
+if (tx.type === "deposit") typeText = "إيداع";
+else if (tx.type === "withdraw") typeText = "سحب";
+else if (tx.type === "transfer") typeText = "تحويل";
 
     row.innerHTML = `
       <td>${date}</td>
@@ -308,13 +314,19 @@ async function loadTransactions() {
     tbody.appendChild(row);
   });
 }
+// ================= تحويل =================
 async function transferMoney() {
 
   const toAccountName = document.getElementById("transferTo").value.trim();
   const amount = parseFloat(document.getElementById("transferAmount").value);
 
-  if (!toAccountName || amount <= 0) {
+  if (!toAccountName || isNaN(amount) || amount <= 0) {
     alert("أدخل بيانات صحيحة");
+    return;
+  }
+
+  if (!currentAccount) {
+    alert("لم يتم تحميل الحساب بعد");
     return;
   }
 
@@ -341,35 +353,55 @@ async function transferMoney() {
     return;
   }
 
+  const newSenderBalance = currentBalance - amount;
+  const newReceiverBalance = parseFloat(receiver.balance) + amount;
+
   // تحديث رصيد المرسل
-  await supabase
+  const { error: senderError } = await supabase
     .from("accounts")
-    .update({ balance: currentBalance - amount })
+    .update({ balance: newSenderBalance })
     .eq("user_id", currentAccount.user_id);
 
+  if (senderError) {
+    alert("خطأ تحديث رصيد المرسل");
+    return;
+  }
+
   // تحديث رصيد المستقبل
-  await supabase
+  const { error: receiverError } = await supabase
     .from("accounts")
-    .update({ balance: receiver.balance + amount })
+    .update({ balance: newReceiverBalance })
     .eq("user_id", receiver.user_id);
 
-  // تسجيل عملية للمرسل
+  if (receiverError) {
+    alert("خطأ تحديث رصيد المستقبل");
+    return;
+  }
+
+  // تسجيل العملية للمرسل
   await supabase.from("transactions").insert({
     user_id: currentAccount.user_id,
-    tpye: "تحويل",
-    deascription: "تحويل إلى " + toAccountName + " - مبلغ " + amount
+    type: "transfer",
+    amount: amount,
+    description: "تحويل إلى " + toAccountName
   });
 
-  // تسجيل عملية للمستقبل
+  // تسجيل العملية للمستقبل
   await supabase.from("transactions").insert({
     user_id: receiver.user_id,
-    tpye: "تحويل",
-    deascription: "تحويل من " + currentAccount.account_name + " - مبلغ " + amount
+    type: "transfer",
+    amount: amount,
+    description: "تحويل من " + currentAccount.account_name
   });
 
   alert("تم التحويل بنجاح ✅");
 
-  loadAccount();
+  // إعادة تحميل البيانات
+  await loadAccount();
+
+  // تنظيف الحقول
+  document.getElementById("transferTo").value = "";
+  document.getElementById("transferAmount").value = "";
 }
 // ================= طباعة =================
 async function downloadPDF() {
@@ -455,6 +487,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
