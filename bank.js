@@ -307,6 +307,7 @@ async function loadTransactions() {
     tbody.appendChild(row);
   });
 }
+// ================= طباعة =================
 async function downloadPDF() {
 
   const printArea = document.getElementById("printArea");
@@ -322,7 +323,7 @@ async function downloadPDF() {
   document.getElementById("pdfBalance").innerText =
     "الرصيد الحالي: " + document.getElementById("balance").innerText;
 
-  // نسخ العمليات من الجدول الأصلي
+  // نسخ العمليات
   const rows = document.querySelectorAll("#transactionsBody tr");
   pdfBody.innerHTML = "";
 
@@ -330,18 +331,27 @@ async function downloadPDF() {
     pdfBody.appendChild(row.cloneNode(true));
   });
 
+  // إظهار منطقة الطباعة مؤقتاً
   printArea.style.display = "block";
 
   const opt = {
-    margin: 0.3,
+    margin: 0,
     filename: 'كشف_حساب.pdf',
     image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 3, useCORS: true },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    html2canvas: { 
+      scale: 4,
+      useCORS: true
+    },
+    jsPDF: { 
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
   };
 
   await html2pdf().set(opt).from(printArea).save();
 
+  // إخفاؤها مرة أخرى
   printArea.style.display = "none";
 }
 // ================= خروج =================
@@ -376,6 +386,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
