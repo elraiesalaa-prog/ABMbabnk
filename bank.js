@@ -287,35 +287,25 @@ async function loadTransactions() {
     return;
   }
 
-  const container = document.getElementById("transactions");
-  container.innerHTML = "";
+  const tbody = document.getElementById("transactionsBody");
+  tbody.innerHTML = "";
 
   data.forEach(tx => {
 
-    const row = document.createElement("div");
+    const row = document.createElement("tr");
 
     const date = new Date(tx.created_at).toLocaleString("ar-EG");
-
-    const typeColor = tx.type === "deposit" ? "#2ecc71" : "#e74c3c";
     const typeText = tx.type === "deposit" ? "إيداع" : "سحب";
 
     row.innerHTML = `
-      <div style="display:flex; flex-direction:column;">
-        <span style="color:${typeColor}; font-weight:bold;">
-          ${typeText} - ${tx.amount}
-        </span>
-        <small style="color:#666;">
-          ${tx.description || ""}
-        </small>
-        <small style="color:#999; font-size:11px;">
-          ${date}
-        </small>
-      </div>
+      <td>${date}</td>
+      <td>${typeText}</td>
+      <td>${tx.amount} SDG</td>
+      <td>${tx.description || ""}</td>
     `;
 
-    container.appendChild(row);
+    tbody.appendChild(row);
   });
-
 }
 
 // ================= خروج =================
@@ -350,6 +340,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
