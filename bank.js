@@ -307,6 +307,65 @@ async function loadTransactions() {
     tbody.appendChild(row);
   });
 }
+async function transferMoney() {
+
+  const toUsername = document.getElementById("transferTo").value.trim();
+  const amount = parseFloat(document.getElementById("transferAmount").value);
+
+  if (!toUsername || amount <= 0) {
+    alert("أدخل بيانات صحيحة");
+    return;
+  }
+
+  if (amount > currentBalance) {
+    alert("الرصيد غير كافي");
+    return;
+  }
+
+  // البحث عن الحساب المستقبل
+  const { data: receiver, error } = await supabase
+    .from("accounts")
+    .select("*")
+    .eq("username", toUsername)
+    .single();
+
+  if (error || !receiver) {
+    alert("الحساب غير موجود");
+    return;
+  }
+
+  // 1️⃣ خصم من المرسل
+  await supabase
+    .from("accounts")
+    .update({ balance: currentBalance - amount })
+    .eq("id", currentUser.id);
+
+  // 2️⃣ إضافة للمستقبل
+  await supabase
+    .from("accounts")
+    .update({ balance: receiver.balance + amount })
+    .eq("id", receiver.id);
+
+  // 3️⃣ تسجيل عملية للمرسل
+  await supabase.from("transactions").insert({
+    user_id: currentUser.id,
+    type: "تحويل",
+    amount: -amount,
+    description: "تحويل إلى " + toUsername
+  });
+
+  // 4️⃣ تسجيل عملية للمستقبل
+  await supabase.from("transactions").insert({
+    user_id: receiver.id,
+    type: "تحويل",
+    amount: amount,
+    description: "تحويل من " + currentUser.username
+  });
+
+  alert("تم التحويل بنجاح ✅");
+
+  loadAccount(); // إعادة تحميل البيانات
+}
 // ================= طباعة =================
 async function downloadPDF() {
 
@@ -391,6 +450,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
