@@ -336,11 +336,22 @@ async function transferMoney() {
   }
 
   // البحث عن الحساب المستقبل
-  const { data: receiver, error } = await supabase
-    .from("accounts")
-    .select("*")
-    .eq("account_name", toAccountName)
-    .single();
+ const { data: receivers, error } = await supabase
+  .from("accounts")
+  .select("*")
+  .eq("account_name", toAccountName);
+
+if (error) {
+  alert("خطأ في البحث عن الحساب");
+  return;
+}
+
+if (!receivers || receivers.length === 0) {
+  alert("الحساب غير موجود");
+  return;
+}
+
+const receiver = receivers[0];
 
   if (error || !receiver) {
     alert("الحساب غير موجود");
@@ -487,6 +498,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
