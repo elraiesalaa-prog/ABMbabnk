@@ -276,6 +276,31 @@ button:disabled{
   <tbody id="transactionsBody">
   </tbody>
 </table>
+  <div id="printArea" style="display:none; direction:rtl; font-family:Arial;">
+
+  <h2 style="text-align:center;">بنك الاحترافي</h2>
+  <hr>
+
+  <p id="pdfFullName"></p>
+  <p id="pdfAccountName"></p>
+  <p id="pdfBalance"></p>
+
+  <br>
+
+  <table border="1" width="100%" style="border-collapse:collapse; text-align:center;">
+    <thead>
+      <tr>
+        <th>التاريخ</th>
+        <th>النوع</th>
+        <th>المبلغ</th>
+        <th>الوصف</th>
+      </tr>
+    </thead>
+    <tbody id="pdfTransactionsBody">
+    </tbody>
+  </table>
+
+</div>
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
 <button onclick="logout()">تسجيل خروج</button>
 </div>
@@ -284,6 +309,7 @@ button:disabled{
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
