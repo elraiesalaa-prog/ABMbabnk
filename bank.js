@@ -310,54 +310,66 @@ async function loadTransactions() {
 // ================= طباعة =================
 async function downloadPDF() {
 
-  const printArea = document.getElementById("printArea");
-  const pdfBody = document.getElementById("pdfTransactionsBody");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("p", "mm", "a4");
 
-  // تعبئة بيانات العنوان
-  document.getElementById("pdfFullName").innerText =
-    document.getElementById("welcomeName").innerText;
+  const pageWidth = doc.internal.pageSize.getWidth();
 
-  document.getElementById("pdfAccountName").innerText =
-    document.getElementById("accountNameDisplay").innerText;
+  // ====== بيانات العميل ======
+  const fullName = document.getElementById("welcomeName").innerText;
+  const accountName = document.getElementById("accountNameDisplay").innerText;
+  const balance = document.getElementById("balance").innerText;
+  const issueDate = new Date().toLocaleString("ar-EG");
 
-  document.getElementById("pdfBalance").innerText =
-    "الرصيد الحالي: " + document.getElementById("balance").innerText;
-  document.getElementById("pdfDate").innerText =
-  "تاريخ الإصدار: " + new Date().toLocaleString("ar-EG");
+  // ====== ترويسة ثابتة ======
+  doc.setFont("helvetica");
+  doc.setFontSize(16);
+  doc.text("Bank Pro System", pageWidth / 2, 15, { align: "center" });
 
-  // نسخ العمليات
-  const rows = document.querySelectorAll("#transactionsBody tr");
-  pdfBody.innerHTML = "";
+  doc.setFontSize(11);
+  doc.text(fullName, pageWidth - 20, 25, { align: "right" });
+  doc.text(accountName, pageWidth - 20, 32, { align: "right" });
+  doc.text("الرصيد الحالي: " + balance, pageWidth - 20, 39, { align: "right" });
+  doc.text("تاريخ الإصدار: " + issueDate, pageWidth - 20, 46, { align: "right" });
 
-  rows.forEach(row => {
-  const clonedRow = row.cloneNode(true);
-  clonedRow.style.pageBreakInside = "avoid";
-  pdfBody.appendChild(clonedRow);
-});
+  // ====== تجهيز بيانات الجدول ======
+  const rows = [];
+  document.querySelectorAll("#transactionsBody tr").forEach(tr => {
+    const cols = tr.querySelectorAll("td");
+    rows.push([
+      cols[0].innerText,
+      cols[1].innerText,
+      cols[2].innerText,
+      cols[3].innerText
+    ]);
+  });
 
-  // إظهار منطقة الطباعة مؤقتاً
-  printArea.style.display = "block";
-
-  const opt = {
-    margin: 0,
-    filename: 'كشف_حساب.pdf',
-    image: { type: 'jpeg', quality: 1 },
-    html2canvas: { 
-      scale: 4,
-      useCORS: true
+  // ====== إنشاء الجدول ======
+  doc.autoTable({
+    startY: 55,
+    head: [["التاريخ", "النوع", "المبلغ", "الوصف"]],
+    body: rows,
+    styles: {
+      font: "helvetica",
+      halign: "center"
     },
-    jsPDF: { 
-      unit: 'mm',
-      format: 'a4',
-      orientation: 'portrait'
+    headStyles: {
+      fillColor: [41, 128, 185]
+    },
+    didDrawPage: function (data) {
+      // رقم الصفحة
+      let pageNumber = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        "صفحة " + pageNumber,
+        pageWidth / 2,
+        doc.internal.pageSize.height - 10,
+        { align: "center" }
+      );
     }
-    
-  };
+  });
 
-  await html2pdf().set(opt).from(printArea).save();
-
-  // إخفاؤها مرة أخرى
-  printArea.style.display = "none";
+  doc.save("كشف_حساب_احترافي.pdf");
 }
 // ================= خروج =================
 async function logout(){
@@ -391,6 +403,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
