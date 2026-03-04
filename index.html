@@ -304,23 +304,23 @@ button:disabled{
   <br>
 
   <table border="1"
-         style="width:100%;
-                border-collapse:collapse;
-                text-align:center;
-                table-layout:fixed;">
+       style="width:100%;
+              border-collapse:collapse;
+              text-align:center;
+              table-layout:fixed;">
 
-    <thead>
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>الوصف</th>
-      </tr>
-    </thead>
+  <thead style="display:table-header-group;">
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
 
-    <tbody id="pdfTransactionsBody"></tbody>
+  <tbody id="pdfTransactionsBody"></tbody>
 
-  </table>
+</table>
 
 </div>
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
@@ -331,6 +331,7 @@ button:disabled{
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
