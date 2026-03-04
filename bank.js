@@ -303,7 +303,7 @@ async function loadTransactions() {
       <tr>
         <td>${new Date(tx.created_at).toLocaleDateString()}</td>
         <td>${typeText}</td>
-        <td>${tx.amount}</td>
+        <<td>${tx.amount || 0}</td>
         <td>${tx.description || ""}</td>
       </tr>
     `;
@@ -384,22 +384,21 @@ const receiver = receivers[0];
     return;
   }
 
-  // تسجيل العملية للمرسل
-  await supabase.from("transactions").insert({
-    user_id: currentAccount.user_id,
-    type: "transfer",
-    amount: amount,
-    description: "تحويل إلى " + toAccountName
-  });
+  // تسجيل عملية المرسل
+await supabase.from("transactions").insert({
+  user_id: currentAccount.user_id,
+  type: "transfer",
+  amount: amount,
+  description: "تحويل إلى " + toAccountName
+});
 
-  // تسجيل العملية للمستقبل
-  await supabase.from("transactions").insert({
-    user_id: receiver.user_id,
-    type: "transfer",
-    amount: amount,
-    description: "تحويل من " + currentAccount.account_name
-  });
-
+// تسجيل عملية المستقبل
+await supabase.from("transactions").insert({
+  user_id: receiver.user_id,
+  type: "transfer",
+  amount: amount,
+  description: "تحويل من " + currentAccount.account_name
+});
   alert("تم التحويل بنجاح ✅");
 
   // إعادة تحميل البيانات
@@ -493,6 +492,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
