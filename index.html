@@ -262,9 +262,14 @@ button:disabled{
 <button id="depositBtn" onclick="deposit()">إيداع</button>
 <button id="withdrawBtn" onclick="withdraw()">سحب</button>
 
+<!-- ================= كشف الحساب في الصفحة ================= -->
+
 <h3>كشف الحساب</h3>
 
-<table id="transactionsTable" border="1" width="100%" style="border-collapse:collapse; text-align:center;">
+<table id="transactionsTable"
+       border="1"
+       style="width:100%; border-collapse:collapse; text-align:center;">
+
   <thead>
     <tr>
       <th>التاريخ</th>
@@ -273,11 +278,15 @@ button:disabled{
       <th>الوصف</th>
     </tr>
   </thead>
-  <tbody id="transactionsBody">
-  </tbody>
+
+  <tbody id="transactionsBody"></tbody>
+
 </table>
- 
-<div id="printArea" 
+
+
+<!-- ================= منطقة الطباعة PDF (مخفية) ================= -->
+
+<div id="printArea"
      style="display:none;
             direction:rtl;
             font-family:Arial;
@@ -314,29 +323,6 @@ button:disabled{
   </table>
 
 </div>
-  <h2 style="text-align:center;">بنك الاحترافي</h2>
-  <hr>
-
-  <p id="pdfFullName"></p>
-  <p id="pdfAccountName"></p>
-  <p id="pdfBalance"></p>
-
-  <br>
-
-  <table border="1" width="100%" style="border-collapse:collapse; text-align:center;">
-    <thead>
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>الوصف</th>
-      </tr>
-    </thead>
-    <tbody id="pdfTransactionsBody">
-    </tbody>
-  </table>
-
-</div>
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
 <button onclick="logout()">تسجيل خروج</button>
 </div>
@@ -345,6 +331,7 @@ button:disabled{
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
