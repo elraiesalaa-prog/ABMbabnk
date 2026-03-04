@@ -311,11 +311,19 @@ async function logout(){
 }
 
 function usernameInput(){
-  return document.getElementById("username").value.trim();
+  return (
+    document.getElementById("username")?.value ||
+    document.getElementById("usernameReg")?.value ||
+    ""
+  ).trim();
 }
 
 function passwordInput(){
-  return document.getElementById("password").value.trim();
+  return (
+    document.getElementById("password")?.value ||
+    document.getElementById("passwordReg")?.value ||
+    ""
+  ).trim();
 }
 
 
@@ -328,6 +336,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
