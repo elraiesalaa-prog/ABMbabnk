@@ -307,7 +307,20 @@ async function loadTransactions() {
     tbody.appendChild(row);
   });
 }
+function downloadPDF() {
 
+  const element = document.getElementById("bankCard");
+
+  const opt = {
+    margin: 0.5,
+    filename: 'كشف_حساب.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -340,6 +353,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
