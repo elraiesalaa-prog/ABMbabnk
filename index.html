@@ -204,7 +204,8 @@ button:disabled{
 </head>
 
 <body>
-<div id="bankCard" style="display:none;">
+
+<!-- كرت تسجيل الدخول -->
 <div class="card" id="authCard">
 
   <!-- شاشة الدخول -->
@@ -240,9 +241,30 @@ button:disabled{
 
 </div>
 
+
+<!-- كرت البنك (منفصل تماماً) -->
+<div class="card" id="bankCard" style="display:none;">
+
+  <h2 id="welcomeName"></h2>
+  <p id="accountNameDisplay"></p>
+  <h3 id="balance"></h3>
+
+  <input type="number" id="amount" placeholder="المبلغ">
+  <input type="text" id="description" placeholder="الوصف">
+
+  <button onclick="deposit()">إيداع</button>
+  <button onclick="withdraw()">سحب</button>
+  <button onclick="logout()">تسجيل خروج</button>
+
+  <h3>كشف الحساب</h3>
+  <div id="transactions"></div>
+
+</div>
+
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
