@@ -243,27 +243,34 @@ button:disabled{
 
 
 <!-- كرت البنك (منفصل تماماً) -->
-<div class="card" id="bankCard" style="display:none;">
+<div class="card" id="bankCard" style="display:none">
+<h2>حسابي البنكي</h2>
 
-  <h2 id="welcomeName"></h2>
-  <p id="accountNameDisplay"></p>
-  <h3 id="balance"></h3>
+<div id="accountInfo" class="account-box">
+  <div class="avatar-circle">👤</div>
+  <div class="account-text">
+    <div id="welcomeName" class="welcome-name"></div>
+    <div id="accountNameDisplay" class="account-name"></div>
+  </div>
+</div>
 
-  <input type="number" id="amount" placeholder="المبلغ">
-  <input type="text" id="description" placeholder="الوصف">
+<div class="balance">الرصيد: <span id="balance">0</span></div>
 
-  <button onclick="deposit()">إيداع</button>
-  <button onclick="withdraw()">سحب</button>
-  <button onclick="logout()">تسجيل خروج</button>
+<input type="number" id="amount" placeholder="المبلغ">
+<input type="text" id="description" placeholder="بيان العملية (سبب الإيداع أو السحب)">
 
-  <h3>كشف الحساب</h3>
-  <div id="transactions"></div>
+<button id="depositBtn" onclick="deposit()">إيداع</button>
+<button id="withdrawBtn" onclick="withdraw()">سحب</button>
 
+<div class="transactions" id="transactions"></div>
+
+<button onclick="logout()">تسجيل خروج</button>
 </div>
 
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
