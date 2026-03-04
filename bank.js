@@ -307,19 +307,42 @@ async function loadTransactions() {
     tbody.appendChild(row);
   });
 }
-function downloadPDF() {
+async function downloadPDF() {
 
-  const element = document.getElementById("bankCard");
+  const printArea = document.getElementById("printArea");
+  const pdfBody = document.getElementById("pdfTransactionsBody");
+
+  // تعبئة بيانات العنوان
+  document.getElementById("pdfFullName").innerText =
+    document.getElementById("welcomeName").innerText;
+
+  document.getElementById("pdfAccountName").innerText =
+    document.getElementById("accountNameDisplay").innerText;
+
+  document.getElementById("pdfBalance").innerText =
+    "الرصيد الحالي: " + document.getElementById("balance").innerText;
+
+  // نسخ العمليات من الجدول الأصلي
+  const rows = document.querySelectorAll("#transactionsBody tr");
+  pdfBody.innerHTML = "";
+
+  rows.forEach(row => {
+    pdfBody.appendChild(row.cloneNode(true));
+  });
+
+  printArea.style.display = "block";
 
   const opt = {
-    margin: 0.5,
+    margin: 0.3,
     filename: 'كشف_حساب.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { scale: 3, useCORS: true },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(element).save();
+  await html2pdf().set(opt).from(printArea).save();
+
+  printArea.style.display = "none";
 }
 // ================= خروج =================
 async function logout(){
@@ -353,6 +376,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
