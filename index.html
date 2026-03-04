@@ -206,47 +206,44 @@ button:disabled{
 <body>
 
 <div class="card" id="authCard">
-<h2>تسجيل / دخول</h2>
 
-<input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
-<input type="password" id="password" placeholder="كلمة المرور">
-<input type="text" id="fullName" placeholder="الاسم الكامل">
-<input type="text" id="accountName" placeholder="اسم الحساب البنكي">
-<button id="registerBtn" onclick="register()">إنشاء حساب</button>
-<button id="loginBtn" onclick="login()">تسجيل الدخول</button>
+  <!-- شاشة الدخول -->
+  <div id="loginView">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
 
-<div class="loading" id="authLoading">جاري المعالجة...</div>
-</div>
-
-
-
-<div class="card" id="bankCard" style="display:none">
-<h2>حسابي البنكي</h2>
-
-<div id="accountInfo" class="account-box">
-  <div class="avatar-circle">👤</div>
-  <div class="account-text">
-    <div id="welcomeName" class="welcome-name"></div>
-    <div id="accountNameDisplay" class="account-name"></div>
+    <p style="text-align:center;margin-top:15px;">
+      ليس لديك حساب؟
+      <a href="#" onclick="showRegister()">إنشاء حساب</a>
+    </p>
   </div>
-</div>
 
-<div class="balance">الرصيد: <span id="balance">0</span></div>
+  <!-- شاشة التسجيل -->
+  <div id="registerView" style="display:none;">
+    <h2>إنشاء حساب جديد</h2>
+    <input type="text" id="usernameReg" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="passwordReg" placeholder="كلمة المرور">
+    <input type="text" id="fullName" placeholder="الاسم الكامل">
+    <input type="text" id="accountName" placeholder="اسم الحساب البنكي">
 
-<input type="number" id="amount" placeholder="المبلغ">
-<input type="text" id="description" placeholder="بيان العملية (سبب الإيداع أو السحب)">
+    <button id="registerBtn" onclick="register()">إنشاء حساب</button>
 
-<button id="depositBtn" onclick="deposit()">إيداع</button>
-<button id="withdrawBtn" onclick="withdraw()">سحب</button>
+    <p style="text-align:center;margin-top:15px;">
+      لديك حساب بالفعل؟
+      <a href="#" onclick="showLogin()">تسجيل الدخول</a>
+    </p>
+  </div>
 
-<div class="transactions" id="transactions"></div>
+  <div class="loading" id="authLoading">جاري المعالجة...</div>
 
-<button onclick="logout()">تسجيل خروج</button>
 </div>
 
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
