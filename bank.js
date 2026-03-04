@@ -183,6 +183,8 @@ async function deposit(){
   loadTransactions();
   await loadTransactions();
 }
+// ================= سحب =================
+
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
@@ -252,7 +254,8 @@ async function withdraw(){
   loadTransactions();
   await loadTransactions();
 }
-// ================= سحب =================
+
+// ================= كشف الحساب =================
 async function loadTransactions() {
 
   const { data: userData } = await supabase.auth.getUser();
@@ -263,7 +266,7 @@ async function loadTransactions() {
     .from("transactions")
     .select("*")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false }); // 🔥 ترتيب من الأحدث
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error(error);
@@ -300,35 +303,6 @@ async function loadTransactions() {
   });
 
 }
-// ================= كشف الحساب =================
-async function loadTransactions(){
-
-  const user = (await supabase.auth.getUser()).data.user;
-
-  const { data } = await supabase
-    .from("transactions")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at",{ascending:false});
-
-  let html="";
-
-  data.forEach(t=>{
-    html += `
-      <div class="transaction">
-        <div>
-          <strong>${t.type === "deposit" ? "إيداع" : "سحب"}</strong>
-          <div style="font-size:12px;color:gray">
-            ${t.description || ""}
-          </div>
-        </div>
-        <span>${t.amount} SDG</span>
-      </div>
-    `;
-  });
-
-  document.getElementById("transactions").innerHTML = html;
-}
 
 // ================= خروج =================
 async function logout(){
@@ -343,6 +317,7 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
 
 
