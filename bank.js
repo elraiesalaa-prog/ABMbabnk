@@ -16,8 +16,8 @@ function setLoading(state){
 // ================= تسجيل =================
 async function register(){
 
-  const username = usernameInput();
-  const password = passwordInput();
+ const username = document.getElementById("usernameReg").value.trim();
+const password = document.getElementById("passwordReg").value.trim();
 
   if(password.length < 6){
     alert("كلمة المرور 6 أحرف على الأقل");
@@ -319,6 +319,15 @@ function passwordInput(){
 }
 
 
+function showRegister(){
+  document.getElementById("loginView").style.display = "none";
+  document.getElementById("registerView").style.display = "block";
+}
+
+function showLogin(){
+  document.getElementById("registerView").style.display = "none";
+  document.getElementById("loginView").style.display = "block";
+}
 
 
 
