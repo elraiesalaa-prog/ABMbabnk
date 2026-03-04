@@ -286,7 +286,7 @@ button:disabled{
 
 <!-- ================= منطقة الطباعة PDF (مخفية) ================= -->
 
-<div id="printArea"
+<<div id="printArea"
      style="display:none;
             direction:rtl;
             font-family:Arial;
@@ -294,14 +294,14 @@ button:disabled{
             padding:15mm;
             box-sizing:border-box;">
 
-  <h2 style="text-align:center;">بنك الاحترافي</h2>
-  <hr>
-
-  <p id="pdfFullName"></p>
-  <p id="pdfAccountName"></p>
-  <p id="pdfBalance"></p>
-
-  <br>
+  <div style="text-align:center; margin-bottom:10mm;">
+    <h2 style="margin:0;">🏦 بنك ABM</h2>
+    <p style="margin:3px 0;" id="pdfFullName"></p>
+    <p style="margin:3px 0;" id="pdfAccountName"></p>
+    <p style="margin:3px 0;" id="pdfBalance"></p>
+    <p style="margin:3px 0;" id="pdfDate"></p>
+    <hr>
+  </div>
 
   <table border="1"
        style="width:100%;
@@ -331,6 +331,7 @@ button:disabled{
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
