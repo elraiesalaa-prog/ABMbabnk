@@ -262,14 +262,27 @@ button:disabled{
 <button id="depositBtn" onclick="deposit()">إيداع</button>
 <button id="withdrawBtn" onclick="withdraw()">سحب</button>
 
-<div class="transactions" id="transactions"></div>
+<h3>كشف الحساب</h3>
 
+<table id="transactionsTable" border="1" width="100%" style="border-collapse:collapse; text-align:center;">
+  <thead>
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+  <tbody id="transactionsBody">
+  </tbody>
+</table>
 <button onclick="logout()">تسجيل خروج</button>
 </div>
 
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
