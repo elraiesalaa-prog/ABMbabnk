@@ -275,14 +275,12 @@ async function withdraw(){
 // ================= كشف الحساب =================
 async function loadTransactions() {
 
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
-  if (!user) return;
+  if (!currentAccount) return;
 
   const { data, error } = await supabase
     .from("transactions")
     .select("*")
-    .eq("user_id", user.id)
+    .eq("user_id", currentAccount.user_id)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -290,28 +288,25 @@ async function loadTransactions() {
     return;
   }
 
-  const tbody = document.getElementById("transactionsBody");
-  tbody.innerHTML = "";
+  const body = document.getElementById("transactionsBody");
+  body.innerHTML = "";
 
   data.forEach(tx => {
 
-    const row = document.createElement("tr");
+    let typeText = "عملية";
 
-    const date = new Date(tx.created_at).toLocaleString("ar-EG");
-   let typeText = "عملية";
+    if (tx.type === "deposit") typeText = "إيداع";
+    else if (tx.type === "withdraw") typeText = "سحب";
+    else if (tx.type === "transfer") typeText = "تحويل";
 
-if (tx.type === "deposit") typeText = "إيداع";
-else if (tx.type === "withdraw") typeText = "سحب";
-else if (tx.type === "transfer") typeText = "تحويل";
-
-    row.innerHTML = `
-      <td>${date}</td>
-      <td>${typeText}</td>
-      <td>${tx.amount} SDG</td>
-      <td>${tx.description || ""}</td>
+    body.innerHTML += `
+      <tr>
+        <td>${new Date(tx.created_at).toLocaleDateString()}</td>
+        <td>${typeText}</td>
+        <td>${tx.amount}</td>
+        <td>${tx.description || ""}</td>
+      </tr>
     `;
-
-    tbody.appendChild(row);
   });
 }
 // ================= تحويل =================
@@ -498,6 +493,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
