@@ -2,7 +2,8 @@ var supabase = window.supabase.createClient(
   "https://rahqhfowbphaipiadlkh.supabase.co",
   "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9"
 );
-
+let currentAccount;
+let currentBalance;
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
@@ -309,10 +310,10 @@ async function loadTransactions() {
 }
 async function transferMoney() {
 
-  const toUsername = document.getElementById("transferTo").value.trim();
+  const toAccountName = document.getElementById("transferTo").value.trim();
   const amount = parseFloat(document.getElementById("transferAmount").value);
 
-  if (!toUsername || amount <= 0) {
+  if (!toAccountName || amount <= 0) {
     alert("أدخل بيانات صحيحة");
     return;
   }
@@ -326,7 +327,7 @@ async function transferMoney() {
   const { data: receiver, error } = await supabase
     .from("accounts")
     .select("*")
-    .eq("username", toUsername)
+    .eq("account_name", toAccountName)
     .single();
 
   if (error || !receiver) {
@@ -334,37 +335,41 @@ async function transferMoney() {
     return;
   }
 
-  // 1️⃣ خصم من المرسل
+  // منع التحويل لنفس الحساب
+  if (receiver.user_id === currentAccount.user_id) {
+    alert("لا يمكن التحويل لنفس الحساب");
+    return;
+  }
+
+  // تحديث رصيد المرسل
   await supabase
     .from("accounts")
     .update({ balance: currentBalance - amount })
-    .eq("id", currentUser.id);
+    .eq("user_id", currentAccount.user_id);
 
-  // 2️⃣ إضافة للمستقبل
+  // تحديث رصيد المستقبل
   await supabase
     .from("accounts")
     .update({ balance: receiver.balance + amount })
-    .eq("id", receiver.id);
+    .eq("user_id", receiver.user_id);
 
-  // 3️⃣ تسجيل عملية للمرسل
+  // تسجيل عملية للمرسل
   await supabase.from("transactions").insert({
-    user_id: currentUser.id,
-    type: "تحويل",
-    amount: -amount,
-    description: "تحويل إلى " + toUsername
+    user_id: currentAccount.user_id,
+    tpye: "تحويل",
+    deascription: "تحويل إلى " + toAccountName + " - مبلغ " + amount
   });
 
-  // 4️⃣ تسجيل عملية للمستقبل
+  // تسجيل عملية للمستقبل
   await supabase.from("transactions").insert({
-    user_id: receiver.id,
-    type: "تحويل",
-    amount: amount,
-    description: "تحويل من " + currentUser.username
+    user_id: receiver.user_id,
+    tpye: "تحويل",
+    deascription: "تحويل من " + currentAccount.account_name + " - مبلغ " + amount
   });
 
   alert("تم التحويل بنجاح ✅");
 
-  loadAccount(); // إعادة تحميل البيانات
+  loadAccount();
 }
 // ================= طباعة =================
 async function downloadPDF() {
@@ -450,6 +455,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
