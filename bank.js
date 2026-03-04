@@ -181,8 +181,8 @@ async function deposit(){
 
   // تحديث كشف الحساب
   loadTransactions();
+  await loadTransactions();
 }
-// ================= سحب =================
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
@@ -250,6 +250,55 @@ async function withdraw(){
 
   // تحديث العمليات
   loadTransactions();
+  await loadTransactions();
+}
+// ================= سحب =================
+async function loadTransactions() {
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false }); // 🔥 ترتيب من الأحدث
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const container = document.getElementById("transactions");
+  container.innerHTML = "";
+
+  data.forEach(tx => {
+
+    const row = document.createElement("div");
+
+    const date = new Date(tx.created_at).toLocaleString("ar-EG");
+
+    const typeColor = tx.type === "deposit" ? "#2ecc71" : "#e74c3c";
+    const typeText = tx.type === "deposit" ? "إيداع" : "سحب";
+
+    row.innerHTML = `
+      <div style="display:flex; flex-direction:column;">
+        <span style="color:${typeColor}; font-weight:bold;">
+          ${typeText} - ${tx.amount}
+        </span>
+        <small style="color:#666;">
+          ${tx.description || ""}
+        </small>
+        <small style="color:#999; font-size:11px;">
+          ${date}
+        </small>
+      </div>
+    `;
+
+    container.appendChild(row);
+  });
+
 }
 // ================= كشف الحساب =================
 async function loadTransactions(){
@@ -294,6 +343,7 @@ function usernameInput(){
 function passwordInput(){
   return document.getElementById("password").value.trim();
 }
+
 
 
 
