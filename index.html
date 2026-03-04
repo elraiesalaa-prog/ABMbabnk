@@ -203,23 +203,10 @@
 
   <button id="depositBtn" onclick="deposit()">إيداع</button>
   <button id="withdrawBtn" onclick="withdraw()">سحب</button>
-<hr style="margin:15px 0;">
 
-<hr style="margin:15px 0;">
-
-<h3>تحويل أموال</h3>
-
-<input type="text" id="transferTo" placeholder="اسم الحساب البنكي للمستلم">
-<input type="number" id="transferAmount" placeholder="المبلغ">
-
-<button onclick="transferMoney()">تحويل</button>
   <h3>كشف الحساب</h3>
 
-  <div class="table-container">
-
-  <table border="1"
-         style="width:100%; border-collapse:collapse; text-align:center;">
-
+  <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
     <thead>
       <tr>
         <th>التاريخ</th>
@@ -228,12 +215,8 @@
         <th>الوصف</th>
       </tr>
     </thead>
-
     <tbody id="transactionsBody"></tbody>
-
   </table>
-
-</div>
 
   <!-- منطقة الطباعة -->
   <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
@@ -268,7 +251,3 @@
 
 </body>
 </html>
-
-
-
-
