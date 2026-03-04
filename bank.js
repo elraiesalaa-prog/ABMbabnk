@@ -194,7 +194,7 @@ async function deposit(){
   document.getElementById("description").value = "";
 
   // تحديث كشف الحساب
-  loadTransactions();
+ 
   await loadTransactions();
 }
 // ================= سحب =================
@@ -265,7 +265,7 @@ async function withdraw(){
   document.getElementById("description").value = "";
 
   // تحديث العمليات
-  loadTransactions();
+ 
   await loadTransactions();
 }
 
@@ -350,6 +350,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
