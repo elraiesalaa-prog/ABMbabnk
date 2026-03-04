@@ -70,7 +70,7 @@ const password = document.getElementById("passwordReg").value.trim();
     return;
   }
 
-  alert("تم إنشاء الحساب بالكامل ✅");
+  alert("تم إنشاء الحساب بنجاح ✅");
 }
 
 // ================= دخول =================
@@ -391,6 +391,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
