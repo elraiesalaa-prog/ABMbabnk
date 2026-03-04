@@ -322,14 +322,18 @@ async function downloadPDF() {
 
   document.getElementById("pdfBalance").innerText =
     "الرصيد الحالي: " + document.getElementById("balance").innerText;
+  document.getElementById("pdfDate").innerText =
+  "تاريخ الإصدار: " + new Date().toLocaleString("ar-EG");
 
   // نسخ العمليات
   const rows = document.querySelectorAll("#transactionsBody tr");
   pdfBody.innerHTML = "";
 
   rows.forEach(row => {
-    pdfBody.appendChild(row.cloneNode(true));
-  });
+  const clonedRow = row.cloneNode(true);
+  clonedRow.style.pageBreakInside = "avoid";
+  pdfBody.appendChild(clonedRow);
+});
 
   // إظهار منطقة الطباعة مؤقتاً
   printArea.style.display = "block";
@@ -347,6 +351,7 @@ async function downloadPDF() {
       format: 'a4',
       orientation: 'portrait'
     }
+    
   };
 
   await html2pdf().set(opt).from(printArea).save();
@@ -386,6 +391,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
