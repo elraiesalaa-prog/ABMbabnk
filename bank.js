@@ -338,25 +338,21 @@ document.getElementById("pdfDate").innerText =
 // إظهار المنطقة للطباعة
 printArea.style.display = "block"
 
-const options = {
-
-margin: 0.5,
-
-filename: "كشف_الحساب.pdf",
-
-image: { type: "jpeg", quality: 1 },
-
-html2canvas: {
-scale: 2
-},
-
-jsPDF: {
-unit: "in",
-format: "a4",
-orientation: "portrait"
-}
-
-}
+const opt = {
+  margin: [0.6, 0.6, 0.6, 0.6], // أعلى، يسار، أسفل، يمين
+  filename: 'كشف_حساب.pdf',
+  image: { type: 'jpeg', quality: 1 },
+  html2canvas: { 
+    scale: 3,
+    scrollX: 0,
+    scrollY: 0
+  },
+  jsPDF: { 
+    unit: 'in',
+    format: 'a4',
+    orientation: 'portrait'
+  }
+};
 
 // إنشاء PDF
 await html2pdf().set(options).from(printArea).save()
@@ -455,6 +451,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
