@@ -312,49 +312,58 @@ async function downloadPDF() {
 
 const printArea = document.getElementById("printArea")
 const pdfBody = document.getElementById("pdfTransactionsBody")
+const tableRows = document.querySelectorAll("#transactionsBody tr")
 
+// مسح الجدول
 pdfBody.innerHTML = ""
 
-const { data, error } = await supabase
-.from("transactions")
-.select("*")
-.eq("user_id", currentUser.id)
-.order("created_at", { ascending:false })
-
-if(error){
-console.log(error)
-return
-}
-
-data.forEach(t => {
-
-let row = `
-<tr>
-<td>${new Date(t.created_at).toLocaleDateString()}</td>
-<td>${t.type}</td>
-<td>${t.amount}</td>
-<td>${t.description || ""}</td>
-</tr>
-`
-
-pdfBody.innerHTML += row
-
+// نسخ العمليات من الجدول الرئيسي
+tableRows.forEach(row => {
+pdfBody.appendChild(row.cloneNode(true))
 })
 
-document.getElementById("pdfFullName").innerText = "الاسم: " + currentFullName
-document.getElementById("pdfAccountName").innerText = "الحساب: " + currentAccountName
-document.getElementById("pdfBalance").innerText = "الرصيد: " + currentBalance
-document.getElementById("pdfDate").innerText = "تاريخ الكشف: " + new Date().toLocaleDateString()
+// تعبئة بيانات الحساب
+document.getElementById("pdfFullName").innerText =
+"الاسم: " + document.getElementById("welcomeName").innerText
 
+document.getElementById("pdfAccountName").innerText =
+"اسم الحساب: " + document.getElementById("accountNameDisplay").innerText
+
+document.getElementById("pdfBalance").innerText =
+"الرصيد الحالي: " + document.getElementById("balance").innerText
+
+document.getElementById("pdfDate").innerText =
+"تاريخ الكشف: " + new Date().toLocaleDateString()
+
+// إظهار المنطقة للطباعة
 printArea.style.display = "block"
 
-html2pdf().from(printArea).save("كشف_الحساب.pdf")
+const options = {
 
-setTimeout(()=>{
-printArea.style.display = "none"
-},1000)
+margin: 0.5,
+
+filename: "كشف_الحساب.pdf",
+
+image: { type: "jpeg", quality: 1 },
+
+html2canvas: {
+scale: 2
+},
+
+jsPDF: {
+unit: "in",
+format: "a4",
+orientation: "portrait"
+}
 
 }
+
+// إنشاء PDF
+await html2pdf().set(options).from(printArea).save()
+
+// إعادة الإخفاء
+printArea.style.display = "none"
+
 }
 // ================= فلترة =================
 
@@ -446,6 +455,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
