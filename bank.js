@@ -3,7 +3,6 @@ var supabase = window.supabase.createClient(
   "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9"
 );
 
-
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
@@ -311,50 +310,118 @@ async function loadTransactions() {
 // ================= طباعة =================
 async function downloadPDF() {
 
-  const printArea = document.getElementById("printArea");
-  const pdfBody = document.getElementById("pdfTransactionsBody");
+const printArea = document.getElementById("printArea")
+const pdfBody = document.getElementById("pdfTransactionsBody")
+const tableRows = document.querySelectorAll("#transactionsBody tr")
 
-  // تعبئة بيانات العنوان
-  document.getElementById("pdfFullName").innerText =
-    document.getElementById("welcomeName").innerText;
+// مسح الجدول
+pdfBody.innerHTML = ""
 
-  document.getElementById("pdfAccountName").innerText =
-    document.getElementById("accountNameDisplay").innerText;
+// نسخ العمليات من الجدول الرئيسي
+tableRows.forEach(row => {
+pdfBody.appendChild(row.cloneNode(true))
+})
 
-  document.getElementById("pdfBalance").innerText =
-    "الرصيد الحالي: " + document.getElementById("balance").innerText;
+// تعبئة بيانات الحساب
+document.getElementById("pdfFullName").innerText =
+"الاسم: " + document.getElementById("welcomeName").innerText
 
-  // نسخ العمليات
-  const rows = document.querySelectorAll("#transactionsBody tr");
-  pdfBody.innerHTML = "";
+document.getElementById("pdfAccountName").innerText =
+"اسم الحساب: " + document.getElementById("accountNameDisplay").innerText
 
-  rows.forEach(row => {
-    pdfBody.appendChild(row.cloneNode(true));
+document.getElementById("pdfBalance").innerText =
+"الرصيد الحالي: " + document.getElementById("balance").innerText
+
+document.getElementById("pdfDate").innerText =
+"تاريخ الكشف: " + new Date().toLocaleDateString()
+
+// إظهار المنطقة للطباعة
+printArea.style.display = "block"
+
+const options = {
+
+margin: 0.5,
+
+filename: "كشف_الحساب.pdf",
+
+image: { type: "jpeg", quality: 1 },
+
+html2canvas: {
+scale: 2
+},
+
+jsPDF: {
+unit: "in",
+format: "a4",
+orientation: "portrait"
+}
+
+}
+
+// إنشاء PDF
+await html2pdf().set(options).from(printArea).save()
+
+// إعادة الإخفاء
+printArea.style.display = "none"
+
+}
+// ================= فلترة =================
+
+async function filterTransactions(){
+
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  let query = supabase
+    .from("transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", {ascending:false});
+
+  if(from){
+    query = query.gte("created_at", from);
+  }
+
+  if(to){
+    query = query.lte("created_at", to + "T23:59:59");
+  }
+
+  const { data, error } = await query;
+
+  if(error){
+    console.log(error);
+    return;
+  }
+
+  const tbody = document.getElementById("transactionsBody");
+  tbody.innerHTML="";
+
+  data.forEach(tx=>{
+
+    const row=document.createElement("tr");
+
+    const date=new Date(tx.created_at).toLocaleString("ar-EG");
+
+    let typeText="";
+
+    if(tx.type==="deposit") typeText="إيداع";
+    else if(tx.type==="withdraw") typeText="سحب";
+    else if(tx.type==="transfer") typeText="تحويل";
+
+    row.innerHTML=`
+      <td>${date}</td>
+      <td>${typeText}</td>
+      <td>${tx.amount || ""}</td>
+      <td>${tx.description || ""}</td>
+    `;
+
+    tbody.appendChild(row);
+
   });
 
-  // إظهار منطقة الطباعة مؤقتاً
-  printArea.style.display = "block";
-
-  const opt = {
-  margin: [0.6, 0.6, 0.6, 0.6], // أعلى، يسار، أسفل، يمين
-  filename: 'كشف_حساب.pdf',
-  image: { type: 'jpeg', quality: 1 },
-  html2canvas: { 
-    scale: 3,
-    scrollX: 0,
-    scrollY: 0
-  },
-  jsPDF: { 
-    unit: 'in',
-    format: 'a4',
-    orientation: 'portrait'
-  }
-};
-
-  await html2pdf().set(opt).from(printArea).save();
-
-  // إخفاؤها مرة أخرى
-  printArea.style.display = "none";
 }
 // ================= خروج =================
 async function logout(){
@@ -388,24 +455,6 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
