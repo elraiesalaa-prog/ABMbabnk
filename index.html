@@ -211,19 +211,30 @@
 <button onclick="filterTransactions()">عرض العمليات</button>
 
 <hr>
-  <h3>كشف الحساب</h3>
+  <div id="printArea" style="padding:20px; background:white; display:none;">
 
-  <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-    <thead>
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>الوصف</th>
-      </tr>
-    </thead>
-    <tbody id="transactionsBody"></tbody>
-  </table>
+<h2 style="text-align:center">كشف حساب بنكي</h2>
+
+<p id="pdfFullName"></p>
+<p id="pdfAccountName"></p>
+<p id="pdfBalance"></p>
+<p id="pdfDate"></p>
+
+<table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+<thead>
+<tr>
+<th>التاريخ</th>
+<th>النوع</th>
+<th>المبلغ</th>
+<th>الوصف</th>
+</tr>
+</thead>
+
+<tbody id="pdfTransactionsBody"></tbody>
+
+</table>
+
+</div>
 
   <!-- منطقة الطباعة -->
   <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
@@ -258,4 +269,5 @@
 
 </body>
 </html>
+
 
