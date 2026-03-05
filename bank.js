@@ -1,4 +1,4 @@
-const { createClient } = supabase
+const { createClient } = supabase;
 
 const supabaseClient = createClient(
   "https://rahqhfowbphaipiadlkh.supabase.co",
@@ -379,6 +379,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
