@@ -310,21 +310,31 @@ async function loadTransactions() {
 // ================= طباعة =================
 async function downloadPDF(){
 
-  const printArea = document.getElementById("printArea");
+  const tbody = document.getElementById("transactionsBody");
   const pdfBody = document.getElementById("pdfTransactionsBody");
+  const printArea = document.getElementById("printArea");
 
-  // مسح العمليات القديمة
+  if(!tbody || !pdfBody){
+    alert("جدول العمليات غير موجود");
+    return;
+  }
+
+  // مسح القديم
   pdfBody.innerHTML = "";
 
-  // جلب العمليات الموجودة في الجدول
-  const rows = document.querySelectorAll("#transactionsBody tr");
+  const rows = tbody.querySelectorAll("tr");
+
+  if(rows.length === 0){
+    alert("لا توجد عمليات للطباعة");
+    return;
+  }
 
   rows.forEach(row=>{
     const clone = row.cloneNode(true);
     pdfBody.appendChild(clone);
   });
 
-  // تعبئة بيانات الحساب
+  // بيانات الحساب
   document.getElementById("pdfFullName").innerText =
     document.getElementById("welcomeName").innerText;
 
@@ -337,14 +347,14 @@ async function downloadPDF(){
   document.getElementById("pdfDate").innerText =
     "تاريخ الإصدار: " + new Date().toLocaleString("ar-EG");
 
-  // إظهار المنطقة مؤقتاً
+  // إظهار مؤقت
   printArea.style.display="block";
 
   const opt = {
-    margin: 5,
-    filename: 'كشف_حساب.pdf',
+    margin: 10,
+    filename: 'bank_statement.pdf',
     image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 3 },
+    html2canvas: { scale: 2 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
@@ -442,6 +452,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
