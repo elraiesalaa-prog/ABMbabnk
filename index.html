@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام البنكي الخاص - علاء الدين</title>
 
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
 body{
-font-family:"Segoe UI",Tahoma,sans-serif;
+font-family:"Segoe UI",Tahoma;
 background:linear-gradient(135deg,#141e30,#243b55);
 display:flex;
 justify-content:center;
@@ -24,26 +25,22 @@ direction:rtl;
 .card{
 background:white;
 padding:30px;
-width:420px;
+width:380px;
 border-radius:20px;
 box-shadow:0 20px 40px rgba(0,0,0,0.3);
-animation:fadeIn 0.4s ease-in-out;
 }
 
 h2{
 text-align:center;
-margin-bottom:20px;
 color:#243b55;
 }
 
 input{
 width:100%;
-padding:14px;
+padding:12px;
 margin:10px 0;
-border-radius:12px;
+border-radius:10px;
 border:1px solid #ddd;
-font-size:14px;
-background:#f9fafc;
 box-sizing:border-box;
 }
 
@@ -53,21 +50,20 @@ padding:12px;
 margin-top:10px;
 border:none;
 border-radius:10px;
-font-weight:bold;
 cursor:pointer;
+font-weight:bold;
 }
 
-#registerBtn{background:#1e88e5;color:white;}
 #loginBtn{background:#43a047;color:white;}
+#registerBtn{background:#1e88e5;color:white;}
 #depositBtn{background:#2ecc71;color:white;}
 #withdrawBtn{background:#e74c3c;color:white;}
 
 .balance{
-font-size:24px;
+font-size:22px;
 text-align:center;
 margin:15px 0;
 font-weight:bold;
-color:#243b55;
 }
 
 .account-box{
@@ -89,14 +85,12 @@ background:white;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:22px;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
 margin-top:15px;
-font-size:13px;
 }
 
 th,td{
@@ -105,14 +99,9 @@ padding:8px;
 text-align:center;
 }
 
-th{
+thead{
 background:#243b55;
 color:white;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(10px);}
-to{opacity:1;transform:translateY(0);}
 }
 
 </style>
@@ -121,18 +110,18 @@ to{opacity:1;transform:translateY(0);}
 <body>
 
 <!-- تسجيل الدخول -->
-
 <div class="card" id="authCard">
 
 <div id="loginView">
+
 <h2>تسجيل الدخول</h2>
 
-<input type="text" id="username" placeholder="اسم الحساب">
+<input id="username" placeholder="اسم الحساب">
 <input type="password" id="password" placeholder="كلمة المرور">
 
 <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
 
-<p style="text-align:center;margin-top:15px;">
+<p style="text-align:center">
 ليس لديك حساب؟
 <a href="#" onclick="showRegister()">إنشاء حساب</a>
 </p>
@@ -143,14 +132,14 @@ to{opacity:1;transform:translateY(0);}
 
 <h2>إنشاء حساب</h2>
 
-<input type="text" id="usernameReg" placeholder="اسم الحساب">
+<input id="usernameReg" placeholder="اسم الحساب">
 <input type="password" id="passwordReg" placeholder="كلمة المرور">
-<input type="text" id="fullName" placeholder="الاسم الكامل">
-<input type="text" id="accountName" placeholder="اسم الحساب البنكي">
+<input id="fullName" placeholder="الاسم الكامل">
+<input id="accountName" placeholder="اسم الحساب البنكي">
 
 <button id="registerBtn" onclick="register()">إنشاء حساب</button>
 
-<p style="text-align:center;margin-top:15px;">
+<p style="text-align:center">
 لديك حساب؟
 <a href="#" onclick="showLogin()">تسجيل الدخول</a>
 </p>
@@ -160,8 +149,7 @@ to{opacity:1;transform:translateY(0);}
 </div>
 
 
-<!-- البنك -->
-
+<!-- النظام البنكي -->
 <div class="card" id="bankCard" style="display:none">
 
 <h2>حسابي البنكي</h2>
@@ -178,8 +166,9 @@ to{opacity:1;transform:translateY(0);}
 </div>
 
 <div class="balance">
-الرصيد : <span id="balance">0</span>
+الرصيد: <span id="balance">0</span>
 </div>
+
 
 <input type="number" id="amount" placeholder="المبلغ">
 <input type="text" id="description" placeholder="وصف العملية">
@@ -198,8 +187,6 @@ to{opacity:1;transform:translateY(0);}
 
 <hr>
 
-<!-- جدول العمليات للمستخدم -->
-
 <h3>العمليات</h3>
 
 <table>
@@ -217,20 +204,11 @@ to{opacity:1;transform:translateY(0);}
 
 </table>
 
-<hr>
 
-<button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
+<!-- منطقة الطباعة -->
+<div id="printArea" style="display:none; direction:rtl; font-family:Arial">
 
-<button onclick="logout()">تسجيل خروج</button>
-
-</div>
-
-
-<!-- منطقة الطباعة فقط -->
-
-<div id="printArea" style="display:none; direction:rtl; width:190mm; padding:15mm; font-family:Arial;">
-
-<h2 style="text-align:center;">🏦 بنك ABM</h2>
+<h2 style="text-align:center">كشف حساب بنكي</h2>
 
 <p id="pdfFullName"></p>
 <p id="pdfAccountName"></p>
@@ -254,7 +232,15 @@ to{opacity:1;transform:translateY(0);}
 
 </div>
 
+<button onclick="downloadPDF()">طباعة كشف الحساب</button>
+
+<button onclick="logout()">تسجيل خروج</button>
+
+</div>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script src="bank.js"></script>
 
 </body>
