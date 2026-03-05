@@ -218,28 +218,68 @@
     <tbody id="transactionsBody"></tbody>
   </table>
 
-  <!-- منطقة الطباعة -->
-  <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
-    <div style="text-align:center; margin-bottom:10mm;">
-      <h2 style="margin:0;">🏦 بنك ABM</h2>
-      <p id="pdfFullName"></p>
-      <p id="pdfAccountName"></p>
-      <p id="pdfBalance"></p>
-      <p id="pdfDate"></p>
-      <hr>
-    </div>
-    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-      <thead>
-        <tr>
-          <th>التاريخ</th>
-          <th>النوع</th>
-          <th>المبلغ</th>
-          <th>الوصف</th>
-        </tr>
-      </thead>
-      <tbody id="pdfTransactionsBody"></tbody>
-    </table>
-  </div>
+  
+  <!-- ================= كشف الحساب في الصفحة ================= -->
+
+<h3>كشف الحساب</h3>
+
+<table id="transactionsTable"
+       border="1"
+       style="width:100%; border-collapse:collapse; text-align:center;">
+
+  <thead>
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+
+  <tbody id="transactionsBody"></tbody>
+
+</table>
+
+
+<!-- ================= منطقة الطباعة PDF (مخفية) ================= -->
+
+<div id="printArea"
+     style="display:none;
+            direction:rtl;
+            font-family:Arial;
+            width:190mm;
+            padding:15mm;
+            box-sizing:border-box;">
+
+  <h2 style="text-align:center;">بنك ABM</h2>
+  <hr>
+
+  <p id="pdfFullName"></p>
+  <p id="pdfAccountName"></p>
+  <p id="pdfBalance"></p>
+
+  <br>
+
+  <table border="1"
+         style="width:100%;
+                border-collapse:collapse;
+                text-align:center;
+                table-layout:fixed;">
+
+    <thead>
+      <tr>
+        <th>التاريخ</th>
+        <th>النوع</th>
+        <th>المبلغ</th>
+        <th>الوصف</th>
+      </tr>
+    </thead>
+
+    <tbody id="pdfTransactionsBody"></tbody>
+
+  </table>
+
+</div>
 
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
   <button onclick="logout()">تسجيل خروج</button>
@@ -252,5 +292,6 @@
 
 </body>
 </html>
+
 
 
