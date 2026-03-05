@@ -310,10 +310,50 @@ async function loadTransactions() {
 // ================= طباعة =================
 async function downloadPDF() {
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("p", "mm", "a4");
+  const printArea = document.getElementById("printArea");
+  const pdfBody = document.getElementById("pdfTransactionsBody");
 
-  const pageWidth = doc.internal.pageSize.getWidth();
+  // تعبئة بيانات العنوان
+  document.getElementById("pdfFullName").innerText =
+    document.getElementById("welcomeName").innerText;
+
+  document.getElementById("pdfAccountName").innerText =
+    document.getElementById("accountNameDisplay").innerText;
+
+  document.getElementById("pdfBalance").innerText =
+    "الرصيد الحالي: " + document.getElementById("balance").innerText;
+
+  // نسخ العمليات
+  const rows = document.querySelectorAll("#transactionsBody tr");
+  pdfBody.innerHTML = "";
+
+  rows.forEach(row => {
+    pdfBody.appendChild(row.cloneNode(true));
+  });
+
+  // إظهار منطقة الطباعة مؤقتاً
+  printArea.style.display = "block";
+
+  const opt = {
+    margin: 0,
+    filename: 'كشف_حساب.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { 
+      scale: 4,
+      useCORS: true
+    },
+    jsPDF: { 
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+  };
+
+  await html2pdf().set(opt).from(printArea).save();
+
+  // إخفاؤها مرة أخرى
+  printArea.style.display = "none";
+}
 
   // ====== بيانات العميل ======
   const fullName = document.getElementById("welcomeName").innerText;
@@ -461,6 +501,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
