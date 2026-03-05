@@ -1,9 +1,8 @@
-const { createClient } = supabase;
-
-const supabaseClient = createClient(
+var supabase = window.supabase.createClient(
   "https://rahqhfowbphaipiadlkh.supabase.co",
   "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9"
 );
+
 
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
@@ -379,6 +378,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
