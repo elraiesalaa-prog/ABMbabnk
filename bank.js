@@ -309,72 +309,56 @@ async function loadTransactions() {
   });
 }
 // ================= طباعة =================
-// ================= طباعة =================
-async function downloadPDF(){
+async function downloadPDF() {
 
-const printArea = document.getElementById("printArea");
-const pdfBody = document.getElementById("pdfTransactionsBody");
+  const printArea = document.getElementById("printArea");
+  const pdfBody = document.getElementById("pdfTransactionsBody");
 
-// مسح الجدول
-pdfBody.innerHTML = "";
+  // تعبئة بيانات العنوان
+  document.getElementById("pdfFullName").innerText =
+    document.getElementById("welcomeName").innerText;
 
-// جلب العمليات من Supabase مباشرة
-const { data: userData } = await supabase.auth.getUser();
-const user = userData.user;
-if (!user) return;
+  document.getElementById("pdfAccountName").innerText =
+    document.getElementById("accountNameDisplay").innerText;
 
-const { data } = await supabase
-.from("transactions")
-.select("*")
-.eq("user_id", user.id)
-.order("created_at", { ascending: false });
+  document.getElementById("pdfBalance").innerText =
+    "الرصيد الحالي: " + document.getElementById("balance").innerText;
+  document.getElementById("pdfDate").innerText =
+  "تاريخ الإصدار: " + new Date().toLocaleString("ar-EG");
 
-data.forEach(tx => {
+  // نسخ العمليات
+  const rows = document.querySelectorAll("#transactionsBody tr");
+  pdfBody.innerHTML = "";
 
-const row = document.createElement("tr");
-
-const date = new Date(tx.created_at).toLocaleString("ar-EG");
-const typeText = tx.type === "deposit" ? "إيداع" : "سحب";
-
-row.innerHTML = `
-<td>${date}</td>
-<td>${typeText}</td>
-<td>${tx.amount} SDG</td>
-<td>${tx.description || ""}</td>
-`;
-
-pdfBody.appendChild(row);
-
+  rows.forEach(row => {
+  const clonedRow = row.cloneNode(true);
+  clonedRow.style.pageBreakInside = "avoid";
+  pdfBody.appendChild(clonedRow);
 });
 
-// تعبئة بيانات الحساب
-document.getElementById("pdfFullName").innerText =
-document.getElementById("welcomeName").innerText;
+  // إظهار منطقة الطباعة مؤقتاً
+  printArea.style.display = "block";
 
-document.getElementById("pdfAccountName").innerText =
-document.getElementById("accountNameDisplay").innerText;
+  const opt = {
+    margin: 0,
+    filename: 'كشف_حساب.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { 
+      scale: 4,
+      useCORS: true
+    },
+    jsPDF: { 
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+    
+  };
 
-document.getElementById("pdfBalance").innerText =
-"الرصيد: " + document.getElementById("balance").innerText;
+  await html2pdf().set(opt).from(printArea).save();
 
-document.getElementById("pdfDate").innerText =
-"تاريخ الطباعة: " + new Date().toLocaleDateString();
-
-// اظهار منطقة الطباعة
-printArea.style.display = "block";
-
-const opt = {
-margin: 10,
-filename: 'كشف_حساب.pdf',
-image: { type: 'jpeg', quality: 1 },
-html2canvas: { scale: 2 },
-jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-};
-
-await html2pdf().set(opt).from(printArea).save();
-
-// اخفاءها
-printArea.style.display = "none";
+  // إخفاؤها مرة أخرى
+  printArea.style.display = "none";
 }
 // ================= خروج =================
 async function logout(){
@@ -408,6 +392,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
