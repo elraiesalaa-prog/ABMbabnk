@@ -354,63 +354,6 @@ async function downloadPDF() {
   // إخفاؤها مرة أخرى
   printArea.style.display = "none";
 }
-
-  // ====== بيانات العميل ======
-  const fullName = document.getElementById("welcomeName").innerText;
-  const accountName = document.getElementById("accountNameDisplay").innerText;
-  const balance = document.getElementById("balance").innerText;
-  const issueDate = new Date().toLocaleString("ar-EG");
-
-  // ====== ترويسة ثابتة ======
-  doc.setFont("helvetica");
-  doc.setFontSize(16);
-  doc.text("Bank Pro System", pageWidth / 2, 15, { align: "center" });
-
-  doc.setFontSize(11);
-  doc.text(fullName, pageWidth - 20, 25, { align: "right" });
-  doc.text(accountName, pageWidth - 20, 32, { align: "right" });
-  doc.text("الرصيد الحالي: " + balance, pageWidth - 20, 39, { align: "right" });
-  doc.text("تاريخ الإصدار: " + issueDate, pageWidth - 20, 46, { align: "right" });
-
-  // ====== تجهيز بيانات الجدول ======
-  const rows = [];
-  document.querySelectorAll("#transactionsBody tr").forEach(tr => {
-    const cols = tr.querySelectorAll("td");
-    rows.push([
-      cols[0].innerText,
-      cols[1].innerText,
-      cols[2].innerText,
-      cols[3].innerText
-    ]);
-  });
-
-  // ====== إنشاء الجدول ======
-  doc.autoTable({
-    startY: 55,
-    head: [["التاريخ", "النوع", "المبلغ", "الوصف"]],
-    body: rows,
-    styles: {
-      font: "helvetica",
-      halign: "center"
-    },
-    headStyles: {
-      fillColor: [41, 128, 185]
-    },
-    didDrawPage: function (data) {
-      // رقم الصفحة
-      let pageNumber = doc.internal.getNumberOfPages();
-      doc.setFontSize(10);
-      doc.text(
-        "صفحة " + pageNumber,
-        pageWidth / 2,
-        doc.internal.pageSize.height - 10,
-        { align: "center" }
-      );
-    }
-  });
-
-  doc.save("كشف_حساب_احترافي.pdf");
-}
 // ================= فلترة =================
 
 async function filterTransactions(){
@@ -501,6 +444,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
