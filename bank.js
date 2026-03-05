@@ -347,9 +347,6 @@ async function downloadPDF() {
   printArea.style.display = "none";
 }
 
-
-
-
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -382,6 +379,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
