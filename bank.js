@@ -309,17 +309,42 @@ async function loadTransactions() {
   });
 }
 // ================= طباعة =================
+// ================= طباعة =================
 async function downloadPDF(){
 
 const printArea = document.getElementById("printArea");
 const pdfBody = document.getElementById("pdfTransactionsBody");
-const rows = document.querySelectorAll("#transactionsBody tr");
 
+// مسح الجدول
 pdfBody.innerHTML = "";
 
-// نسخ العمليات من الجدول إلى جدول الطباعة
-rows.forEach(row => {
-  pdfBody.appendChild(row.cloneNode(true));
+// جلب العمليات من Supabase مباشرة
+const { data: userData } = await supabase.auth.getUser();
+const user = userData.user;
+if (!user) return;
+
+const { data } = await supabase
+.from("transactions")
+.select("*")
+.eq("user_id", user.id)
+.order("created_at", { ascending: false });
+
+data.forEach(tx => {
+
+const row = document.createElement("tr");
+
+const date = new Date(tx.created_at).toLocaleString("ar-EG");
+const typeText = tx.type === "deposit" ? "إيداع" : "سحب";
+
+row.innerHTML = `
+<td>${date}</td>
+<td>${typeText}</td>
+<td>${tx.amount} SDG</td>
+<td>${tx.description || ""}</td>
+`;
+
+pdfBody.appendChild(row);
+
 });
 
 // تعبئة بيانات الحساب
@@ -335,7 +360,7 @@ document.getElementById("pdfBalance").innerText =
 document.getElementById("pdfDate").innerText =
 "تاريخ الطباعة: " + new Date().toLocaleDateString();
 
-// اظهار منطقة الطباعة مؤقتا
+// اظهار منطقة الطباعة
 printArea.style.display = "block";
 
 const opt = {
@@ -348,9 +373,8 @@ jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
 
 await html2pdf().set(opt).from(printArea).save();
 
-// اخفاء منطقة الطباعة
+// اخفاءها
 printArea.style.display = "none";
-
 }
 // ================= خروج =================
 async function logout(){
@@ -384,6 +408,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
