@@ -308,59 +308,53 @@ async function loadTransactions() {
   });
 }
 // ================= طباعة =================
-async function downloadPDF(){
+async function downloadPDF() {
 
-  const tbody = document.getElementById("transactionsBody");
-  const pdfBody = document.getElementById("pdfTransactionsBody");
-  const printArea = document.getElementById("printArea");
+const printArea = document.getElementById("printArea")
+const pdfBody = document.getElementById("pdfTransactionsBody")
 
-  if(!tbody || !pdfBody){
-    alert("جدول العمليات غير موجود");
-    return;
-  }
+pdfBody.innerHTML = ""
 
-  // مسح القديم
-  pdfBody.innerHTML = "";
+const { data, error } = await supabase
+.from("transactions")
+.select("*")
+.eq("user_id", currentUser.id)
+.order("created_at", { ascending:false })
 
-  const rows = tbody.querySelectorAll("tr");
+if(error){
+console.log(error)
+return
+}
 
-  if(rows.length === 0){
-    alert("لا توجد عمليات للطباعة");
-    return;
-  }
+data.forEach(t => {
 
-  rows.forEach(row=>{
-    const clone = row.cloneNode(true);
-    pdfBody.appendChild(clone);
-  });
+let row = `
+<tr>
+<td>${new Date(t.created_at).toLocaleDateString()}</td>
+<td>${t.type}</td>
+<td>${t.amount}</td>
+<td>${t.description || ""}</td>
+</tr>
+`
 
-  // بيانات الحساب
-  document.getElementById("pdfFullName").innerText =
-    document.getElementById("welcomeName").innerText;
+pdfBody.innerHTML += row
 
-  document.getElementById("pdfAccountName").innerText =
-    document.getElementById("accountNameDisplay").innerText;
+})
 
-  document.getElementById("pdfBalance").innerText =
-    "الرصيد الحالي: " + document.getElementById("balance").innerText;
+document.getElementById("pdfFullName").innerText = "الاسم: " + currentFullName
+document.getElementById("pdfAccountName").innerText = "الحساب: " + currentAccountName
+document.getElementById("pdfBalance").innerText = "الرصيد: " + currentBalance
+document.getElementById("pdfDate").innerText = "تاريخ الكشف: " + new Date().toLocaleDateString()
 
-  document.getElementById("pdfDate").innerText =
-    "تاريخ الإصدار: " + new Date().toLocaleString("ar-EG");
+printArea.style.display = "block"
 
-  // إظهار مؤقت
-  printArea.style.display="block";
+html2pdf().from(printArea).save("كشف_الحساب.pdf")
 
-  const opt = {
-    margin: 10,
-    filename: 'bank_statement.pdf',
-    image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+setTimeout(()=>{
+printArea.style.display = "none"
+},1000)
 
-  await html2pdf().set(opt).from(printArea).save();
-
-  printArea.style.display="none";
+}
 }
 // ================= فلترة =================
 
@@ -452,6 +446,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
