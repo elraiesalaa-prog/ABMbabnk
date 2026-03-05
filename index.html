@@ -110,44 +110,51 @@ color:white;
 <body>
 
 <!-- تسجيل الدخول -->
+<!-- تسجيل الدخول -->
 <div class="card" id="authCard">
 
-<div id="loginView">
+  <!-- شاشة تسجيل الدخول -->
+  <div id="loginView">
 
-<h2>تسجيل الدخول</h2>
+    <h2>تسجيل الدخول</h2>
 
-<input id="username" placeholder="اسم الحساب">
-<input type="password" id="password" placeholder="كلمة المرور">
+    <input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="password" placeholder="كلمة المرور">
 
-<button id="loginBtn" onclick="login()">تسجيل الدخول</button>
+    <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
 
-<p style="text-align:center">
-ليس لديك حساب؟
-<a href="#" onclick="showRegister()">إنشاء حساب</a>
-</p>
+    <p style="text-align:center;margin-top:15px;">
+      ليس لديك حساب؟
+      <a href="#" onclick="showRegister()">إنشاء حساب</a>
+    </p>
+
+  </div>
+
+  <!-- شاشة إنشاء حساب -->
+  <div id="registerView" style="display:none;">
+
+    <h2>إنشاء حساب جديد</h2>
+
+    <input type="text" id="usernameReg" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="passwordReg" placeholder="كلمة المرور">
+    <input type="text" id="fullName" placeholder="الاسم الكامل">
+    <input type="text" id="accountName" placeholder="اسم الحساب البنكي">
+
+    <button id="registerBtn" onclick="register()">إنشاء حساب</button>
+
+    <p style="text-align:center;margin-top:15px;">
+      لديك حساب بالفعل؟
+      <a href="#" onclick="showLogin()">تسجيل الدخول</a>
+    </p>
+
+  </div>
+
+  <!-- مؤشر التحميل -->
+  <div class="loading" id="authLoading" style="display:none;">
+    جاري المعالجة...
+  </div>
 
 </div>
-
-<div id="registerView" style="display:none">
-
-<h2>إنشاء حساب</h2>
-
-<input id="usernameReg" placeholder="اسم الحساب">
-<input type="password" id="passwordReg" placeholder="كلمة المرور">
-<input id="fullName" placeholder="الاسم الكامل">
-<input id="accountName" placeholder="اسم الحساب البنكي">
-
-<button id="registerBtn" onclick="register()">إنشاء حساب</button>
-
-<p style="text-align:center">
-لديك حساب؟
-<a href="#" onclick="showLogin()">تسجيل الدخول</a>
-</p>
-
-</div>
-
-</div>
-
 
 <!-- النظام البنكي -->
 <div class="card" id="bankCard" style="display:none">
@@ -245,3 +252,4 @@ color:white;
 
 </body>
 </html>
+
