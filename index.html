@@ -203,7 +203,14 @@
 
   <button id="depositBtn" onclick="deposit()">إيداع</button>
   <button id="withdrawBtn" onclick="withdraw()">سحب</button>
+<h3>فلترة كشف الحساب</h3>
 
+<input type="date" id="fromDate">
+<input type="date" id="toDate">
+
+<button onclick="filterTransactions()">عرض العمليات</button>
+
+<hr>
   <h3>كشف الحساب</h3>
 
   <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
@@ -251,3 +258,4 @@
 
 </body>
 </html>
+
