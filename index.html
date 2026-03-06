@@ -231,18 +231,24 @@
 
 </div>
     </div>
-    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-      <thead>
-        <tr>
-          <th>التاريخ</th>
-          <th>النوع</th>
-          <th>المبلغ</th>
-          <th>الوصف</th>
-        </tr>
-      </thead>
-      <tbody id="pdfTransactionsBody"></tbody>
-    </table>
-  </div>
+    <table border="1"
+       style="width:100%;
+              border-collapse:collapse;
+              text-align:center;
+              table-layout:fixed;">
+
+  <thead style="display:table-header-group;">
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+
+  <tbody id="pdfTransactionsBody"></tbody>
+
+</table>
 
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
   <button onclick="logout()">تسجيل خروج</button>
@@ -254,6 +260,7 @@
 
 </body>
 </html>
+
 
 
 
