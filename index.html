@@ -203,19 +203,28 @@
   <button id="depositBtn" onclick="deposit()">إيداع</button>
   <button id="withdrawBtn" onclick="withdraw()">سحب</button>
 
-  <h3>كشف الحساب</h3>
+ <h3>كشف الحساب</h3>
 
-  <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-    <thead>
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>الوصف</th>
-      </tr>
-    </thead>
-    <tbody id="transactionsBody"></tbody>
-  </table>
+<div style="max-height:250px; overflow-y:auto; border:1px solid #ccc;">
+
+<table id="transactionsTable"
+       border="1"
+       style="width:100%; border-collapse:collapse; text-align:center;">
+
+  <thead style="background:#243b55; color:white; position:sticky; top:0;">
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+
+  <tbody id="transactionsBody"></tbody>
+
+</table>
+
+</div>
 
   <!-- منطقة الطباعة -->
   <div id="printArea"
@@ -271,6 +280,7 @@
 
 </body>
 </html>
+
 
 
 
