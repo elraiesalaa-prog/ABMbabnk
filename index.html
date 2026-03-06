@@ -222,33 +222,28 @@
     <div style="text-align:center; margin-bottom:10mm;">
       <h2 style="margin:0;">🏦 بنك ABM</h2>
       
-      <div style="text-align: right; font-weight: bold;">
+       <div style="text-align: right; font-weight: bold;">
   <p id="pdfFullName" style="color: #007bff;"></p>
   
   <p id="pdfAccountName" style="color: #28a745;"></p>
   
   <p id="pdfBalance" style="color: #0056b3;"></p>
 
-</div>
+
     </div>
-    <table border="1"
-       style="width:100%;
-              border-collapse:collapse;
-              text-align:center;
-              table-layout:fixed;">
-
-  <thead style="display:table-header-group;">
-    <tr>
-      <th>التاريخ</th>
-      <th>النوع</th>
-      <th>المبلغ</th>
-      <th>الوصف</th>
-    </tr>
-  </thead>
-
-  <tbody id="pdfTransactionsBody"></tbody>
-
-</table>
+    </div>
+    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+      <thead>
+        <tr>
+          <th>التاريخ</th>
+          <th>النوع</th>
+          <th>المبلغ</th>
+          <th>الوصف</th>
+        </tr>
+      </thead>
+      <tbody id="pdfTransactionsBody"></tbody>
+    </table>
+  </div>
 
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
   <button onclick="logout()">تسجيل خروج</button>
@@ -260,8 +255,3 @@
 
 </body>
 </html>
-
-
-
-
-
