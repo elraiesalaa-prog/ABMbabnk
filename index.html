@@ -6,20 +6,19 @@
   <title>النظام البنكي الخاص - علاء الدين</title>
 
   <!-- Supabase -->
-  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body{
-  font-family: "Segoe UI", Tahoma, sans-serif;
-  background: linear-gradient(135deg,#141e30,#243b55);
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;   /* بدل center */
-  min-height:100vh;         /* بدل height */
-  margin:0;
-  padding:20px 0;           /* مسافة علوية */
-  direction: rtl;
-}
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg,#141e30,#243b55);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0;
+      direction: rtl;
+    }
 
     .card{
       background:white;
@@ -204,53 +203,9 @@
   <button id="depositBtn" onclick="deposit()">إيداع</button>
   <button id="withdrawBtn" onclick="withdraw()">سحب</button>
 
- <!-- ================= كشف الحساب في الصفحة ================= -->
+  <h3>كشف الحساب</h3>
 
-<h3>كشف الحساب</h3>
-
-<table id="transactionsTable"
-       border="1"
-       style="width:100%; border-collapse:collapse; text-align:center;">
-
-  <thead>
-    <tr>
-      <th>التاريخ</th>
-      <th>النوع</th>
-      <th>المبلغ</th>
-      <th>الوصف</th>
-    </tr>
-  </thead>
-
-  <tbody id="transactionsBody"></tbody>
-
-</table>
-
-
-<!-- ================= منطقة الطباعة PDF (مخفية) ================= -->
-
-<div id="printArea"
-     style="display:none;
-            direction:rtl;
-            font-family:Arial;
-            width:190mm;
-            padding:15mm;
-            box-sizing:border-box;">
-
-  <h2 style="text-align:center;">بنك الاحترافي</h2>
-  <hr>
-
-  <p id="pdfFullName"></p>
-  <p id="pdfAccountName"></p>
-  <p id="pdfBalance"></p>
-
-  <br>
-
-  <table border="1"
-         style="width:100%;
-                border-collapse:collapse;
-                text-align:center;
-                table-layout:fixed;">
-
+  <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
     <thead>
       <tr>
         <th>التاريخ</th>
@@ -259,26 +214,39 @@
         <th>الوصف</th>
       </tr>
     </thead>
-
-    <tbody id="pdfTransactionsBody"></tbody>
-
+    <tbody id="transactionsBody"></tbody>
   </table>
 
-</div>
-  
-  
+  <!-- منطقة الطباعة -->
+  <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
+    <div style="text-align:center; margin-bottom:10mm;">
+      <h2 style="margin:0;">🏦 بنك ABM</h2>
+      <p id="pdfFullName"></p>
+      <p id="pdfAccountName"></p>
+      <p id="pdfBalance"></p>
+      <p id="pdfDate"></p>
+      <hr>
+    </div>
+    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+      <thead>
+        <tr>
+          <th>التاريخ</th>
+          <th>النوع</th>
+          <th>المبلغ</th>
+          <th>الوصف</th>
+        </tr>
+      </thead>
+      <tbody id="pdfTransactionsBody"></tbody>
+    </table>
+  </div>
+
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
   <button onclick="logout()">تسجيل خروج</button>
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="bank.js"></script>
 
 </body>
 </html>
-
-
-
-
