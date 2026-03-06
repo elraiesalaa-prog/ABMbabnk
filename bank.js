@@ -349,7 +349,8 @@ async function downloadPDF() {
     orientation: 'portrait'
   }
 };
-
+document.getElementById("pdfDate").innerText =
+  "تاريخ الإصدار: " + new Date().toLocaleString("ar-EG");
   await html2pdf().set(opt).from(printArea).save();
 
   // إخفاؤها مرة أخرى
@@ -445,6 +446,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
