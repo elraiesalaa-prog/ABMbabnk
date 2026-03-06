@@ -310,56 +310,49 @@ async function loadTransactions() {
 // ================= طباعة =================
 async function downloadPDF() {
 
-const printArea = document.getElementById("printArea")
-const pdfBody = document.getElementById("pdfTransactionsBody")
-const tableRows = document.querySelectorAll("#transactionsBody tr")
+  const printArea = document.getElementById("printArea");
+  const pdfBody = document.getElementById("pdfTransactionsBody");
 
-// مسح الجدول
-pdfBody.innerHTML = ""
+  // تعبئة بيانات العنوان
+  document.getElementById("pdfFullName").innerText =
+    document.getElementById("welcomeName").innerText;
 
-// نسخ العمليات من الجدول الرئيسي
-tableRows.forEach(row => {
-pdfBody.appendChild(row.cloneNode(true))
-})
+  document.getElementById("pdfAccountName").innerText =
+    document.getElementById("accountNameDisplay").innerText;
 
-// تعبئة بيانات الحساب
-document.getElementById("pdfFullName").innerText =
-"الاسم: " + document.getElementById("welcomeName").innerText
+  document.getElementById("pdfBalance").innerText =
+    "الرصيد الحالي: " + document.getElementById("balance").innerText;
 
-document.getElementById("pdfAccountName").innerText =
-"اسم الحساب: " + document.getElementById("accountNameDisplay").innerText
+  // نسخ العمليات
+  const rows = document.querySelectorAll("#transactionsBody tr");
+  pdfBody.innerHTML = "";
 
-document.getElementById("pdfBalance").innerText =
-"الرصيد الحالي: " + document.getElementById("balance").innerText
+  rows.forEach(row => {
+    pdfBody.appendChild(row.cloneNode(true));
+  });
 
-document.getElementById("pdfDate").innerText =
-"تاريخ الكشف: " + new Date().toLocaleDateString()
+  // إظهار منطقة الطباعة مؤقتاً
+  printArea.style.display = "block";
 
-// إظهار المنطقة للطباعة
-printArea.style.display = "block"
+  const opt = {
+    margin: 0,
+    filename: 'كشف_حساب.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { 
+      scale: 4,
+      useCORS: true
+    },
+    jsPDF: { 
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+  };
 
-const opt = {
-  margin: [0.6, 0.6, 0.6, 0.6], // أعلى، يسار، أسفل، يمين
-  filename: 'كشف_حساب.pdf',
-  image: { type: 'jpeg', quality: 1 },
-  html2canvas: { 
-    scale: 3,
-    scrollX: 0,
-    scrollY: 0
-  },
-  jsPDF: { 
-    unit: 'in',
-    format: 'a4',
-    orientation: 'portrait'
-  }
-};
+  await html2pdf().set(opt).from(printArea).save();
 
-// إنشاء PDF
-await html2pdf().set(options).from(printArea).save()
-
-// إعادة الإخفاء
-printArea.style.display = "none"
-
+  // إخفاؤها مرة أخرى
+  printArea.style.display = "none";
 }
 // ================= فلترة =================
 
@@ -451,6 +444,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
