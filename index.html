@@ -232,19 +232,25 @@
 
     </div>
     </div>
-    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-      <thead>
-        <tr>
-          <th>التاريخ</th>
-          <th>النوع</th>
-          <th>المبلغ</th>
-          <th>الوصف</th>
-        </tr>
-      </thead>
-      <tbody id="pdfTransactionsBody"></tbody>
-    </table>
-    <h2 style="margin:0;" style="color: #0056b3;>علاء الدين ادم احم </h2
-<h2 style="margin:0;" style="color: #0056b3;>   المدير العام </h2>
+    <table border="1"
+       style="width:100%;
+              border-collapse:collapse;
+              text-align:center;
+              table-layout:fixed;">
+
+  <thead style="display:table-header-group;">
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+
+  <tbody id="pdfTransactionsBody"></tbody>
+
+</table>
+    
   </div>
 
   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
@@ -257,4 +263,5 @@
 
 </body>
 </html>
+
 
