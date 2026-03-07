@@ -390,10 +390,27 @@ document.getElementById("description").value=desc;
 withdraw();
 closeWithdraw();
 }
+// ================= شاشات العمليات =================
 
+function openDeposit(){
+document.getElementById("depositScreen").style.display="block";
+}
+
+function closeDeposit(){
+document.getElementById("depositScreen").style.display="none";
+}
+
+function openWithdraw(){
+document.getElementById("withdrawScreen").style.display="block";
+}
+
+function closeWithdraw(){
+document.getElementById("withdrawScreen").style.display="none";
+}
 // ================= خروج =================
 
 async function logout(){
 await supabase.auth.signOut();
 location.reload();
 }
+
