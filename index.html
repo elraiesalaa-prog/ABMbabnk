@@ -203,8 +203,8 @@
 
 <h3>العمليات</h3>
 
-<button onclick="deposit()">إيداع</button>
-<button onclick="withdraw()">سحب</button>
+<button onclick="openDeposit()">إيداع</button>
+<button onclick="openWithdraw()">سحب</button>
 <button onclick="openStatement()">كشف الحساب</button>
 
 <br><br>
@@ -226,9 +226,45 @@
 
 <h3>العمليات</h3>
 
-<button onclick="deposit()">إيداع</button>
-<button onclick="withdraw()">سحب</button>
-<button onclick="openStatement()">كشف الحساب</button>
+<!-- شاشة الإيداع -->
+
+<div id="depositScreen" style="display:none;">
+
+<h3>عملية إيداع</h3>
+
+المبلغ
+<input type="number" id="depositAmount">
+
+الوصف
+<input type="text" id="depositDesc">
+
+<br><br>
+
+<button onclick="confirmDeposit()">تأكيد الإيداع</button>
+<button onclick="closeDeposit()">رجوع</button>
+
+</div>
+
+
+
+<!-- شاشة السحب -->
+
+<div id="withdrawScreen" style="display:none;">
+
+<h3>عملية سحب</h3>
+
+المبلغ
+<input type="number" id="withdrawAmount">
+
+الوصف
+<input type="text" id="withdrawDesc">
+
+<br><br>
+
+<button onclick="confirmWithdraw()">تأكيد السحب</button>
+<button onclick="closeWithdraw()">رجوع</button>
+
+</div>
 
 <br><br>
 
@@ -424,6 +460,7 @@
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
