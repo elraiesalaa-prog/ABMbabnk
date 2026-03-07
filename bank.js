@@ -153,8 +153,8 @@ loadTransactions();
 
 async function deposit(){
 
-const amount=parseFloat(document.getElementById("amount").value);
-const description=document.getElementById("description").value.trim();
+const amount=parseFloat(document.getElementById("depositAmount").value);
+const description=document.getElementById("depositDesc").value.trim();
 
 if(isNaN(amount)||amount<=0){
 alert("أدخل مبلغ صحيح");
@@ -187,18 +187,15 @@ description:description
 
 document.getElementById("balance").innerText=newBalance.toFixed(2)+" SDG";
 
-document.getElementById("amount").value="";
-document.getElementById("description").value="";
-
+closeDeposit();
 loadTransactions();
 }
-
 // ================= سحب =================
 
 async function withdraw(){
 
-const amount=parseFloat(document.getElementById("amount").value);
-const description=document.getElementById("description").value.trim();
+const amount=parseFloat(document.getElementById("withdrawAmount").value);
+const description=document.getElementById("withdrawDesc").value.trim();
 
 if(isNaN(amount)||amount<=0){
 alert("أدخل مبلغ صحيح");
@@ -236,12 +233,9 @@ description:description
 
 document.getElementById("balance").innerText=newBalance.toFixed(2)+" SDG";
 
-document.getElementById("amount").value="";
-document.getElementById("description").value="";
-
+closeWithdraw();
 loadTransactions();
 }
-
 // ================= كشف الحساب =================
 
 async function loadTransactions(){
@@ -368,27 +362,11 @@ document.getElementById("mainScreen").style.display="block";
 // ================= تأكيد العمليات =================
 
 function confirmDeposit(){
-
-const amount=document.getElementById("depositAmount").value;
-const desc=document.getElementById("depositDesc").value;
-
-document.getElementById("amount").value=amount;
-document.getElementById("description").value=desc;
-
 deposit();
-closeDeposit();
 }
 
 function confirmWithdraw(){
-
-const amount=document.getElementById("withdrawAmount").value;
-const desc=document.getElementById("withdrawDesc").value;
-
-document.getElementById("amount").value=amount;
-document.getElementById("description").value=desc;
-
 withdraw();
-closeWithdraw();
 }
 // ================= شاشات العمليات =================
 
@@ -413,4 +391,5 @@ async function logout(){
 await supabase.auth.signOut();
 location.reload();
 }
+
 
