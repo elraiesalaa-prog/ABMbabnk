@@ -173,57 +173,54 @@ justify-content:center;
 
 
 <!-- الشاشة الرئيسية -->
+<!-- لوحة العمليات -->
+<div id="dashboard">
 
-<div id="mainScreen">
-
-<h3>العمليات</h3>
+<h2>العمليات</h2>
 
 <button onclick="openDeposit()">إيداع</button>
 <button onclick="openWithdraw()">سحب</button>
-<button onclick="openStatement()">كشف الحساب</button>
+<button onclick="showStatement()">كشف حساب</button>
 
 </div>
 
 
 <!-- شاشة الإيداع -->
-
 <div id="depositScreen" style="display:none">
 
 <h3>عملية إيداع</h3>
 
 <input type="number" id="depositAmount" placeholder="المبلغ">
-<input type="text" id="depositDesc" placeholder="الوصف">
 
-<button onclick="confirmDeposit()">تأكيد الإيداع</button>
-<button onclick="closeDeposit()">رجوع</button>
+<button onclick="confirmDeposit()">تأكيد</button>
+<button onclick="closeDeposit()">إلغاء</button>
 
 </div>
 
 
 <!-- شاشة السحب -->
-
 <div id="withdrawScreen" style="display:none">
 
 <h3>عملية سحب</h3>
 
 <input type="number" id="withdrawAmount" placeholder="المبلغ">
-<input type="text" id="withdrawDesc" placeholder="الوصف">
 
-<button onclick="confirmWithdraw()">تأكيد السحب</button>
-<button onclick="closeWithdraw()">رجوع</button>
+<button onclick="confirmWithdraw()">تأكيد</button>
+<button onclick="closeWithdraw()">إلغاء</button>
 
 </div>
 
 
-<!-- كشف الحساب -->
-
+<!-- شاشة كشف الحساب -->
 <div id="statementScreen" style="display:none">
 
 <h3>كشف الحساب</h3>
 
-<input type="date" id="fromDate">
-<input type="date" id="toDate">
+<div id="statementList"></div>
 
+<button onclick="closeStatement()">إغلاق</button>
+
+</div>
 <button onclick="filterTransactions()">بحث</button>
 <button onclick="downloadPDF()">تحميل PDF</button>
 
@@ -258,4 +255,5 @@ justify-content:center;
 
 </body>
 </html>
+
 
