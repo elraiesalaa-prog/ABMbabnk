@@ -437,6 +437,28 @@ document.getElementById("withdrawScreen").style.display="block"
 function closeWithdraw(){
 document.getElementById("withdrawScreen").style.display="none"
 }
+  function confirmDeposit(){
+
+const amount = document.getElementById("depositAmount").value
+const desc = document.getElementById("depositDesc").value
+
+deposit(amount, desc)
+
+closeDeposit()
+
+}
+
+
+function confirmWithdraw(){
+
+const amount = document.getElementById("withdrawAmount").value
+const desc = document.getElementById("withdrawDesc").value
+
+withdraw(amount, desc)
+
+closeWithdraw()
+
+}
 }
 // ================= خروج =================
 async function logout(){
@@ -470,6 +492,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
