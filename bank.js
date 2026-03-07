@@ -421,7 +421,22 @@ document.getElementById("statementScreen").style.display="block"
 function closeStatement(){
 
 document.getElementById("statementScreen").style.display="none"
+  // ================= 0000  =================
+function openDeposit(){
+document.getElementById("depositScreen").style.display="block"
+}
 
+function closeDeposit(){
+document.getElementById("depositScreen").style.display="none"
+}
+
+function openWithdraw(){
+document.getElementById("withdrawScreen").style.display="block"
+}
+
+function closeWithdraw(){
+document.getElementById("withdrawScreen").style.display="none"
+}
 }
 // ================= خروج =================
 async function logout(){
@@ -455,6 +470,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
