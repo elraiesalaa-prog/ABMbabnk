@@ -189,10 +189,8 @@ justify-content:center;
 
 <input type="number" id="depositAmount" placeholder="المبلغ">
  <input type="text" id="description" placeholder="بيان العملية">
-
 <button onclick="confirmDeposit()">تأكيد</button>
- 
-<button onclick="closeDeposit()">إلغاء</button>
+ <button onclick="closeDeposit()">إلغاء</button>
 
 
 
@@ -200,10 +198,10 @@ justify-content:center;
 <div id="withdrawScreen" style="display:none">
 
 <h3>عملية سحب</h3>
-
-<input type="number" id="withdrawAmount" placeholder="المبلغ">
- <input type="text" id="description" placeholder="بيان العملية">
-<button onclick="confirmWithdraw()">تأكيد</button>
+<button id="withdrawBtn" onclick="withdraw()">سحب</button>
+//<input type="number" id="withdrawAmount" placeholder="المبلغ">
+// <input type="text" id="description" placeholder="بيان العملية">
+//<button onclick="confirmWithdraw()">تأكيد</button>
 <button onclick="closeWithdraw()">إلغاء</button>
 
 </div>
@@ -264,6 +262,7 @@ justify-content:center;
 
 </body>
 </html>
+
 
 
 
