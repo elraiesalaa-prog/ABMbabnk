@@ -208,7 +208,125 @@
 <button onclick="openStatement()">كشف الحساب</button>
 
 <br><br>
+<h2>حسابي البنكي</h2>
 
+<div id="accountInfo" class="account-box">
+  <div class="avatar-circle">👤</div>
+
+  <div class="account-text">
+    <div id="welcomeName" class="welcome-name"></div>
+    <div id="accountNameDisplay" class="account-name"></div>
+  </div>
+</div>
+
+<div class="balance">
+  الرصيد: <span id="balance">0</span>
+</div>
+
+
+<h3>العمليات</h3>
+
+<button onclick="deposit()">إيداع</button>
+<button onclick="withdraw()">سحب</button>
+<button onclick="openStatement()">كشف الحساب</button>
+
+<br><br>
+
+
+<!-- شاشة كشف الحساب -->
+<div id="statementScreen" style="display:none;">
+
+<h3>كشف الحساب</h3>
+
+من تاريخ
+<input type="date" id="fromDate">
+
+إلى تاريخ
+<input type="date" id="toDate">
+
+<button onclick="filterTransactions()">بحث</button>
+<button onclick="downloadPDF()">تحميل PDF</button>
+
+<br><br>
+
+<table border="1" style="width:100%; text-align:center;">
+
+<thead>
+<tr>
+<th>التاريخ</th>
+<th>النوع</th>
+<th>المبلغ</th>
+<th>الوصف</th>
+</tr>
+</thead>
+
+<tbody id="statementBody"></tbody>
+
+</table>
+
+<br>
+
+<button onclick="closeStatement()">رجوع</button>
+
+</div>
+
+
+<!-- ================= منطقة الطباعة PDF ================= -->
+
+<div id="printArea"
+     style="display:none;
+            direction:rtl;
+            font-family:Arial;
+            width:190mm;
+            padding:15mm;
+            box-sizing:border-box;">
+
+<div style="text-align:center; margin-bottom:10mm;">
+<h2 style="margin:0;">🏦 بنك ABM</h2>
+</div>
+
+<div style="text-align:right; font-weight:bold;">
+
+<p id="pdfFullName" style="color:#007bff;"></p>
+
+<p id="pdfAccountName" style="color:#28a745;"></p>
+
+<p id="pdfBalance" style="color:#0056b3;"></p>
+
+</div>
+
+<br>
+
+<table border="1"
+       style="width:100%;
+              border-collapse:collapse;
+              text-align:center;
+              table-layout:fixed;">
+
+<thead>
+<tr>
+<th>التاريخ</th>
+<th>النوع</th>
+<th>المبلغ</th>
+<th>الوصف</th>
+</tr>
+</thead>
+
+<tbody id="pdfTransactionsBody"></tbody>
+
+</table>
+
+</div>
+
+
+<br>
+
+<button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
+<button onclick="logout()">تسجيل خروج</button>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="bank.js"></script>
 
 <!-- شاشة كشف الحساب -->
 <div id="statementScreen" style="display:none;">
@@ -306,6 +424,7 @@
 <script src="bank.js"></script>
 </body>
 </html>
+
 
 
 
