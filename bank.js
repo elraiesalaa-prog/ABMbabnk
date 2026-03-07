@@ -419,30 +419,52 @@ document.getElementById("statementScreen").style.display="block"
 }
 // ================= فصل الشاشات =================
 
-function openStatement(){
-  document.getElementById("statementScreen").style.display = "block";
-}
 
-function closeStatement(){
-  document.getElementById("statementScreen").style.display = "none";
-}
+
 
 function openDeposit(){
-  document.getElementById("depositScreen").style.display = "block";
+
+document.getElementById("mainScreen").style.display="none"
+document.getElementById("depositScreen").style.display="block"
+
 }
 
 function closeDeposit(){
-  document.getElementById("depositScreen").style.display = "none";
+
+document.getElementById("depositScreen").style.display="none"
+document.getElementById("mainScreen").style.display="block"
+
 }
 
+
 function openWithdraw(){
-  document.getElementById("withdrawScreen").style.display = "block";
+
+document.getElementById("mainScreen").style.display="none"
+document.getElementById("withdrawScreen").style.display="block"
+
 }
 
 function closeWithdraw(){
-  document.getElementById("withdrawScreen").style.display = "none";
+
+document.getElementById("withdrawScreen").style.display="none"
+document.getElementById("mainScreen").style.display="block"
+
 }
 
+
+function openStatement(){
+
+document.getElementById("mainScreen").style.display="none"
+document.getElementById("statementScreen").style.display="block"
+
+}
+
+function closeStatement(){
+
+document.getElementById("statementScreen").style.display="none"
+document.getElementById("mainScreen").style.display="block"
+
+}
 
 // ================= تنفيذ العمليات =================
 
@@ -502,6 +524,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
