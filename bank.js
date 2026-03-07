@@ -451,24 +451,25 @@ function confirmDeposit(){
   const amount = document.getElementById("depositAmount").value;
   const desc = document.getElementById("depositDesc").value;
 
-  deposit(amount, desc);
+  document.getElementById("amount").value = amount;
+  document.getElementById("description").value = desc;
+
+  deposit();
   closeDeposit();
 }
+
 
 function confirmWithdraw(){
 
   const amount = document.getElementById("withdrawAmount").value;
   const desc = document.getElementById("withdrawDesc").value;
 
-  withdraw(amount, desc);
+  document.getElementById("amount").value = amount;
+  document.getElementById("description").value = desc;
+
+  withdraw();
   closeWithdraw();
 }
-window.addEventListener("DOMContentLoaded", async () => {
-  const { data } = await supabase.auth.getSession();
-  if(data.session){
-    loadAccount();
-  }
-});
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -501,6 +502,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
