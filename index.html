@@ -184,8 +184,7 @@
 
 <!-- ================= البنك ================= -->
 <div class="card" id="bankCard" style="display:none">
-<h2>  </h2>
-  <h2>  </h2>
+
   <h2>حسابي البنكي</h2>
     
   
@@ -199,43 +198,48 @@
 
   <div class="balance">الرصيد: <span id="balance">0</span></div>
 
-  <input type="number" id="amount" placeholder="المبلغ">
-  <input type="text" id="description" placeholder="بيان العملية">
+ <h3>العمليات</h3>
 
-  <button id="depositBtn" onclick="deposit()">إيداع</button>
-  <button id="withdrawBtn" onclick="withdraw()">سحب</button>
-  <hr>
-  <h3>فلترة كشف الحساب</h3>
+<button onclick="deposit()">إيداع</button>
+<button onclick="withdraw()">سحب</button>
 
-<input type="date" id="fromDate">
-<input type="date" id="toDate">
+<br><br>
 
-<button onclick="filterTransactions()">عرض العمليات</button>
+<div id="statementScreen" style="display:none;">
 
-<hr>
 <h3>كشف الحساب</h3>
 
-<div style="max-height:250px; overflow-y:auto; border:1px solid #ccc;">
+من تاريخ
+<input type="date" id="fromDate">
 
-<table id="transactionsTable"
-       border="1"
-       style="width:100%; border-collapse:collapse; text-align:center;">
+إلى تاريخ
+<input type="date" id="toDate">
 
-  <thead style="background:#243b55; color:white; position:sticky; top:0;">
-    <tr>
-      <th>التاريخ</th>
-      <th>النوع</th>
-      <th>المبلغ</th>
-      <th>الوصف</th>
-    </tr>
-  </thead>
+<button onclick="filterTransactions()">بحث</button>
+<button onclick="downloadPDF()">تحميل PDF</button>
 
-  <tbody id="transactionsBody"></tbody>
+<br><br>
+
+<table border="1" style="width:100%; text-align:center;">
+
+<thead>
+<tr>
+<th>التاريخ</th>
+<th>النوع</th>
+<th>المبلغ</th>
+<th>الوصف</th>
+</tr>
+</thead>
+
+<tbody id="statementBody"></tbody>
 
 </table>
 
-</div>
+<br>
 
+<button onclick="closeStatement()">رجوع</button>
+
+</div>
 
   <!-- منطقة الطباعة -->
   <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
@@ -284,6 +288,7 @@
 
 </body>
 </html>
+
 
 
 
