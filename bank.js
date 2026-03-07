@@ -236,6 +236,34 @@ document.getElementById("balance").innerText=newBalance.toFixed(2)+" SDG";
 closeWithdraw();
 loadTransactions();
 }
+// ================= تحميل الحساب =================
+async function loadStatement(){
+
+const {data,error} = await supabase
+.from("transactions")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error){
+console.log(error);
+return;
+}
+
+const list = document.getElementById("statementList");
+
+list.innerHTML="";
+
+data.forEach(t=>{
+
+list.innerHTML += `
+<div>
+${t.type} - ${t.amount}
+</div>
+`;
+
+});
+
+}
 // ================= كشف الحساب =================
 
 async function loadTransactions(){
@@ -349,27 +377,67 @@ printArea.style.display="none";
 
 // ================= الشاشات =================
 
-function openStatement(){
-document.getElementById("mainScreen").style.display="none";
-document.getElementById("statementScreen").style.display="block";
-}
-
-function closeStatement(){
-document.getElementById("statementScreen").style.display="none";
-document.getElementById("mainScreen").style.display="block";
-}
 
 // ================= تأكيد العمليات =================
 
-function confirmDeposit(){
-deposit();
+async function confirmDeposit(){
+
+const amount = Number(document.getElementById("depositAmount").value);
+
+if(!amount || amount <=0){
+alert("ادخل مبلغ صحيح");
+return;
 }
 
-function confirmWithdraw(){
-withdraw();
+const {error} = await supabase
+.from("transactions")
+.insert([{
+type:"deposit",
+amount:amount
+}]);
+
+if(error){
+alert("خطأ في الإيداع");
+console.log(error);
+return;
+}
+
+alert("تم الإيداع بنجاح");
+
+closeDeposit();
+loadStatement();
+
+}
+
+async function confirmWithdraw(){
+
+const amount = Number(document.getElementById("withdrawAmount").value);
+
+if(!amount || amount <=0){
+alert("ادخل مبلغ صحيح");
+return;
+}
+
+const {error} = await supabase
+.from("transactions")
+.insert([{
+type:"withdraw",
+amount:amount
+}]);
+
+if(error){
+alert("خطأ في السحب");
+console.log(error);
+return;
+}
+
+alert("تم السحب بنجاح");
+
+closeWithdraw();
+loadStatement();
+
 }
 // ================= شاشات العمليات =================
-
 function openDeposit(){
 document.getElementById("depositScreen").style.display="block";
 }
@@ -384,6 +452,15 @@ document.getElementById("withdrawScreen").style.display="block";
 
 function closeWithdraw(){
 document.getElementById("withdrawScreen").style.display="none";
+}
+
+function showStatement(){
+document.getElementById("statementScreen").style.display="block";
+loadStatement();
+}
+
+function closeStatement(){
+document.getElementById("statementScreen").style.display="none";
 }
 // ================= خروج =================
 
