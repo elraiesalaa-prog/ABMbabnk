@@ -441,6 +441,7 @@ function confirmWithdraw(){
 
   closeWithdraw();
 }
+// =================   =================
 function openStatement(){
 
 document.getElementById("mainScreen").style.display="none"
@@ -448,25 +449,14 @@ document.getElementById("statementScreen").style.display="block"
 
 }
 
-function closeStatement(){
-
-document.getElementById("statementScreen").style.display="none"
-document.getElementById("mainScreen").style.display="block"
-
-}
 
 // ================= تنفيذ العمليات =================
 
-{
+function confirmDeposit(){
 
-  async function deposit(amount, description){
+  const amount = document.getElementById("depositAmount").value;
+  const desc = document.getElementById("depositDesc").value;
 
-  amount = parseFloat(amount);
-
-  if(isNaN(amount) || amount <= 0){
-    alert("أدخل مبلغ صحيح");
-    return;
-  }
   document.getElementById("amount").value = amount;
   document.getElementById("description").value = desc;
 
@@ -474,15 +464,10 @@ document.getElementById("mainScreen").style.display="block"
   closeDeposit();
 }
 
+function confirmWithdraw(){
 
-async function withdraw(amount, description){
-
-  amount = parseFloat(amount);
-
-  if(isNaN(amount) || amount <= 0){
-    alert("أدخل مبلغ صحيح");
-    return;
-  }
+  const amount = document.getElementById("withdrawAmount").value;
+  const desc = document.getElementById("withdrawDesc").value;
 
   document.getElementById("amount").value = amount;
   document.getElementById("description").value = desc;
@@ -522,6 +507,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
