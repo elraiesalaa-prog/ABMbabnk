@@ -210,10 +210,7 @@ justify-content:center;
 
 
 <!-- شاشة كشف الحساب -->
-<div id="statementScreen" style="display:none">
-
 <h3>كشف الحساب</h3>
-  <h3>كشف الحساب</h3>
 
   <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
     <thead>
@@ -226,26 +223,34 @@ justify-content:center;
     </thead>
     <tbody id="transactionsBody"></tbody>
   </table>
+
+  <!-- منطقة الطباعة -->
+  <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
+    <div style="text-align:center; margin-bottom:10mm;">
+      <h2 style="margin:0;">🏦 بنك ABM</h2>
+      
+      <div style="text-align:right;">
+
+  <p id="pdfFullName"></p>
+  <p id="pdfAccountName"></p>
+  <p id="pdfBalance"></p>
+
 </div>
+    </div>
+    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+      <thead>
+        <tr>
+          <th>التاريخ</th>
+          <th>النوع</th>
+          <th>المبلغ</th>
+          <th>الوصف</th>
+        </tr>
+      </thead>
+      <tbody id="pdfTransactionsBody"></tbody>
+    </table>
+  </div>
 
-<button onclick="filterTransactions()">بحث</button>
-<button onclick="downloadPDF()">تحميل PDF</button>
-
-<table border="1" style="width:100%;text-align:center">
-
-<thead>
-<tr>
-<th>التاريخ</th>
-<th>النوع</th>
-<th>المبلغ</th>
-<th>الوصف</th>
-</tr>
-</thead>
-
-<tbody id="statementBody"></tbody>
-
-</table>
-
+  <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
 <button onclick="closeStatement()">رجوع</button>
 
 </div>
@@ -259,6 +264,7 @@ justify-content:center;
 
 </body>
 </html>
+
 
 
 
