@@ -412,6 +412,17 @@ async function filterTransactions(){
   });
 
 }
+function openStatement(){
+
+document.getElementById("statementScreen").style.display="block"
+
+}
+// ================= فصل الشاشات =================
+function closeStatement(){
+
+document.getElementById("statementScreen").style.display="none"
+
+}
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -444,6 +455,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
