@@ -422,36 +422,25 @@ document.getElementById("statementScreen").style.display="block"
 
 
 
-function openDeposit(){
+function confirmDeposit(){
 
-document.getElementById("mainScreen").style.display="none"
-document.getElementById("depositScreen").style.display="block"
+  const amount = document.getElementById("depositAmount").value;
+  const desc = document.getElementById("depositDesc").value;
 
+  deposit(amount, desc);
+
+  closeDeposit();
 }
 
-function closeDeposit(){
+function confirmWithdraw(){
 
-document.getElementById("depositScreen").style.display="none"
-document.getElementById("mainScreen").style.display="block"
+  const amount = document.getElementById("withdrawAmount").value;
+  const desc = document.getElementById("withdrawDesc").value;
 
+  withdraw(amount, desc);
+
+  closeWithdraw();
 }
-
-
-function openWithdraw(){
-
-document.getElementById("mainScreen").style.display="none"
-document.getElementById("withdrawScreen").style.display="block"
-
-}
-
-function closeWithdraw(){
-
-document.getElementById("withdrawScreen").style.display="none"
-document.getElementById("mainScreen").style.display="block"
-
-}
-
-
 function openStatement(){
 
 document.getElementById("mainScreen").style.display="none"
@@ -524,6 +513,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
