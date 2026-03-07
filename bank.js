@@ -463,6 +463,12 @@ function confirmWithdraw(){
   withdraw(amount, desc);
   closeWithdraw();
 }
+window.addEventListener("DOMContentLoaded", async () => {
+  const { data } = await supabase.auth.getSession();
+  if(data.session){
+    loadAccount();
+  }
+});
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -495,6 +501,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
