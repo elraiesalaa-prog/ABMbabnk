@@ -562,8 +562,7 @@ function showLogin(){
 }
 
 
-await updateBalance();
-await loadTransactions();
+
 
 
 
