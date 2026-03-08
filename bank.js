@@ -357,19 +357,34 @@ async function updateBalance() {
 // ================= طباعة =================
 async function downloadPDF() {
 
+  if (!window.jspdf) {
+    alert("مكتبة PDF لم يتم تحميلها");
+    return;
+  }
+
   const { jsPDF } = window.jspdf;
 
   const doc = new jsPDF();
 
+  doc.setFontSize(16);
   doc.text("كشف الحساب", 10, 10);
+
+  doc.setFontSize(12);
 
   let y = 20;
 
   const rows = document.querySelectorAll("#transactionsBody tr");
 
+  if (rows.length === 0) {
+    alert("لا توجد عمليات للطباعة");
+    return;
+  }
+
   rows.forEach(row => {
 
     const cells = row.querySelectorAll("td");
+
+    if (cells.length < 4) return;
 
     const date = cells[0].innerText;
     const type = cells[1].innerText;
@@ -381,6 +396,11 @@ async function downloadPDF() {
     doc.text(line, 10, y);
 
     y += 10;
+
+    if (y > 280) {
+      doc.addPage();
+      y = 10;
+    }
 
   });
 
@@ -546,6 +566,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
