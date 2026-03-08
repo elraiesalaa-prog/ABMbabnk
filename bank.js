@@ -361,33 +361,30 @@ function downloadPDF() {
 
   const doc = new jsPDF();
 
-  const rows = [];
+  doc.setFont("Amiri-Regular");
 
-  const tableRows = document.querySelectorAll("#transactionsBody tr");
+  doc.setFontSize(16);
 
-  tableRows.forEach(row => {
+  doc.text("كشف الحساب", 180, 20, { align: "right" });
+
+  let y = 40;
+
+  const rows = document.querySelectorAll("#transactionsBody tr");
+
+  rows.forEach(row => {
 
     const cells = row.querySelectorAll("td");
 
-    rows.push([
-      cells[0].innerText,
-      cells[1].innerText,
-      cells[2].innerText,
-      cells[3].innerText
-    ]);
+    const date = cells[0].innerText;
+    const type = cells[1].innerText;
+    const amount = cells[2].innerText;
+    const desc = cells[3].innerText;
 
-  });
+    const line = `${desc}   ${amount}   ${type}   ${date}`;
 
-  doc.autoTable({
+    doc.text(line, 180, y, { align: "right" });
 
-    head: [["التاريخ", "النوع", "المبلغ", "الوصف"]],
-
-    body: rows,
-
-    styles: {
-      fontSize: 10,
-      halign: "center"
-    }
+    y += 10;
 
   });
 
@@ -553,6 +550,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
