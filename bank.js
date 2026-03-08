@@ -302,19 +302,17 @@ async function loadTransactions() {
       <td>${typeText}</td>
       <td>${tx.amount} SDG</td>
       <td>${tx.description || ""}</td>
-
-      <td>
-        <button onclick="editTransaction(${tx.id}, ${tx.amount}, '${tx.description || ""}')">
-        تعديل
-        </button>
-      </td>
-
-      <td>
-        <button onclick="deleteTransaction(${tx.id})">
-        حذف
-        </button>
-      </td>
+      <td><button class="editBtn">تعديل</button></td>
+      <td><button class="deleteBtn">حذف</button></td>
     `;
+
+    row.querySelector(".editBtn").onclick = () => {
+      editTransaction(tx.id, tx.amount, tx.description || "");
+    };
+
+    row.querySelector(".deleteBtn").onclick = () => {
+      deleteTransaction(tx.id);
+    };
 
     tbody.appendChild(row);
   });
@@ -449,56 +447,49 @@ loadStatement();
 function closeStatement(){
 document.getElementById("statementScreen").style.display="none";
 }
-// ================= حذف =================
-async function editTransaction(id,amount,desc){
+// ================= تعديل =================
+async function editTransaction(id, amount, desc) {
 
-const newAmount = prompt("المبلغ الجديد", amount);
+  const newAmount = prompt("المبلغ الجديد", amount);
+  if (newAmount === null) return;
 
-if(newAmount === null) return;
+  const newDesc = prompt("الوصف", desc);
 
-const newDesc = prompt("الوصف", desc);
+  const { error } = await supabase
+    .from("transactions")
+    .update({
+      amount: Number(newAmount),
+      description: newDesc
+    })
+    .eq("id", id);
 
-const {error} = await supabase
-.from("transactions")
-.update({
-amount:newAmount,
-description:newDesc
-})
-.eq("id", id);
+  if (error) {
+    console.error(error);
+    alert("فشل تعديل العملية");
+    return;
+  }
 
-if(error){
-
-alert("فشل التعديل");
-
-return;
-
-}
-
-updateBalance();
-loadStatement();
-
+  await loadTransactions();
+  await updateBalance();
 }
 // ================= حذف =================
-async function deleteTransaction(id){
+async function deleteTransaction(id) {
 
-if(!confirm("هل تريد حذف العملية؟")) return;
+  if (!confirm("هل تريد حذف العملية؟")) return;
 
-const {error} = await supabase
-.from("transactions")
-.delete()
-.eq("id", id);
+  const { error } = await supabase
+    .from("transactions")
+    .delete()
+    .eq("id", id);
 
-if(error){
+  if (error) {
+    console.error(error);
+    alert("فشل حذف العملية");
+    return;
+  }
 
-alert("فشل الحذف");
-
-return;
-
-}
-
-updateBalance();
-loadStatement();
-
+  await loadTransactions();
+  await updateBalance();
 }
 // ================= خروج =================
 async function logout(){
@@ -532,6 +523,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
