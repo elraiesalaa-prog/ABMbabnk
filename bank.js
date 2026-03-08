@@ -355,56 +355,43 @@ async function updateBalance() {
 
 }
 // ================= طباعة =================
-async function downloadPDF() {
-
-  if (!window.jspdf) {
-    alert("مكتبة PDF لم يتم تحميلها");
-    return;
-  }
+function downloadPDF() {
 
   const { jsPDF } = window.jspdf;
 
   const doc = new jsPDF();
 
-  doc.setFontSize(16);
-  doc.text("كشف الحساب", 10, 10);
+  const rows = [];
 
-  doc.setFontSize(12);
+  const tableRows = document.querySelectorAll("#transactionsBody tr");
 
-  let y = 20;
-
-  const rows = document.querySelectorAll("#transactionsBody tr");
-
-  if (rows.length === 0) {
-    alert("لا توجد عمليات للطباعة");
-    return;
-  }
-
-  rows.forEach(row => {
+  tableRows.forEach(row => {
 
     const cells = row.querySelectorAll("td");
 
-    if (cells.length < 4) return;
+    rows.push([
+      cells[0].innerText,
+      cells[1].innerText,
+      cells[2].innerText,
+      cells[3].innerText
+    ]);
 
-    const date = cells[0].innerText;
-    const type = cells[1].innerText;
-    const amount = cells[2].innerText;
-    const desc = cells[3].innerText;
+  });
 
-    const line = `${date} | ${type} | ${amount} | ${desc}`;
+  doc.autoTable({
 
-    doc.text(line, 10, y);
+    head: [["التاريخ", "النوع", "المبلغ", "الوصف"]],
 
-    y += 10;
+    body: rows,
 
-    if (y > 280) {
-      doc.addPage();
-      y = 10;
+    styles: {
+      fontSize: 10,
+      halign: "center"
     }
 
   });
 
-  doc.save("statement.pdf");
+  doc.save("كشف_الحساب.pdf");
 
 }
 // ================= فلترة =================
@@ -566,6 +553,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
