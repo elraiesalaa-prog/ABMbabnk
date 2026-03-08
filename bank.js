@@ -414,7 +414,7 @@ async function filterTransactions(){
 }
 // ================= شاشات العمليات =================
 function openDeposit(){
-document.getElementById("depositScreen").style.display="none";
+document.getElementById("depositScreen").style.display="block";
 }
 
 function closeDeposit(){
@@ -422,7 +422,7 @@ document.getElementById("depositScreen").style.display="none";
 }
 
 function openWithdraw(){
-document.getElementById("withdrawScreen").style.display="none";
+document.getElementById("withdrawScreen").style.display="block";
 }
 
 function closeWithdraw(){
@@ -469,6 +469,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
