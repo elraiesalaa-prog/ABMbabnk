@@ -198,12 +198,17 @@ async function deposit(){
   await loadTransactions();
 }
 // ================= سحب =================
-// ================= سحب =================
+
 
 async function withdraw(){
 
   const amount = parseFloat(document.getElementById("amount").value);
   const description = document.getElementById("description").value.trim();
+
+  if(isNaN(amount) || amount <= 0){
+    alert("أدخل مبلغ صحيح");
+    return;
+  }
 
   const user = (await supabase.auth.getUser()).data.user;
 
@@ -264,7 +269,6 @@ async function withdraw(){
  
   await loadTransactions();
 }
-
 
 // ================= كشف الحساب =================
 async function loadTransactions() {
@@ -466,6 +470,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
