@@ -198,6 +198,7 @@ async function deposit(){
   await loadTransactions();
 }
 // ================= سحب =================
+// ================= سحب =================
 
 async function withdraw(){
 
@@ -268,6 +269,7 @@ async function withdraw(){
  
   await loadTransactions();
 }
+
 
 // ================= كشف الحساب =================
 async function loadTransactions() {
@@ -469,5 +471,6 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
