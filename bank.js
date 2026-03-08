@@ -355,44 +355,51 @@ async function updateBalance() {
 
 }
 // ================= طباعة =================
-function downloadPDF() {
+async function downloadPDF() {
 
-  const { jsPDF } = window.jspdf;
+  const printArea = document.getElementById("printArea");
+  const pdfBody = document.getElementById("pdfTransactionsBody");
 
-  const doc = new jsPDF();
+  // تعبئة بيانات العنوان
+  document.getElementById("pdfFullName").innerText =
+    document.getElementById("welcomeName").innerText;
 
-  const rows = [];
+  document.getElementById("pdfAccountName").innerText =
+    document.getElementById("accountNameDisplay").innerText;
 
-  const tableRows = document.querySelectorAll("#transactionsBody tr");
+  document.getElementById("pdfBalance").innerText =
+    "الرصيد الحالي: " + document.getElementById("balance").innerText;
 
-  tableRows.forEach(row => {
+  // نسخ العمليات
+  const rows = document.querySelectorAll("#transactionsBody tr");
+  pdfBody.innerHTML = "";
 
-    const cells = row.querySelectorAll("td");
-
-    rows.push([
-      cells[0].innerText,
-      cells[1].innerText,
-      cells[2].innerText,
-      cells[3].innerText
-    ]);
-
+  rows.forEach(row => {
+    pdfBody.appendChild(row.cloneNode(true));
   });
 
-  doc.autoTable({
+  // إظهار منطقة الطباعة مؤقتاً
+  printArea.style.display = "block";
 
-    head: [["التاريخ", "النوع", "المبلغ", "الوصف"]],
-
-    body: rows,
-
-    styles: {
-      fontSize: 10,
-      halign: "center"
+  const opt = {
+    margin: 0,
+    filename: 'كشف_حساب.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { 
+      scale: 4,
+      useCORS: true
+    },
+    jsPDF: { 
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
     }
+  };
 
-  });
+  await html2pdf().set(opt).from(printArea).save();
 
-  doc.save("كشف_الحساب.pdf");
-
+  // إخفاؤها مرة أخرى
+  printArea.style.display = "none";
 }
 // ================= فلترة =================
 
@@ -553,6 +560,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
