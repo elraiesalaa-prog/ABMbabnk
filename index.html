@@ -145,7 +145,30 @@
       from{opacity:0; transform:translateY(10px);}
       to{opacity:1; transform:translateY(0);}
     }
-  </style>
+   
+  .btn-custom {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px; /* زوايا دائرية */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .btn-custom:hover {
+    transform: scale(1.05); /* تكبير بسيط عند التمرير */
+    opacity: 0.9;
+  }
+
+  /* ألوان متدرجة جميلة */
+  .btn-deposit { background: linear-gradient(to right, #007bff, #00d2ff); } /* أزرق */
+  .btn-statement { background: linear-gradient(to right, #28a745, #8bc34a); } /* أخضر */
+  .btn-pdf { background: linear-gradient(to right, #6f42c1, #a88be0); } /* بنفسجي */
+  .btn-logout { background: linear-gradient(to right, #dc3545, #ff6b6b); } /* أحمر */
+</style>
+  
 </head>
 
 <body>
@@ -191,11 +214,23 @@
   <div id="accountInfo" class="account-box">
     <div class="avatar-circle">👤</div>
     <div class="account-text">
-      <div id="welcomeName" class="welcome-name"></div>
-      <div id="accountNameDisplay" class="account-name"></div>
+      
+      
+      <div style="text-align: right; font-weight: bold;">
+  <p id="pdfFullName" style="color: #007bff;"></p>
+  
+  <p id="pdfAccountName" style="color: #28a745;"></p>
+  
+  <p id="pdfBalance" style="color: #0056b3;"></p>
+</div>
     </div>
   </div>
 
+
+
+
+
+  
   <div class="balance">الرصيد: <span id="balance">0</span></div>
 
   <!-- الشاشة الرئيسية -->
@@ -204,9 +239,8 @@
 
 <h3>العمليات</h3>
 
-<button onclick="openDeposit()">العمليات</button>
-
-<button onclick="showStatement()">كشف الحساب</button>
+<button class="btn-custom btn-deposit" onclick="openDeposit()">العمليات</button>
+<button class="btn-custom btn-statement" onclick="showStatement()">كشف الحساب</button>
 
 </div>
 
@@ -272,8 +306,8 @@
     </table>
   </div>
 
-   <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
-  <button onclick="logout()">تسجيل خروج</button>
+  <button class="btn-custom btn-pdf" onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
+<button class="btn-custom btn-logout" onclick="logout()">تسجيل خروج</button>
 
 </div>
 
@@ -282,6 +316,7 @@
 
 </body>
 </html>
+
 
 
 
