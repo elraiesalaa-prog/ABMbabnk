@@ -1,261 +1,299 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>النظام البنكي الخاص - علاء الدين</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<title>النظام البنكي الخاص - علاء الدين</title>
+  <style>
+    body{
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg,#141e30,#243b55);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0;
+      direction: rtl;
+    }
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    .card{
+      background:white;
+      padding:30px;
+      width:380px;
+      border-radius:20px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.3);
+      animation: fadeIn 0.4s ease-in-out;
+    }
 
-<!-- مكتبة PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    h2{
+      text-align:center;
+      margin-bottom:20px;
+      color:#243b55;
+    }
 
-<style>
+    input{
+      width:100%;
+      padding:14px 14px 14px 40px;
+      margin:10px 0;
+      border-radius:12px;
+      border:1px solid #ddd;
+      font-size:14px;
+      background:#f9fafc;
+      transition: all 0.25s ease;
+      box-sizing:border-box;
+    }
 
-body{
-font-family:"Segoe UI",Tahoma,sans-serif;
-background:linear-gradient(135deg,#141e30,#243b55);
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
-direction:rtl;
-}
+    input:focus{
+      border-color:#2a5298;
+      background:white;
+      outline:none;
+      box-shadow:0 0 0 3px rgba(42,82,152,0.15);
+      transform:translateY(-1px);
+    }
 
-.card{
-background:white;
-padding:30px;
-width:380px;
-border-radius:20px;
-box-shadow:0 20px 40px rgba(0,0,0,0.3);
-}
+    input::placeholder{
+      color:#999;
+      font-size:13px;
+    }
 
-h2{
-text-align:center;
-margin-bottom:20px;
-color:#243b55;
-}
+    input:hover{
+      border-color:#aaa;
+    }
 
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-border-radius:10px;
-border:1px solid #ddd;
-box-sizing:border-box;
-}
+    #amount{
+      font-weight:bold;
+      letter-spacing:0.5px;
+    }
 
-button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-}
+    button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.2s;
+      font-size:14px;
+    }
 
-#registerBtn{background:#1e88e5;color:white;}
-#loginBtn{background:#43a047;color:white;}
+    #registerBtn{ background:#1e88e5; color:white; }
+    #loginBtn{ background:#43a047; color:white; }
+    #depositBtn{ background:#2ecc71; color:white; }
+    #withdrawBtn{ background:#e74c3c; color:white; }
 
-.balance{
-font-size:22px;
-text-align:center;
-margin:15px 0;
-font-weight:bold;
-}
+    button:hover{
+      transform:translateY(-2px);
+      opacity:0.9;
+    }
 
-.loading{
-text-align:center;
-display:none;
-margin-top:10px;
-}
+    button:disabled{
+      background:gray;
+      cursor:not-allowed;
+    }
 
-.account-box{
-display:flex;
-align-items:center;
-gap:12px;
-background:linear-gradient(135deg,#243b55,#141e30);
-padding:15px;
-border-radius:15px;
-color:white;
-margin-bottom:15px;
-}
+    .balance{
+      font-size:24px;
+      text-align:center;
+      margin:15px 0;
+      font-weight:bold;
+      color:#243b55;
+    }
 
-.avatar-circle{
-width:45px;
-height:45px;
-border-radius:50%;
-background:white;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+    .loading{
+      text-align:center;
+      display:none;
+      margin-top:10px;
+      font-size:14px;
+      color:#243b55;
+    }
 
-</style>
+    .account-box{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      background:linear-gradient(135deg,#243b55,#141e30);
+      padding:15px;
+      border-radius:15px;
+      color:white;
+      margin-bottom:15px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.25);
+    }
 
+    .avatar-circle{
+      width:45px;
+      height:45px;
+      border-radius:50%;
+      background:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+    }
+
+    .account-text{
+      display:flex;
+      flex-direction:column;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(10px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+  </style>
 </head>
 
 <body>
 
 <!-- ================= تسجيل الدخول ================= -->
-
 <div class="card" id="authCard">
 
-<div id="loginView">
+  <div id="loginView">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
 
-<h2>تسجيل الدخول</h2>
+    <p style="text-align:center;margin-top:15px;">
+      ليس لديك حساب؟
+      <a href="#" onclick="showRegister()">إنشاء حساب</a>
+    </p>
+  </div>
 
-<input type="text" id="username" placeholder="اسم الحساب">
-<input type="password" id="password" placeholder="كلمة المرور">
+  <div id="registerView" style="display:none;">
+    <h2>إنشاء حساب جديد</h2>
+    <input type="text" id="usernameReg" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="passwordReg" placeholder="كلمة المرور">
+    <input type="text" id="fullName" placeholder="الاسم الكامل">
+    <input type="text" id="accountName" placeholder="اسم الحساب البنكي">
+    <button id="registerBtn" onclick="register()">إنشاء حساب</button>
 
-<button id="loginBtn" onclick="login()">تسجيل الدخول</button>
+    <p style="text-align:center;margin-top:15px;">
+      لديك حساب بالفعل؟
+      <a href="#" onclick="showLogin()">تسجيل الدخول</a>
+    </p>
+  </div>
 
-<p style="text-align:center">
-ليس لديك حساب؟
-<a href="#" onclick="showRegister()">إنشاء حساب</a>
-</p>
-
+  <div class="loading" id="authLoading">جاري المعالجة...</div>
 </div>
 
 
-<div id="registerView" style="display:none">
-
-<h2>إنشاء حساب جديد</h2>
-
-<input type="text" id="usernameReg" placeholder="اسم الحساب">
-<input type="password" id="passwordReg" placeholder="كلمة المرور">
-<input type="text" id="fullName" placeholder="الاسم الكامل">
-<input type="text" id="accountName" placeholder="اسم الحساب البنكي">
-
-<button id="registerBtn" onclick="register()">إنشاء حساب</button>
-
-<p style="text-align:center">
-لديك حساب بالفعل؟
-<a href="#" onclick="showLogin()">تسجيل الدخول</a>
-</p>
-
-</div>
-
-<div class="loading" id="authLoading">
-جاري المعالجة...
-</div>
-
-</div>
-
-
-<!-- ================= شاشة البنك ================= -->
-
+<!-- ================= البنك ================= -->
 <div class="card" id="bankCard" style="display:none">
+<h2>  </h2>
+  <h2>  </h2>
+  <h2>حسابي البنكي</h2>
+    
+  
+  <div id="accountInfo" class="account-box">
+    <div class="avatar-circle">👤</div>
+    <div class="account-text">
+      <div id="welcomeName" class="welcome-name"></div>
+      <div id="accountNameDisplay" class="account-name"></div>
+    </div>
+  </div>
 
-<h2>حسابي البنكي</h2>
+  <div class="balance">الرصيد: <span id="balance">0</span></div>
 
-<div id="accountInfo" class="account-box">
-
-<div class="avatar-circle">👤</div>
-
-<div>
-
-<div id="welcomeName"></div>
-<div id="accountNameDisplay"></div>
-
-</div>
-
-</div>
-
-<div class="balance">
-<div class="balance">الرصيد: <span id="balance">0</span></div></div>
-
-
-<!-- الشاشة الرئيسية -->
-
-<div id="mainScreen">
-
-<h3>العمليات</h3>
-
-<button onclick="openDeposit()">إيداع</button>
-<button onclick="openWithdraw()">سحب</button>
-<button onclick="openStatement()">كشف الحساب</button>
-
-</div>
-
-
-<!-- شاشة الإيداع -->
-
-<div id="depositScreen" style="display:none">
-
-<h3>عملية إيداع</h3>
-
-<input type="number" id="amount" placeholder="المبلغ">
+  <input type="number" id="amount" placeholder="المبلغ">
   <input type="text" id="description" placeholder="بيان العملية">
 
   <button id="depositBtn" onclick="deposit()">إيداع</button>
-<button onclick="closeDeposit()">رجوع</button>
-
-</div>
-
-
-<!-- شاشة السحب -->
-
-<div id="withdrawScreen" style="display:none">
-
-<h3>عملية سحب</h3>
-
-<input type="number" id="amount" placeholder="المبلغ">
-  <input type="text" id="description" placeholder="بيان العملية">
-   <button id="withdrawBtn" onclick="withdraw()">سحب</button>
-<button onclick="closeWithdraw()">رجوع</button>
-
-</div>
-
-
-<!-- كشف الحساب -->
-
-<div id="statementScreen" style="display:none">
-
-<h3>كشف الحساب</h3>
+  <button id="withdrawBtn" onclick="withdraw()">سحب</button>
+  <hr>
+  <h3>فلترة كشف الحساب</h3>
 
 <input type="date" id="fromDate">
 <input type="date" id="toDate">
 
-<button onclick="filterTransactions()">بحث</button>
-<button onclick="downloadPDF()">تحميل PDF</button>
+<button onclick="filterTransactions()">عرض العمليات</button>
 
-<table border="1" style="width:100%;text-align:center">
+<hr>
+<h3>كشف الحساب</h3>
 
-<thead>
-<tr>
-<th>التاريخ</th>
-<th>النوع</th>
-<th>المبلغ</th>
-<th>الوصف</th>
-</tr>
-</thead>
+<div style="max-height:250px; overflow-y:auto; border:1px solid #ccc;">
 
-<tbody id="statementBody"></tbody>
+<table id="transactionsTable"
+       border="1"
+       style="width:100%; border-collapse:collapse; text-align:center;">
+
+  <thead style="background:#243b55; color:white; position:sticky; top:0;">
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+
+  <tbody id="transactionsBody"></tbody>
 
 </table>
 
-<button onclick="closeStatement()">رجوع</button>
-
 </div>
 
 
-<button onclick="logout()">تسجيل خروج</button>
+  <!-- منطقة الطباعة -->
+  <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
+    <div style="text-align:center; margin-bottom:10mm;">
+      <h2 style="margin:0;">🏦 بنك ABM</h2>
+      
+       <div style="text-align: right; font-weight: bold;">
+  <p id="pdfFullName" style="color: #007bff;"></p>
+  
+  <p id="pdfAccountName" style="color: #28a745;"></p>
+  
+  <p id="pdfBalance" style="color: #0056b3;"></p>
+
+
+    </div>
+    </div>
+    <table border="1"
+       style="width:100%;
+              border-collapse:collapse;
+              text-align:center;
+              table-layout:fixed;">
+
+  <thead style="display:table-header-group;">
+    <tr>
+      <th>التاريخ</th>
+      <th>النوع</th>
+      <th>المبلغ</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+
+  <tbody id="pdfTransactionsBody"></tbody>
+
+</table>
+    
+
+  </div>
+
+  <button onclick="downloadPDF()">تحميل كشف الحساب PDF</button>
+  <button onclick="logout()">تسجيل خروج</button>
 
 </div>
 
-
-<!-- ملف الجافاسكربت -->
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="bank.js"></script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 
