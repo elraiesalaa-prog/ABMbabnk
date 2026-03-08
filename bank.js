@@ -302,6 +302,18 @@ async function loadTransactions() {
       <td>${typeText}</td>
       <td>${tx.amount} SDG</td>
       <td>${tx.description || ""}</td>
+
+      <td>
+        <button onclick="editTransaction(${tx.id}, ${tx.amount}, '${tx.description || ""}')">
+        تعديل
+        </button>
+      </td>
+
+      <td>
+        <button onclick="deleteTransaction(${tx.id})">
+        حذف
+        </button>
+      </td>
     `;
 
     tbody.appendChild(row);
@@ -437,6 +449,57 @@ loadStatement();
 function closeStatement(){
 document.getElementById("statementScreen").style.display="none";
 }
+// ================= حذف =================
+async function editTransaction(id,amount,desc){
+
+const newAmount = prompt("المبلغ الجديد", amount);
+
+if(newAmount === null) return;
+
+const newDesc = prompt("الوصف", desc);
+
+const {error} = await supabase
+.from("transactions")
+.update({
+amount:newAmount,
+description:newDesc
+})
+.eq("id", id);
+
+if(error){
+
+alert("فشل التعديل");
+
+return;
+
+}
+
+updateBalance();
+loadStatement();
+
+}
+// ================= حذف =================
+async function deleteTransaction(id){
+
+if(!confirm("هل تريد حذف العملية؟")) return;
+
+const {error} = await supabase
+.from("transactions")
+.delete()
+.eq("id", id);
+
+if(error){
+
+alert("فشل الحذف");
+
+return;
+
+}
+
+updateBalance();
+loadStatement();
+
+}
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -469,6 +532,7 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
+
 
 
 
