@@ -206,10 +206,9 @@ justify-content:center;
 
 <h3>عملية سحب</h3>
 
-<input type="number" id="withdrawAmount" placeholder="المبلغ">
-<input type="text" id="withdrawDesc" placeholder="الوصف">
-
-<button onclick="confirmWithdraw()">تأكيد السحب</button>
+<input type="number" id="amount" placeholder="المبلغ">
+  <input type="text" id="description" placeholder="بيان العملية">
+   <button id="withdrawBtn" onclick="withdraw()">سحب</button>
 <button onclick="closeWithdraw()">رجوع</button>
 
 </div>
@@ -258,6 +257,7 @@ justify-content:center;
 
 </body>
 </html>
+
 
 
 
