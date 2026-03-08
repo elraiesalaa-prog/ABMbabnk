@@ -194,8 +194,9 @@ async function deposit(){
   document.getElementById("description").value = "";
 
   // تحديث كشف الحساب
- 
-  await loadTransactions();
+ await updateBalance();
+await loadTransactions();
+  
 }
 // ================= سحب =================
 
@@ -266,7 +267,8 @@ async function withdraw(){
 
   // تحديث العمليات
  
-  await loadTransactions();
+  await updateBalance();
+await loadTransactions();
 }
 
 // ================= كشف الحساب =================
@@ -316,6 +318,41 @@ async function loadTransactions() {
 
     tbody.appendChild(row);
   });
+}
+// ================= تحديث الرصيد =================
+async function updateBalance() {
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("type, amount")
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  let balance = 0;
+
+  data.forEach(tx => {
+
+    if (tx.type === "deposit") {
+      balance += Number(tx.amount);
+    }
+
+    if (tx.type === "withdraw") {
+      balance -= Number(tx.amount);
+    }
+
+  });
+
+  document.getElementById("balance").textContent = balance + " SDG";
+
 }
 // ================= طباعة =================
 async function downloadPDF() {
@@ -525,6 +562,8 @@ function showLogin(){
 }
 
 
+await updateBalance();
+await loadTransactions();
 
 
 
