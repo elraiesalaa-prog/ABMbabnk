@@ -204,8 +204,8 @@
 
 <h3>العمليات</h3>
 
-<button onclick="openDeposit()">إيداع</button>
-<button onclick="openWithdraw()">سحب</button>
+<button onclick="openDeposit()">العمليات</button>
+
 <button onclick="openStatement()">كشف الحساب</button>
 
 </div>
@@ -215,7 +215,7 @@
 
 <div id="depositScreen" style="display:none">
 
-<h3>عملية إيداع</h3>
+<h3> العمليات</h3>
 
 <input type="number" id="amount" placeholder="المبلغ">
   <input type="text" id="description" placeholder="بيان العملية">
@@ -226,35 +226,13 @@
 </div>
 
 
-<!-- شاشة السحب -->
 
-<div id="withdrawScreen" style="display:none">
-
-<h3>عملية سحب</h3>
-
-<input type="number" id="amount" placeholder="المبلغ">
-  <input type="text" id="description" placeholder="بيان العملية">
-
- <button id="withdrawBtn" onclick="withdraw()">سحب</button>
-<button onclick="closeWithdraw()">رجوع</button>
 
 </div>
 
 
 
-  <h3>كشف الحساب</h3>
-
-  <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-    <thead>
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>الوصف</th>
-      </tr>
-    </thead>
-    <tbody id="transactionsBody"></tbody>
-  </table>
+ 
 
   <!-- منطقة الطباعة -->
   <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
@@ -289,6 +267,7 @@
 
 </body>
 </html>
+
 
 
 
