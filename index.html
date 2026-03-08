@@ -225,7 +225,24 @@
 
 </div>
 
+<!-- كشف الحساب -->
 
+<div id="statementScreen" style="display:none">
+<h3>كشف الحساب</h3>
+<table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+    <thead>
+      <tr>
+        <th>التاريخ</th>
+        <th>النوع</th>
+        <th>المبلغ</th>
+        <th>الوصف</th>
+      </tr>
+    </thead>
+    <tbody id="transactionsBody"></tbody>
+  </table>
+<button onclick="closeStatement()">رجوع</button>
+
+</div>
 
 
   <!-- منطقة الطباعة -->
@@ -261,6 +278,7 @@
 
 </body>
 </html>
+
 
 
 
