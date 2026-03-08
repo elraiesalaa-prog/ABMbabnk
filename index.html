@@ -198,11 +198,49 @@
 
   <div class="balance">الرصيد: <span id="balance">0</span></div>
 
-  <input type="number" id="amount" placeholder="المبلغ">
-  <input type="text" id="description" placeholder="بيان العملية">
+  <!-- الشاشة الرئيسية -->
 
-  <button id="depositBtn" onclick="deposit()">إيداع</button>
-  <button id="withdrawBtn" onclick="withdraw()">سحب</button>
+<div id="mainScreen">
+
+<h3>العمليات</h3>
+
+<button onclick="openDeposit()">إيداع</button>
+<button onclick="openWithdraw()">سحب</button>
+<button onclick="openStatement()">كشف الحساب</button>
+
+</div>
+
+
+<!-- شاشة الإيداع -->
+
+<div id="depositScreen" style="display:none">
+
+<h3>عملية إيداع</h3>
+
+<input type="number" id="depositAmount" placeholder="المبلغ">
+<input type="text" id="depositDesc" placeholder="الوصف">
+<button id="depositBtn" onclick="deposit()">إيداع</button>
+
+<button onclick="closeDeposit()">رجوع</button>
+
+</div>
+
+
+<!-- شاشة السحب -->
+
+<div id="withdrawScreen" style="display:none">
+
+<h3>عملية سحب</h3>
+
+<input type="number" id="withdrawAmount" placeholder="المبلغ">
+<input type="text" id="withdrawDesc" placeholder="الوصف">
+
+ <button id="withdrawBtn" onclick="withdraw()">سحب</button>
+<button onclick="closeWithdraw()">رجوع</button>
+
+</div>
+
+
 
   <h3>كشف الحساب</h3>
 
@@ -251,3 +289,4 @@
 
 </body>
 </html>
+
