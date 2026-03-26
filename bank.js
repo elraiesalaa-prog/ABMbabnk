@@ -459,6 +459,39 @@ async function filterTransactions(){
   });
 
 }
+function setActive(btn){
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function goHome(btn){
+  setActive(btn);
+
+  document.getElementById("mainScreen").style.display = "block";
+  document.getElementById("depositScreen").style.display = "none";
+  document.getElementById("statementScreen").style.display = "none";
+}
+
+function goDeposit(btn){
+  setActive(btn);
+
+  document.getElementById("mainScreen").style.display = "none";
+  document.getElementById("depositScreen").style.display = "block";
+  document.getElementById("statementScreen").style.display = "none";
+}
+
+function goStatement(btn){
+  setActive(btn);
+
+  document.getElementById("mainScreen").style.display = "none";
+  document.getElementById("depositScreen").style.display = "none";
+  document.getElementById("statementScreen").style.display = "block";
+
+  // لو عندك دالة تحميل العمليات خليه يستدعيها
+  if (typeof loadTransactions === "function") {
+    loadTransactions();
+  }
+}
 // ================= شاشات العمليات =================
 function openDeposit(){
 document.getElementById("depositScreen").style.display="block";
