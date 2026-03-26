@@ -257,24 +257,34 @@
 
 <div id="statementScreen" style="display:none">
 <h3>كشف الحساب</h3>
-  <input type="date" id="fromDate">
+
+<input type="date" id="fromDate">
 <input type="date" id="toDate">
 
 <button onclick="filterTransactions()">بحث</button>
+
+<!-- 🔥 شريط التمرير -->
+<div style="max-height:300px; overflow-y:auto; margin-top:10px; border:1px solid #ddd; border-radius:10px;">
+  
 <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-    <thead>
+    <thead style="position:sticky; top:0; background:#f1f1f1; z-index:1;">
       <tr>
-<th>التاريخ</th>
-<th>النوع</th>
-<th>المبلغ</th>
-<th>الوصف</th>
-<th>تعديل</th>
-<th>حذف</th>
-</tr>
+        <th>التاريخ</th>
+        <th>النوع</th>
+        <th>المبلغ</th>
+        <th>الوصف</th>
+        <th>تعديل</th>
+        <th>حذف</th>
+      </tr>
     </thead>
     <tbody id="transactionsBody"></tbody>
-  </table>
+</table>
+
+</div>
+
 <button onclick="closeStatement()">رجوع</button>
+
+</div>
 
 </div>
 
