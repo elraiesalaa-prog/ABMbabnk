@@ -135,11 +135,16 @@
       font-size:22px;
     }
 
+    .account-text{
+      display:flex;
+      flex-direction:column;
+    }
+
     @keyframes fadeIn{
       from{opacity:0; transform:translateY(10px);}
       to{opacity:1; transform:translateY(0);}
     }
-
+   
     .btn-custom {
       padding: 10px 20px;
       margin: 5px;
@@ -161,33 +166,10 @@
     .btn-pdf { background: linear-gradient(to right, #6f42c1, #a88be0); }
     .btn-logout { background: linear-gradient(to right, #dc3545, #ff6b6b); }
 
-    /* ✅ شريط تمرير العمليات */
-    .table-container{
+    /* ✅ شريط تمرير بسيط وآمن */
+    .scroll-box{
       max-height:250px;
       overflow-y:auto;
-      border-radius:10px;
-      border:1px solid #ddd;
-    }
-
-    .table-container::-webkit-scrollbar{
-      width:6px;
-    }
-
-    .table-container::-webkit-scrollbar-thumb{
-      background:#888;
-      border-radius:10px;
-    }
-
-    .table-container::-webkit-scrollbar-thumb:hover{
-      background:#555;
-    }
-
-    /* تثبيت العناوين */
-    thead th{
-      position:sticky;
-      top:0;
-      background:#243b55;
-      color:white;
     }
 
   </style>
@@ -195,34 +177,38 @@
 
 <body>
 
-<!-- تسجيل الدخول -->
+<!-- ================= تسجيل الدخول ================= -->
 <div class="card" id="authCard">
   <div id="loginView">
     <h2>تسجيل الدخول</h2>
-    <input type="text" id="username">
-    <input type="password" id="password">
+    <input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="password" placeholder="كلمة المرور">
     <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
-    <p style="text-align:center;">
+
+    <p style="text-align:center;margin-top:15px;">
+      ليس لديك حساب؟
       <a href="#" onclick="showRegister()">إنشاء حساب</a>
     </p>
   </div>
 
   <div id="registerView" style="display:none;">
-    <h2>إنشاء حساب</h2>
-    <input id="usernameReg">
-    <input id="passwordReg">
-    <input id="fullName">
-    <input id="accountName">
+    <h2>إنشاء حساب جديد</h2>
+    <input type="text" id="usernameReg">
+    <input type="password" id="passwordReg">
+    <input type="text" id="fullName">
+    <input type="text" id="accountName">
     <button onclick="register()">إنشاء حساب</button>
   </div>
+
+  <div class="loading" id="authLoading">جاري المعالجة...</div>
 </div>
 
-<!-- البنك -->
+<!-- ================= البنك ================= -->
 <div class="card" id="bankCard" style="display:none">
 
 <h2>حسابي البنكي</h2>
 
-<div class="account-box">
+<div id="accountInfo" class="account-box">
 <div class="avatar-circle">👤</div>
 <div>
 <div id="welcomeName"></div>
@@ -241,8 +227,9 @@
 </div>
 
 <div id="depositScreen" style="display:none">
-<input id="amount">
-<input id="description">
+<h3> العمليات</h3>
+<input type="number" id="amount">
+<input type="text" id="description">
 <button onclick="deposit()">إيداع</button>
 <button onclick="withdraw()">سحب</button>
 <button onclick="closeDeposit()">رجوع</button>
@@ -250,13 +237,16 @@
 
 <!-- كشف الحساب -->
 <div id="statementScreen" style="display:none">
+<h3>كشف الحساب</h3>
 
 <input type="date" id="fromDate">
 <input type="date" id="toDate">
+
 <button onclick="filterTransactions()">بحث</button>
 
-<div class="table-container">
-<table border="1" style="width:100%; text-align:center;">
+<!-- ✅ فقط هذا التعديل -->
+<div class="scroll-box">
+<table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
 <thead>
 <tr>
 <th>التاريخ</th>
@@ -272,15 +262,15 @@
 </div>
 
 <button onclick="closeStatement()">رجوع</button>
-
 </div>
 
-<button class="btn-custom btn-pdf" onclick="downloadPDF()">PDF</button>
-<button class="btn-custom btn-logout" onclick="logout()">خروج</button>
+<button class="btn-custom btn-pdf" onclick="downloadPDF()">تحميل كشف الحساب PDF</button> 
+<button class="btn-custom btn-logout" onclick="logout()">تسجيل خروج</button>
 
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="Amiri-Regular.js"></script>
 <script src="bank.js"></script>
 
 </body>
