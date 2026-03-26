@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -145,40 +146,36 @@
       to{opacity:1; transform:translateY(0);}
     }
    
-    .btn-custom {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
-    }
+  .btn-custom {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px; /* زوايا دائرية */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+  }
 
-    .btn-custom:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
-    }
+  .btn-custom:hover {
+    transform: scale(1.05); /* تكبير بسيط عند التمرير */
+    opacity: 0.9;
+  }
 
-    .btn-deposit { background: linear-gradient(to right, #007bff, #00d2ff); }
-    .btn-statement { background: linear-gradient(to right, #28a745, #8bc34a); }
-    .btn-pdf { background: linear-gradient(to right, #6f42c1, #a88be0); }
-    .btn-logout { background: linear-gradient(to right, #dc3545, #ff6b6b); }
-
-    /* ✅ شريط تمرير بسيط وآمن */
-    .scroll-box{
-      max-height:250px;
-      overflow-y:auto;
-    }
-
-  </style>
+  /* ألوان متدرجة جميلة */
+  .btn-deposit { background: linear-gradient(to right, #007bff, #00d2ff); } /* أزرق */
+  .btn-statement { background: linear-gradient(to right, #28a745, #8bc34a); } /* أخضر */
+  .btn-pdf { background: linear-gradient(to right, #6f42c1, #a88be0); } /* بنفسجي */
+  .btn-logout { background: linear-gradient(to right, #dc3545, #ff6b6b); } /* أحمر */
+</style>
+  
 </head>
 
 <body>
 
 <!-- ================= تسجيل الدخول ================= -->
 <div class="card" id="authCard">
+
   <div id="loginView">
     <h2>تسجيل الدخول</h2>
     <input type="text" id="username" placeholder="اسم الحساب (انجليزي)">
@@ -193,62 +190,80 @@
 
   <div id="registerView" style="display:none;">
     <h2>إنشاء حساب جديد</h2>
-    <input type="text" id="usernameReg">
-    <input type="password" id="passwordReg">
-    <input type="text" id="fullName">
-    <input type="text" id="accountName">
-    <button onclick="register()">إنشاء حساب</button>
+    <input type="text" id="usernameReg" placeholder="اسم الحساب (انجليزي)">
+    <input type="password" id="passwordReg" placeholder="كلمة المرور">
+    <input type="text" id="fullName" placeholder="الاسم الكامل">
+    <input type="text" id="accountName" placeholder="اسم الحساب البنكي">
+    <button id="registerBtn" onclick="register()">إنشاء حساب</button>
+
+    <p style="text-align:center;margin-top:15px;">
+      لديك حساب بالفعل؟
+      <a href="#" onclick="showLogin()">تسجيل الدخول</a>
+    </p>
   </div>
 
   <div class="loading" id="authLoading">جاري المعالجة...</div>
 </div>
 
+
 <!-- ================= البنك ================= -->
 <div class="card" id="bankCard" style="display:none">
 
-<h2>حسابي البنكي</h2>
+ <h2>حسابي البنكي</h2>
 
 <div id="accountInfo" class="account-box">
+
 <div class="avatar-circle">👤</div>
+
 <div>
+
 <div id="welcomeName"></div>
 <div id="accountNameDisplay"></div>
+
 </div>
+
 </div>
 
 <div class="balance">
 الرصيد: <span id="balance">0</span>
 </div>
+  <!-- الشاشة الرئيسية -->
 
 <div id="mainScreen">
+
 <h3>العمليات</h3>
+
 <button class="btn-custom btn-deposit" onclick="openDeposit()">العمليات</button>
 <button class="btn-custom btn-statement" onclick="showStatement()">كشف الحساب</button>
+
 </div>
 
+
+<!-- شاشة الإيداع -->
+
 <div id="depositScreen" style="display:none">
+
 <h3> العمليات</h3>
-<input type="number" id="amount">
-<input type="text" id="description">
-<button onclick="deposit()">إيداع</button>
-<button onclick="withdraw()">سحب</button>
+
+<input type="number" id="amount" placeholder="المبلغ">
+  <input type="text" id="description" placeholder="بيان العملية">
+<button id="depositBtn" onclick="deposit()">إيداع</button>
+<button id="withdrawBtn" onclick="withdraw()">سحب</button>
 <button onclick="closeDeposit()">رجوع</button>
+
 </div>
 
 <!-- كشف الحساب -->
+
 <div id="statementScreen" style="display:none">
 <h3>كشف الحساب</h3>
-
-<input type="date" id="fromDate">
+  <input type="date" id="fromDate">
 <input type="date" id="toDate">
 
 <button onclick="filterTransactions()">بحث</button>
-
-<!-- ✅ فقط هذا التعديل -->
-<div class="scroll-box">
 <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-<thead>
-<tr>
+    <thead>
+      <tr>
 <th>التاريخ</th>
 <th>النوع</th>
 <th>المبلغ</th>
@@ -256,22 +271,92 @@
 <th>تعديل</th>
 <th>حذف</th>
 </tr>
-</thead>
-<tbody id="transactionsBody"></tbody>
-</table>
-</div>
-
+    </thead>
+    <tbody id="transactionsBody"></tbody>
+  </table>
 <button onclick="closeStatement()">رجوع</button>
+
 </div>
 
-<button class="btn-custom btn-pdf" onclick="downloadPDF()">تحميل كشف الحساب PDF</button> 
+
+  <!-- منطقة الطباعة -->
+  <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
+    <div style="text-align:center; margin-bottom:10mm;">
+      <h2 style="margin:0;">🏦 بنك ABM</h2>
+      <div style="text-align: right; font-weight: bold;">
+  <p id="pdfFullName" style="color: #007bff;"></p>
+  
+  <p id="pdfAccountName" style="color: #28a745;"></p>
+  
+  <p id="pdfBalance" style="color: #0056b3;"></p>
+</div>
+      <hr>
+    </div>
+    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+      <thead>
+        <tr>
+          <th>التاريخ</th>
+          <th>النوع</th>
+          <th>المبلغ</th>
+          <th>الوصف</th>
+        </tr>
+      </thead>
+      <tbody id="pdfTransactionsBody"></tbody>
+    </table>
+     <br>
+     <br>
+   <div style="text-align: left; color: #0056b3; font-family: sans-serif; padding-left: 10px;">
+    <h2 style="margin: 0; font-weight: 200; display: inline-block;">علاء الدين ادم احمد</h2>
+    <br>
+    <h2 style="margin: 0; font-weight: 200; font-size: 1.2em; display: inline-block;">المدير العام</h2>
+</div>
+  </div>
+
+  <button class="btn-custom btn-pdf" onclick="downloadPDF()">تحميل كشف الحساب PDF</button> 
 <button class="btn-custom btn-logout" onclick="logout()">تسجيل خروج</button>
 
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
    <script src="Amiri-Regular.js"></script>
 <script src="bank.js"></script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
