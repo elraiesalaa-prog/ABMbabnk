@@ -194,8 +194,9 @@ async function deposit(){
   document.getElementById("description").value = "";
 
   // تحديث كشف الحساب
- 
-  await loadTransactions();
+ await updateBalance();
+await loadTransactions();
+  
 }
 // ================= سحب =================
 
@@ -266,7 +267,8 @@ async function withdraw(){
 
   // تحديث العمليات
  
-  await loadTransactions();
+  await updateBalance();
+await loadTransactions();
 }
 
 // ================= كشف الحساب =================
@@ -302,10 +304,55 @@ async function loadTransactions() {
       <td>${typeText}</td>
       <td>${tx.amount} SDG</td>
       <td>${tx.description || ""}</td>
+      <td><button class="editBtn">تعديل</button></td>
+      <td><button class="deleteBtn">حذف</button></td>
     `;
+
+    row.querySelector(".editBtn").onclick = () => {
+      editTransaction(tx.id, tx.amount, tx.description || "");
+    };
+
+    row.querySelector(".deleteBtn").onclick = () => {
+      deleteTransaction(tx.id);
+    };
 
     tbody.appendChild(row);
   });
+}
+// ================= تحديث الرصيد =================
+async function updateBalance() {
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("type, amount")
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  let balance = 0;
+
+  data.forEach(tx => {
+
+    if (tx.type === "deposit") {
+      balance += Number(tx.amount);
+    }
+
+    if (tx.type === "withdraw") {
+      balance -= Number(tx.amount);
+    }
+
+  });
+
+  document.getElementById("balance").textContent = balance + " SDG";
+
 }
 // ================= طباعة =================
 async function downloadPDF() {
@@ -412,6 +459,75 @@ async function filterTransactions(){
   });
 
 }
+// ================= شاشات العمليات =================
+function openDeposit(){
+document.getElementById("depositScreen").style.display="block";
+}
+
+function closeDeposit(){
+document.getElementById("depositScreen").style.display="none";
+}
+
+function openWithdraw(){
+document.getElementById("withdrawScreen").style.display="block";
+}
+
+function closeWithdraw(){
+document.getElementById("withdrawScreen").style.display="none";
+}
+
+function showStatement(){
+document.getElementById("statementScreen").style.display="block";
+loadStatement();
+}
+
+function closeStatement(){
+document.getElementById("statementScreen").style.display="none";
+}
+// ================= تعديل =================
+async function editTransaction(id, amount, desc) {
+
+  const newAmount = prompt("المبلغ الجديد", amount);
+  if (newAmount === null) return;
+
+  const newDesc = prompt("الوصف", desc);
+
+  const { error } = await supabase
+    .from("transactions")
+    .update({
+      amount: Number(newAmount),
+      description: newDesc
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert("فشل تعديل العملية");
+    return;
+  }
+
+  await loadTransactions();
+  await updateBalance();
+}
+// ================= حذف =================
+async function deleteTransaction(id) {
+
+  if (!confirm("هل تريد حذف العملية؟")) return;
+
+  const { error } = await supabase
+    .from("transactions")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert("فشل حذف العملية");
+    return;
+  }
+
+  await loadTransactions();
+  await updateBalance();
+}
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
@@ -444,17 +560,6 @@ function showLogin(){
   document.getElementById("registerView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
