@@ -10,27 +10,22 @@ function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
 
-// ================= الرصيد من القيود =================
+// ================= تحديث الرصيد الحقيقي =================
 async function refreshBalance(){
-
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user;
   if (!user) return;
 
   const { data } = await supabase
-    .from("journal_entries")
-    .select("type, amount")
-    .eq("user_id", user.id);
+    .from("accounts")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
 
-  let balance = 0;
-
-  data.forEach(entry => {
-    if(entry.type === "deposit") balance += Number(entry.amount);
-    if(entry.type === "withdraw") balance -= Number(entry.amount);
-  });
-
-  document.getElementById("balance").innerText =
-    balance.toFixed(2) + " SDG";
+  if(data){
+    document.getElementById("balance").innerText =
+      parseFloat(data.balance || 0).toFixed(2) + " SDG";
+  }
 }
 
 // ================= تسجيل =================
@@ -73,7 +68,7 @@ async function login(){
   loadAccount();
 }
 
-// ================= تحميل =================
+// ================= تحميل الحساب =================
 async function loadAccount(){
 
   document.getElementById("authCard").style.display="none";
@@ -91,18 +86,31 @@ async function deposit(){
   if(isProcessing) return;
   isProcessing = true;
 
-  const amount = Number(document.getElementById("amount").value);
-  const description = document.getElementById("description").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const description = document.getElementById("description").value.trim();
 
-  if(amount <= 0){
-    alert("مبلغ غير صحيح");
+  if(isNaN(amount) || amount <= 0){
+    alert("أدخل مبلغ صحيح");
     isProcessing = false;
     return;
   }
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  await supabase.from("journal_entries").insert({
+  const { data: account } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
+
+  const newBalance = parseFloat(account.balance || 0) + amount;
+
+  await supabase
+    .from("accounts")
+    .update({ balance: newBalance })
+    .eq("user_id", user.id);
+
+  await supabase.from("transactions").insert({
     user_id: user.id,
     type: "deposit",
     amount: amount,
@@ -111,6 +119,9 @@ async function deposit(){
 
   await refreshBalance();
   await loadTransactions();
+
+  document.getElementById("amount").value = "";
+  document.getElementById("description").value = "";
 
   isProcessing = false;
 }
@@ -121,22 +132,37 @@ async function withdraw(){
   if(isProcessing) return;
   isProcessing = true;
 
-  const amount = Number(document.getElementById("amount").value);
-  const description = document.getElementById("description").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const description = document.getElementById("description").value.trim();
 
-  const currentBalance = parseFloat(
-    document.getElementById("balance").innerText
-  );
-
-  if(amount > currentBalance){
-    alert("الرصيد غير كاف");
+  if(isNaN(amount) || amount <= 0){
+    alert("أدخل مبلغ صحيح");
     isProcessing = false;
     return;
   }
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  await supabase.from("journal_entries").insert({
+  const { data: account } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
+
+  if(account.balance < amount){
+    alert("الرصيد غير كافٍ");
+    isProcessing = false;
+    return;
+  }
+
+  const newBalance = parseFloat(account.balance) - amount;
+
+  await supabase
+    .from("accounts")
+    .update({ balance: newBalance })
+    .eq("user_id", user.id);
+
+  await supabase.from("transactions").insert({
     user_id: user.id,
     type: "withdraw",
     amount: amount,
@@ -146,34 +172,38 @@ async function withdraw(){
   await refreshBalance();
   await loadTransactions();
 
+  document.getElementById("amount").value = "";
+  document.getElementById("description").value = "";
+
   isProcessing = false;
 }
 
 // ================= كشف الحساب =================
 async function loadTransactions(){
 
-  const user = (await supabase.auth.getUser()).data.user;
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return;
 
   const { data } = await supabase
-    .from("journal_entries")
+    .from("transactions")
     .select("*")
     .eq("user_id", user.id)
-    .order("created_at", {ascending:false});
+    .order("created_at", { ascending: false });
 
   const tbody = document.getElementById("transactionsBody");
-  tbody.innerHTML="";
+  tbody.innerHTML = "";
 
   data.forEach(tx => {
 
-    const row=document.createElement("tr");
-
-    const date=new Date(tx.created_at).toLocaleString("ar-EG");
+    const row = document.createElement("tr");
+    const date = new Date(tx.created_at).toLocaleString("ar-EG");
     const typeText = tx.type === "deposit" ? "إيداع" : "سحب";
 
-    row.innerHTML=`
+    row.innerHTML = `
       <td>${date}</td>
       <td>${typeText}</td>
-      <td>${tx.amount}</td>
+      <td>${tx.amount} SDG</td>
       <td>${tx.description || ""}</td>
       <td><button onclick="editTransaction('${tx.id}')">تعديل</button></td>
       <td><button onclick="deleteTransaction('${tx.id}')">حذف</button></td>
@@ -190,41 +220,53 @@ async function editTransaction(id){
   if(!newAmount) return;
 
   await supabase
-    .from("journal_entries")
+    .from("transactions")
     .update({ amount: Number(newAmount) })
     .eq("id", id);
 
-  await refreshBalance();
   await loadTransactions();
+  await refreshBalance();
 }
 
 // ================= حذف =================
 async function deleteTransaction(id){
 
-  if(!confirm("حذف؟")) return;
+  if(!confirm("هل تريد حذف العملية؟")) return;
 
   await supabase
-    .from("journal_entries")
+    .from("transactions")
     .delete()
     .eq("id", id);
 
-  await refreshBalance();
   await loadTransactions();
+  await refreshBalance();
 }
 
 // ================= realtime =================
 function startRealtime(){
 
   supabase
-    .channel('journal-live')
+    .channel('bank-live')
     .on('postgres_changes',
-      { event: '*', schema: 'public', table: 'journal_entries' },
+      { event: '*', schema: 'public', table: 'transactions' },
+      async () => {
+        await loadTransactions();
+        await refreshBalance();
+      }
+    )
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'accounts' },
       async () => {
         await refreshBalance();
-        await loadTransactions();
       }
     )
     .subscribe();
+}
+
+// ================= خروج =================
+function logout(){
+  supabase.auth.signOut();
+  location.reload();
 }
 
 // ================= أدوات =================
@@ -234,9 +276,4 @@ function usernameInput(){
 
 function passwordInput(){
   return document.getElementById("password").value.trim();
-}
-
-function logout(){
-  supabase.auth.signOut();
-  location.reload();
 }
