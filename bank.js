@@ -276,4 +276,40 @@ function usernameInput(){
 
 function passwordInput(){
   return document.getElementById("password").value.trim();
+  
+}
+// ================= إصلاح الدوال المفقودة =================
+
+// تسجيل
+function showRegister(){
+  document.getElementById("loginView").style.display = "none";
+  document.getElementById("registerView").style.display = "block";
+}
+
+function showLogin(){
+  document.getElementById("registerView").style.display = "none";
+  document.getElementById("loginView").style.display = "block";
+}
+
+// شاشة العمليات
+function openDeposit(){
+  document.getElementById("mainScreen").style.display = "none";
+  document.getElementById("depositScreen").style.display = "block";
+}
+
+function closeDeposit(){
+  document.getElementById("depositScreen").style.display = "none";
+  document.getElementById("mainScreen").style.display = "block";
+}
+
+// كشف الحساب
+function showStatement(){
+  document.getElementById("mainScreen").style.display = "none";
+  document.getElementById("statementScreen").style.display = "block";
+  loadTransactions(); // تحميل البيانات
+}
+
+function closeStatement(){
+  document.getElementById("statementScreen").style.display = "none";
+  document.getElementById("mainScreen").style.display = "block";
 }
