@@ -4,14 +4,37 @@ var supabase = window.supabase.createClient(
 );
 
 let isProcessing = false;
-let channel = null;
 
 // ================= أدوات =================
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
 
-// ================= تحديث الرصيد =================
+// ================= حساب الرصيد الحقيقي =================
+async function recalculateBalance(userId){
+
+  const { data } = await supabase
+    .from("transactions")
+    .select("type, amount")
+    .eq("user_id", userId);
+
+  let balance = 0;
+
+  data.forEach(tx=>{
+    if(tx.type === "deposit"){
+      balance += Number(tx.amount);
+    } else if(tx.type === "withdraw"){
+      balance -= Number(tx.amount);
+    }
+  });
+
+  await supabase
+    .from("accounts")
+    .update({ balance: balance })
+    .eq("user_id", userId);
+}
+
+// ================= تحديث العرض =================
 async function refreshBalance(){
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user;
@@ -92,7 +115,6 @@ async function loadAccount(){
 
   const welcomeName = document.getElementById("welcomeName");
   const accountNameDisplay = document.getElementById("accountNameDisplay");
-  const balanceEl = document.getElementById("balance");
 
   if(welcomeName)
     welcomeName.innerText = "مرحباً " + (data.full_name || "");
@@ -100,12 +122,11 @@ async function loadAccount(){
   if(accountNameDisplay)
     accountNameDisplay.innerText = "الحساب: " + (data.account_name || "");
 
-  if(balanceEl)
-    balanceEl.innerText =
-      parseFloat(data.balance || 0).toFixed(2) + " SDG";
-
+  await recalculateBalance(user.id);
+  await refreshBalance();
   await loadTransactions();
-  startRealtime(); // ✅ تشغيل التحديث الآني
+
+  startRealtime();
 }
 
 // ================= إيداع =================
@@ -125,19 +146,6 @@ async function deposit(){
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  const { data: account } = await supabase
-    .from("accounts")
-    .select("balance")
-    .eq("user_id", user.id)
-    .single();
-
-  const newBalance = parseFloat(account.balance || 0) + amount;
-
-  await supabase
-    .from("accounts")
-    .update({ balance: newBalance })
-    .eq("user_id", user.id);
-
   await supabase.from("transactions").insert({
     user_id: user.id,
     type: "deposit",
@@ -145,6 +153,7 @@ async function deposit(){
     description: description
   });
 
+  await recalculateBalance(user.id);
   await refreshBalance();
   await loadTransactions();
 
@@ -171,24 +180,17 @@ async function withdraw(){
 
   const user = (await supabase.auth.getUser()).data.user;
 
-  const { data: account } = await supabase
+  const { data } = await supabase
     .from("accounts")
     .select("balance")
     .eq("user_id", user.id)
     .single();
 
-  if(account.balance < amount){
+  if(data.balance < amount){
     alert("الرصيد غير كافٍ");
     isProcessing = false;
     return;
   }
-
-  const newBalance = parseFloat(account.balance) - amount;
-
-  await supabase
-    .from("accounts")
-    .update({ balance: newBalance })
-    .eq("user_id", user.id);
 
   await supabase.from("transactions").insert({
     user_id: user.id,
@@ -197,6 +199,7 @@ async function withdraw(){
     description: description
   });
 
+  await recalculateBalance(user.id);
   await refreshBalance();
   await loadTransactions();
 
@@ -241,156 +244,58 @@ async function loadTransactions(){
   });
 }
 
-// ================= طباعة =================
-async function downloadPDF() {
-
-  const printArea = document.getElementById("printArea");
-  const pdfBody = document.getElementById("pdfTransactionsBody");
-
-  document.getElementById("pdfFullName").innerText =
-    document.getElementById("welcomeName").innerText;
-
-  document.getElementById("pdfAccountName").innerText =
-    document.getElementById("accountNameDisplay").innerText;
-
-  document.getElementById("pdfBalance").innerText =
-    "الرصيد الحالي: " + document.getElementById("balance").innerText;
-
-  const rows = document.querySelectorAll("#transactionsBody tr");
-  pdfBody.innerHTML = "";
-
-  rows.forEach(row => {
-    pdfBody.appendChild(row.cloneNode(true));
-  });
-
-  printArea.style.display = "block";
-
-  await html2pdf().from(printArea).save();
-
-  printArea.style.display = "none";
-}
-
-// ================= تعديل (مصحح) =================
+// ================= تعديل =================
 async function editTransaction(id){
 
   const newAmount = prompt("المبلغ الجديد");
   if(!newAmount) return;
-
-  const user = (await supabase.auth.getUser()).data.user;
-
-  const { data: oldTx } = await supabase
-    .from("transactions")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if(!oldTx) return;
-
-  const difference = Number(newAmount) - Number(oldTx.amount);
 
   await supabase
     .from("transactions")
     .update({ amount: Number(newAmount) })
     .eq("id", id);
 
-  const { data: account } = await supabase
-    .from("accounts")
-    .select("balance")
-    .eq("user_id", user.id)
-    .single();
+  const user = (await supabase.auth.getUser()).data.user;
 
-  let newBalance = Number(account.balance || 0);
-
-  if(oldTx.type === "deposit"){
-    newBalance += difference;
-  } else {
-    newBalance -= difference;
-  }
-
-  await supabase
-    .from("accounts")
-    .update({ balance: newBalance })
-    .eq("user_id", user.id);
+  await recalculateBalance(user.id);
+  await refreshBalance();
+  await loadTransactions();
 }
 
-// ================= حذف (مصحح) =================
+// ================= حذف =================
 async function deleteTransaction(id){
 
   if(!confirm("هل تريد حذف العملية؟")) return;
 
+  await supabase
+    .from("transactions")
+    .delete()
+    .eq("id", id);
+
   const user = (await supabase.auth.getUser()).data.user;
 
-  const { data: tx } = await supabase
-    .from("transactions")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if(!tx) return;
-
-  const { data: account } = await supabase
-    .from("accounts")
-    .select("balance")
-    .eq("user_id", user.id)
-    .single();
-
-  let newBalance = Number(account.balance || 0);
-
-  if(tx.type === "deposit"){
-    newBalance -= Number(tx.amount);
-  } else {
-    newBalance += Number(tx.amount);
-  }
-
-  await supabase.from("transactions").delete().eq("id", id);
-
-  await supabase
-    .from("accounts")
-    .update({ balance: newBalance })
-    .eq("user_id", user.id);
+  await recalculateBalance(user.id);
+  await refreshBalance();
+  await loadTransactions();
 }
 
-// ================= realtime (مصحح) =================
+// ================= realtime =================
 function startRealtime(){
 
-  if(channel){
-    supabase.removeChannel(channel);
-  }
+  supabase
+    .channel('bank-live')
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'transactions' },
+      async () => {
+        const user = (await supabase.auth.getUser()).data.user;
+        if(!user) return;
 
-  channel = supabase.channel('bank-live');
-
-  channel.on('postgres_changes',
-    { event: 'INSERT', schema: 'public', table: 'transactions' },
-    async () => {
-      await loadTransactions();
-      await refreshBalance();
-    }
-  );
-
-  channel.on('postgres_changes',
-    { event: 'UPDATE', schema: 'public', table: 'transactions' },
-    async () => {
-      await loadTransactions();
-      await refreshBalance();
-    }
-  );
-
-  channel.on('postgres_changes',
-    { event: 'DELETE', schema: 'public', table: 'transactions' },
-    async () => {
-      await loadTransactions();
-      await refreshBalance();
-    }
-  );
-
-  channel.on('postgres_changes',
-    { event: 'UPDATE', schema: 'public', table: 'accounts' },
-    async () => {
-      await refreshBalance();
-    }
-  );
-
-  channel.subscribe();
+        await recalculateBalance(user.id);
+        await refreshBalance();
+        await loadTransactions();
+      }
+    )
+    .subscribe();
 }
 
 // ================= خروج =================
