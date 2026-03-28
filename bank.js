@@ -71,15 +71,40 @@ async function login(){
 // ================= تحميل الحساب =================
 async function loadAccount(){
 
-  document.getElementById("authCard").style.display="none";
-  document.getElementById("bankCard").style.display="block";
+  const authCard = document.getElementById("authCard");
+  const bankCard = document.getElementById("bankCard");
 
-  await refreshBalance();
-  await loadTransactions();
+  if(authCard) authCard.style.display = "none";
+  if(bankCard) bankCard.style.display = "block";
 
-  startRealtime();
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return;
+
+  const { data } = await supabase
+    .from("accounts")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
+
+  if(!data) return;
+
+  const welcomeName = document.getElementById("welcomeName");
+  const accountNameDisplay = document.getElementById("accountNameDisplay");
+  const balanceEl = document.getElementById("balance");
+
+  if(welcomeName)
+    welcomeName.innerText = "مرحباً " + (data.full_name || "");
+
+  if(accountNameDisplay)
+    accountNameDisplay.innerText = "الحساب: " + (data.account_name || "");
+
+  if(balanceEl)
+    balanceEl.innerText =
+      parseFloat(data.balance || 0).toFixed(2) + " SDG";
+
+  loadTransactions();
 }
-
 // ================= إيداع =================
 async function deposit(){
 
