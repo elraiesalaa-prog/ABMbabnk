@@ -212,7 +212,111 @@ async function loadTransactions(){
     tbody.appendChild(row);
   });
 }
+// ================= طباعة الكشف =================
+async function downloadPDF() {
 
+  const printArea = document.getElementById("printArea");
+  const pdfBody = document.getElementById("pdfTransactionsBody");
+
+  // تعبئة بيانات العنوان
+  document.getElementById("pdfFullName").innerText =
+    document.getElementById("welcomeName").innerText;
+
+  document.getElementById("pdfAccountName").innerText =
+    document.getElementById("accountNameDisplay").innerText;
+
+  document.getElementById("pdfBalance").innerText =
+    "الرصيد الحالي: " + document.getElementById("balance").innerText;
+
+  // نسخ العمليات
+  const rows = document.querySelectorAll("#transactionsBody tr");
+  pdfBody.innerHTML = "";
+
+  rows.forEach(row => {
+    pdfBody.appendChild(row.cloneNode(true));
+  });
+
+  // إظهار منطقة الطباعة مؤقتاً
+  printArea.style.display = "block";
+
+  const opt = {
+    margin: 0,
+    filename: 'كشف_حساب.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { 
+      scale: 4,
+      useCORS: true
+    },
+    jsPDF: { 
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
+  };
+
+  await html2pdf().set(opt).from(printArea).save();
+
+  // إخفاؤها مرة أخرى
+  printArea.style.display = "none";
+}
+// ================= فلترة =================
+
+async function filterTransactions(){
+
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  let query = supabase
+    .from("transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", {ascending:false});
+
+  if(from){
+    query = query.gte("created_at", from);
+  }
+
+  if(to){
+    query = query.lte("created_at", to + "T23:59:59");
+  }
+
+  const { data, error } = await query;
+
+  if(error){
+    console.log(error);
+    return;
+  }
+
+  const tbody = document.getElementById("transactionsBody");
+  tbody.innerHTML="";
+
+  data.forEach(tx=>{
+
+    const row=document.createElement("tr");
+
+    const date=new Date(tx.created_at).toLocaleString("ar-EG");
+
+    let typeText="";
+
+    if(tx.type==="deposit") typeText="إيداع";
+    else if(tx.type==="withdraw") typeText="سحب";
+    else if(tx.type==="transfer") typeText="تحويل";
+
+    row.innerHTML=`
+      <td>${date}</td>
+      <td>${typeText}</td>
+      <td>${tx.amount || ""}</td>
+      <td>${tx.description || ""}</td>
+    `;
+
+    tbody.appendChild(row);
+
+  });
+
+}
 // ================= تعديل =================
 async function editTransaction(id){
 
