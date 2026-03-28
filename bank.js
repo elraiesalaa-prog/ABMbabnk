@@ -4,13 +4,14 @@ var supabase = window.supabase.createClient(
 );
 
 let isProcessing = false;
+let channel = null;
 
 // ================= أدوات =================
 function makeEmail(username){
   return username.toLowerCase().replace(/[^a-z0-9]/g,'') + "@bankapp.com";
 }
 
-// ================= تحديث الرصيد الحقيقي =================
+// ================= تحديث الرصيد =================
 async function refreshBalance(){
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user;
@@ -103,8 +104,10 @@ async function loadAccount(){
     balanceEl.innerText =
       parseFloat(data.balance || 0).toFixed(2) + " SDG";
 
-  loadTransactions();
+  await loadTransactions();
+  startRealtime(); // ✅ تشغيل التحديث الآني
 }
+
 // ================= إيداع =================
 async function deposit(){
 
@@ -237,13 +240,13 @@ async function loadTransactions(){
     tbody.appendChild(row);
   });
 }
-// ================= طباعة الكشف =================
+
+// ================= طباعة =================
 async function downloadPDF() {
 
   const printArea = document.getElementById("printArea");
   const pdfBody = document.getElementById("pdfTransactionsBody");
 
-  // تعبئة بيانات العنوان
   document.getElementById("pdfFullName").innerText =
     document.getElementById("welcomeName").innerText;
 
@@ -253,7 +256,6 @@ async function downloadPDF() {
   document.getElementById("pdfBalance").innerText =
     "الرصيد الحالي: " + document.getElementById("balance").innerText;
 
-  // نسخ العمليات
   const rows = document.querySelectorAll("#transactionsBody tr");
   pdfBody.innerHTML = "";
 
@@ -261,135 +263,134 @@ async function downloadPDF() {
     pdfBody.appendChild(row.cloneNode(true));
   });
 
-  // إظهار منطقة الطباعة مؤقتاً
   printArea.style.display = "block";
 
-  const opt = {
-    margin: 0,
-    filename: 'كشف_حساب.pdf',
-    image: { type: 'jpeg', quality: 1 },
-    html2canvas: { 
-      scale: 4,
-      useCORS: true
-    },
-    jsPDF: { 
-      unit: 'mm',
-      format: 'a4',
-      orientation: 'portrait'
-    }
-  };
+  await html2pdf().from(printArea).save();
 
-  await html2pdf().set(opt).from(printArea).save();
-
-  // إخفاؤها مرة أخرى
   printArea.style.display = "none";
 }
-// ================= فلترة =================
 
-async function filterTransactions(){
-
-  const from = document.getElementById("fromDate").value;
-  const to = document.getElementById("toDate").value;
-
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
-
-  let query = supabase
-    .from("transactions")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", {ascending:false});
-
-  if(from){
-    query = query.gte("created_at", from);
-  }
-
-  if(to){
-    query = query.lte("created_at", to + "T23:59:59");
-  }
-
-  const { data, error } = await query;
-
-  if(error){
-    console.log(error);
-    return;
-  }
-
-  const tbody = document.getElementById("transactionsBody");
-  tbody.innerHTML="";
-
-  data.forEach(tx=>{
-
-    const row=document.createElement("tr");
-
-    const date=new Date(tx.created_at).toLocaleString("ar-EG");
-
-    let typeText="";
-
-    if(tx.type==="deposit") typeText="إيداع";
-    else if(tx.type==="withdraw") typeText="سحب";
-    else if(tx.type==="transfer") typeText="تحويل";
-
-    row.innerHTML=`
-      <td>${date}</td>
-      <td>${typeText}</td>
-      <td>${tx.amount || ""}</td>
-      <td>${tx.description || ""}</td>
-    `;
-
-    tbody.appendChild(row);
-
-  });
-
-}
-// ================= تعديل =================
+// ================= تعديل (مصحح) =================
 async function editTransaction(id){
 
   const newAmount = prompt("المبلغ الجديد");
   if(!newAmount) return;
+
+  const user = (await supabase.auth.getUser()).data.user;
+
+  const { data: oldTx } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if(!oldTx) return;
+
+  const difference = Number(newAmount) - Number(oldTx.amount);
 
   await supabase
     .from("transactions")
     .update({ amount: Number(newAmount) })
     .eq("id", id);
 
-  await loadTransactions();
-  await refreshBalance();
+  const { data: account } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
+
+  let newBalance = Number(account.balance || 0);
+
+  if(oldTx.type === "deposit"){
+    newBalance += difference;
+  } else {
+    newBalance -= difference;
+  }
+
+  await supabase
+    .from("accounts")
+    .update({ balance: newBalance })
+    .eq("user_id", user.id);
 }
 
-// ================= حذف =================
+// ================= حذف (مصحح) =================
 async function deleteTransaction(id){
 
   if(!confirm("هل تريد حذف العملية؟")) return;
 
-  await supabase
-    .from("transactions")
-    .delete()
-    .eq("id", id);
+  const user = (await supabase.auth.getUser()).data.user;
 
-  await loadTransactions();
-  await refreshBalance();
+  const { data: tx } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if(!tx) return;
+
+  const { data: account } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
+
+  let newBalance = Number(account.balance || 0);
+
+  if(tx.type === "deposit"){
+    newBalance -= Number(tx.amount);
+  } else {
+    newBalance += Number(tx.amount);
+  }
+
+  await supabase.from("transactions").delete().eq("id", id);
+
+  await supabase
+    .from("accounts")
+    .update({ balance: newBalance })
+    .eq("user_id", user.id);
 }
 
-// ================= realtime =================
+// ================= realtime (مصحح) =================
 function startRealtime(){
 
-  supabase
-    .channel('bank-live')
-    .on('postgres_changes',
-      { event: '*', schema: 'public', table: 'transactions' },
-      async () => {
-        await loadTransactions();
-        await refreshBalance();
-      }
-    )
-    .on('postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'accounts' },
-      async () => {
-        await refreshBalance();
-      }
-    )
-    .subscribe();
+  if(channel){
+    supabase.removeChannel(channel);
+  }
+
+  channel = supabase.channel('bank-live');
+
+  channel.on('postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'transactions' },
+    async () => {
+      await loadTransactions();
+      await refreshBalance();
+    }
+  );
+
+  channel.on('postgres_changes',
+    { event: 'UPDATE', schema: 'public', table: 'transactions' },
+    async () => {
+      await loadTransactions();
+      await refreshBalance();
+    }
+  );
+
+  channel.on('postgres_changes',
+    { event: 'DELETE', schema: 'public', table: 'transactions' },
+    async () => {
+      await loadTransactions();
+      await refreshBalance();
+    }
+  );
+
+  channel.on('postgres_changes',
+    { event: 'UPDATE', schema: 'public', table: 'accounts' },
+    async () => {
+      await refreshBalance();
+    }
+  );
+
+  channel.subscribe();
 }
 
 // ================= خروج =================
@@ -405,11 +406,9 @@ function usernameInput(){
 
 function passwordInput(){
   return document.getElementById("password").value.trim();
-  
 }
-// ================= إصلاح الدوال المفقودة =================
 
-// تسجيل
+// ================= واجهة =================
 function showRegister(){
   document.getElementById("loginView").style.display = "none";
   document.getElementById("registerView").style.display = "block";
@@ -420,7 +419,6 @@ function showLogin(){
   document.getElementById("loginView").style.display = "block";
 }
 
-// شاشة العمليات
 function openDeposit(){
   document.getElementById("mainScreen").style.display = "none";
   document.getElementById("depositScreen").style.display = "block";
@@ -431,11 +429,10 @@ function closeDeposit(){
   document.getElementById("mainScreen").style.display = "block";
 }
 
-// كشف الحساب
 function showStatement(){
   document.getElementById("mainScreen").style.display = "none";
   document.getElementById("statementScreen").style.display = "block";
-  loadTransactions(); // تحميل البيانات
+  loadTransactions();
 }
 
 function closeStatement(){
