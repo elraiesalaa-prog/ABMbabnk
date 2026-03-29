@@ -112,6 +112,18 @@ async function login(){
   setLoading(false);
   loadAccount();
 }
+async function loadBalance(userId) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("balance")
+    .eq("id", userId)
+    .single();
+
+  if (!error && data) {
+    document.getElementById("balance").innerText =
+      Number(data.balance).toFixed(2);
+  }
+}
 // ================= تحميل الحساب =================
 async function loadAccount(){
 
