@@ -12,6 +12,23 @@ function setLoading(state){
   document.getElementById("registerBtn").disabled = state;
   document.getElementById("loginBtn").disabled = state;
 }
+// ================= تحديث الرصيد الحقيقي =================
+async function refreshBalance(){
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return;
+
+  const { data } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
+
+  if (data) {
+    document.getElementById("balance").innerText =
+      parseFloat(data.balance || 0).toFixed(2) + " SDG";
+  }
+}
 
 // ================= تسجيل =================
 async function register(){
