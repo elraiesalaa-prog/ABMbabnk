@@ -296,7 +296,7 @@ async function withdraw(){
 
   // تحديث العمليات
  
-  await updateBalance();
+ await updateBalance(userId, amount);
 await loadTransactions();
 }
 
@@ -535,7 +535,7 @@ async function editTransaction(id, amount, desc) {
     return;
   }
 
-  await loadTransactions();
+  await updateBalance(userId, amount);
   await updateBalance();
 }
 // ================= حذف =================
@@ -554,7 +554,7 @@ async function deleteTransaction(id) {
     return;
   }
 
-  await loadTransactions();
+  await updateBalance(userId, amount);
   await updateBalance();
 }
 async function updateBalance(userId, amount) {
@@ -585,6 +585,7 @@ async function updateBalance(userId, amount) {
 
   // 3. إعادة جلب الرصيد الصحيح من القاعدة
   await loadBalance(userId);
+  
 }
 // ================= خروج =================
 async function logout(){
