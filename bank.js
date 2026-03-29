@@ -194,7 +194,7 @@ async function deposit(){
   document.getElementById("description").value = "";
 
   // تحديث كشف الحساب
- await updateBalance();
+await updateBalance(userId, amount);
 await loadTransactions();
   
 }
