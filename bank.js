@@ -545,6 +545,35 @@ async function deleteTransaction(id) {
   await loadTransactions();
   await updateBalance();
 }
+async function updateBalance(userId, amount) {
+  // 1. جلب الرصيد الحالي
+  const { data, error } = await supabase
+    .from("users")
+    .select("balance")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const newBalance = (data.balance || 0) + amount;
+
+  // 2. تحديث الرصيد
+  const { error: updateError } = await supabase
+    .from("users")
+    .update({ balance: newBalance })
+    .eq("id", userId);
+
+  if (updateError) {
+    console.error(updateError);
+    return;
+  }
+
+  // 3. إعادة جلب الرصيد الصحيح من القاعدة
+  await loadBalance(userId);
+}
 // ================= خروج =================
 async function logout(){
   await supabase.auth.signOut();
