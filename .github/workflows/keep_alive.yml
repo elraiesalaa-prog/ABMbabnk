@@ -1,0 +1,17 @@
+name: Keep Bank Supabase Active
+
+on:
+  schedule:
+    # يعمل تلقائيًا كل 3 أيام
+    - cron: '0 12 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Keep-Alive Request to Bank Supabase
+        run: |
+          curl -i -X GET "https://rahqhfowbphaipiadlkh.supabase.co/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
