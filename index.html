@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -16,7 +15,7 @@
       display:flex;
       justify-content:center;
       align-items:center;
-      height:100vh;
+      min-height:100vh;
       margin:0;
       direction: rtl;
     }
@@ -30,7 +29,7 @@
       animation: fadeIn 0.4s ease-in-out;
     }
 
-    h2{
+    h2, h3{
       text-align:center;
       margin-bottom:20px;
       color:#243b55;
@@ -38,7 +37,7 @@
 
     input{
       width:100%;
-      padding:14px 14px 14px 40px;
+      padding:14px;
       margin:10px 0;
       border-radius:12px;
       border:1px solid #ddd;
@@ -145,28 +144,51 @@
       from{opacity:0; transform:translateY(10px);}
       to{opacity:1; transform:translateY(0);}
     }
-   
+    
+  /* ================= حاوية الأزرار المربعة ================= */
+  .grid-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+  }
+
+  /* جعل الأزرار مربعة الشكل */
   .btn-custom {
-    padding: 10px 20px;
-    margin: 5px;
+    width: 80px;
+    height: 80px;
+    padding: 8px;
+    margin: 0;
     border: none;
-    border-radius: 8px; /* زوايا دائرية */
+    border-radius: 14px; /* زوايا منحنية بسيطة للمربع */
     color: white;
     font-weight: bold;
+    font-size: 12px;
     cursor: pointer;
     transition: transform 0.2s, opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .btn-custom span.icon {
+    font-size: 22px;
   }
 
   .btn-custom:hover {
-    transform: scale(1.05); /* تكبير بسيط عند التمرير */
+    transform: scale(1.05);
     opacity: 0.9;
   }
 
-  /* ألوان متدرجة جميلة */
-  .btn-deposit { background: linear-gradient(to right, #007bff, #00d2ff); } /* أزرق */
-  .btn-statement { background: linear-gradient(to right, #28a745, #8bc34a); } /* أخضر */
-  .btn-pdf { background: linear-gradient(to right, #6f42c1, #a88be0); } /* بنفسجي */
-  .btn-logout { background: linear-gradient(to right, #dc3545, #ff6b6b); } /* أحمر */
+  /* ألوان الأزرار المتدرجة */
+  .btn-deposit { background: linear-gradient(135deg, #007bff, #00d2ff); }
+  .btn-statement { background: linear-gradient(135deg, #28a745, #8bc34a); }
+  .btn-pdf { background: linear-gradient(135deg, #6f42c1, #a88be0); }
+  .btn-logout { background: linear-gradient(135deg, #dc3545, #ff6b6b); }
 </style>
   
 </head>
@@ -212,93 +234,91 @@
  <h2>حسابي البنكي</h2>
 
 <div id="accountInfo" class="account-box">
-
-<div class="avatar-circle">👤</div>
-
-<div>
-
-<div id="welcomeName"></div>
-<div id="accountNameDisplay"></div>
-
-</div>
-
+  <div class="avatar-circle">👤</div>
+  <div>
+    <div id="welcomeName"></div>
+    <div id="accountNameDisplay"></div>
+  </div>
 </div>
 
 <div class="balance">
-الرصيد: <span id="balance">0</span>
+  الرصيد: <span id="balance">0</span>
 </div>
-  <!-- الشاشة الرئيسية -->
 
+<!-- الشاشة الرئيسية -->
 <div id="mainScreen">
-
-<h3>العمليات</h3>
-
-<button class="btn-custom btn-deposit" onclick="openDeposit()">العمليات</button>
-<button class="btn-custom btn-statement" onclick="showStatement()">كشف الحساب</button>
-
+  <h3>العمليات</h3>
+  <div class="grid-container">
+    <button class="btn-custom btn-deposit" onclick="openDeposit()">
+      <span class="icon">💳</span>
+      <span>العمليات</span>
+    </button>
+    <button class="btn-custom btn-statement" onclick="showStatement()">
+      <span class="icon">📄</span>
+      <span>كشف الحساب</span>
+    </button>
+  </div>
 </div>
-
 
 <!-- شاشة الإيداع -->
-
 <div id="depositScreen" style="display:none">
-
-<h3> العمليات</h3>
-
-<input type="number" id="amount" placeholder="المبلغ">
+  <h3>العمليات</h3>
+  <input type="number" id="amount" placeholder="المبلغ">
   <input type="text" id="description" placeholder="بيان العملية">
-<button id="depositBtn" onclick="deposit()">إيداع</button>
-<button id="withdrawBtn" onclick="withdraw()">سحب</button>
-<button onclick="closeDeposit()">رجوع</button>
-
+  <button id="depositBtn" onclick="deposit()">إيداع</button>
+  <button id="withdrawBtn" onclick="withdraw()">سحب</button>
+  <button onclick="closeDeposit()">رجوع</button>
 </div>
 
 <!-- كشف الحساب -->
-
 <div id="statementScreen" style="display:none">
-<h3>كشف الحساب</h3>
+  <h3>كشف الحساب</h3>
 
-<input type="date" id="fromDate">
-<input type="date" id="toDate">
+  <input type="date" id="fromDate">
+  <input type="date" id="toDate">
 
-<button onclick="filterTransactions()">بحث</button>
+  <button onclick="filterTransactions()">بحث</button>
 
-<!-- 🔥 شريط التمرير -->
-<div style="max-height:300px; overflow-y:auto; margin-top:10px; border:1px solid #ddd; border-radius:10px;">
-  
-<table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-    <thead style="position:sticky; top:0; background:#f1f1f1; z-index:1;">
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>الوصف</th>
-        <th>تعديل</th>
-        <th>حذف</th>
-      </tr>
-    </thead>
-    <tbody id="transactionsBody"></tbody>
-</table>
+  <div style="max-height:300px; overflow-y:auto; margin-top:10px; border:1px solid #ddd; border-radius:10px;">
+    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+      <thead style="position:sticky; top:0; background:#f1f1f1; z-index:1;">
+        <tr>
+          <th>التاريخ</th>
+          <th>النوع</th>
+          <th>المبلغ</th>
+          <th>الوصف</th>
+          <th>تعديل</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody id="transactionsBody"></tbody>
+    </table>
+  </div>
 
+  <button onclick="closeStatement()">رجوع</button>
 </div>
 
-<button onclick="closeStatement()">رجوع</button>
-
-</div>
-
-
+  <!-- أزرار الإجراءات السفلية (مربعة) -->
+  <div class="grid-container" style="margin-top:20px;">
+    <button class="btn-custom btn-pdf" onclick="downloadPDF()">
+      <span class="icon">📥</span>
+      <span>تحميل PDF</span>
+    </button> 
+    <button class="btn-custom btn-logout" onclick="logout()">
+      <span class="icon">🚪</span>
+      <span>خروج</span>
+    </button>
+  </div>
 
   <!-- منطقة الطباعة -->
   <div id="printArea" style="display:none; direction:rtl; font-family:Arial; width:190mm; padding:15mm; box-sizing:border-box;">
     <div style="text-align:center; margin-bottom:10mm;">
       <h2 style="margin:0;">🏦 بنك ABM</h2>
       <div style="text-align: right; font-weight: bold;">
-  <p id="pdfFullName" style="color: #007bff;"></p>
-  
-  <p id="pdfAccountName" style="color: #28a745;"></p>
-  
-  <p id="pdfBalance" style="color: #0056b3;"></p>
-</div>
+        <p id="pdfFullName" style="color: #007bff;"></p>
+        <p id="pdfAccountName" style="color: #28a745;"></p>
+        <p id="pdfBalance" style="color: #0056b3;"></p>
+      </div>
       <hr>
     </div>
     <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
@@ -312,60 +332,18 @@
       </thead>
       <tbody id="pdfTransactionsBody"></tbody>
     </table>
-     <br>
-     <br>
-   <div style="text-align: left; color: #0056b3; font-family: sans-serif; padding-left: 10px;">
-    <h2 style="margin: 0; font-weight: 200; display: inline-block;">علاء الدين ادم احمد</h2>
-    <br>
-    <h2 style="margin: 0; font-weight: 200; font-size: 1.2em; display: inline-block;">المدير العام</h2>
-</div>
+     <br><br>
+    <div style="text-align: left; color: #0056b3; font-family: sans-serif; padding-left: 10px;">
+      <h2 style="margin: 0; font-weight: 200; display: inline-block;">علاء الدين ادم احمد</h2>
+      <br>
+      <h2 style="margin: 0; font-weight: 200; font-size: 1.2em; display: inline-block;">المدير العام</h2>
+    </div>
   </div>
 
-  <button class="btn-custom btn-pdf" onclick="downloadPDF()">تحميل كشف الحساب PDF</button> 
-<button class="btn-custom btn-logout" onclick="logout()">تسجيل خروج</button>
-
 </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-   
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="bank.js"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
