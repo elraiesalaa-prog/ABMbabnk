@@ -189,6 +189,7 @@
 
   /* ألوان الأزرار المتدرجة */
   .btn-deposit { background: linear-gradient(135deg, #007bff, #00d2ff); }
+  .btn-withdraw-icon { background: linear-gradient(135deg, #e74c3c, #c0392b); }
   .btn-statement { background: linear-gradient(135deg, #28a745, #8bc34a); }
   .btn-electricity { background: linear-gradient(135deg, #f39c12, #f1c40f); }
   .btn-transfer { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
@@ -240,7 +241,7 @@
 <!-- ================= البنك ================= -->
 <div class="card" id="bankCard" style="display:none">
 
- <h2>حسابي البنكي</h2>
+ <h2>محفظة  ABM</h2>
 
 <div id="accountInfo" class="account-box">
   <div class="avatar-circle">👤</div>
@@ -261,6 +262,11 @@
     <button class="btn-custom btn-deposit" onclick="openDeposit()">
       <span class="icon">💳</span>
       <span>العمليات</span>
+    </button>
+
+    <button class="btn-custom btn-withdraw-icon" onclick="comingSoon('خدمة السحب')">
+      <span class="icon">💸</span>
+      <span>سحب</span>
     </button>
     
     <button class="btn-custom btn-statement" onclick="showStatement()">
