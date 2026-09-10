@@ -167,7 +167,7 @@
     font-weight: bold;
     font-size: 11px;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -183,20 +183,16 @@
   }
 
   .btn-custom:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
   }
 
-  /* ألوان الأزرار المتدرجة */
-  .btn-deposit { background: linear-gradient(135deg, #007bff, #00d2ff); }
-  .btn-withdraw-icon { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-  .btn-statement { background: linear-gradient(135deg, #28a745, #8bc34a); }
-  .btn-electricity { background: linear-gradient(135deg, #f39c12, #f1c40f); }
-  .btn-transfer { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-  .btn-gov { background: linear-gradient(135deg, #34495e, #2c3e50); }
-  .btn-ecommerce { background: linear-gradient(135deg, #e67e22, #d35400); }
-  .btn-store { background: linear-gradient(135deg, #16a085, #1abc9c); }
-  .btn-other { background: linear-gradient(135deg, #7f8c8d, #95a5a6); }
+  /* اللون الموحد المعتمد لجميع الخدمات البنكية (أزرق داكن كلاسيكي) */
+  .btn-service { 
+    background: linear-gradient(135deg, #1e3c72, #2a5298); 
+  }
+
+  /* ألوان الإجراءات السفلية المصاحبة */
   .btn-pdf { background: linear-gradient(135deg, #6f42c1, #a88be0); }
   .btn-logout { background: linear-gradient(135deg, #dc3545, #ff6b6b); }
 </style>
@@ -241,7 +237,7 @@
 <!-- ================= البنك ================= -->
 <div class="card" id="bankCard" style="display:none">
 
- <h2>محفظة  ABM</h2>
+ <h2>حسابي البنكي</h2>
 
 <div id="accountInfo" class="account-box">
   <div class="avatar-circle">👤</div>
@@ -259,47 +255,47 @@
 <div id="mainScreen">
   <h3>الخدمات والعمليات</h3>
   <div class="grid-container">
-    <button class="btn-custom btn-deposit" onclick="openDeposit()">
+    <button class="btn-custom btn-service" onclick="openDeposit()">
       <span class="icon">💳</span>
       <span>العمليات</span>
     </button>
 
-    <button class="btn-custom btn-withdraw-icon" onclick="comingSoon('خدمة التحويل')">
+    <button class="btn-custom btn-service" onclick="comingSoon('خدمة السحب')">
       <span class="icon">💸</span>
-      <span>تحويل</span>
+      <span>سحب</span>
     </button>
     
-    <button class="btn-custom btn-statement" onclick="showStatement()">
+    <button class="btn-custom btn-service" onclick="showStatement()">
       <span class="icon">📄</span>
       <span>كشف الحساب</span>
     </button>
 
-    <button class="btn-custom btn-electricity" onclick="comingSoon('شراء الكهرباء')">
+    <button class="btn-custom btn-service" onclick="comingSoon('شراء الكهرباء')">
       <span class="icon">⚡</span>
       <span>الكهرباء</span>
     </button>
 
-    <button class="btn-custom btn-transfer" onclick="comingSoon('تحويل الرصيد')">
+    <button class="btn-custom btn-service" onclick="comingSoon('تحويل الرصيد')">
       <span class="icon">📲</span>
       <span>تحويل الرصيد</span>
     </button>
 
-    <button class="btn-custom btn-gov" onclick="comingSoon('الخدمات الحكومية')">
+    <button class="btn-custom btn-service" onclick="comingSoon('الخدمات الحكومية')">
       <span class="icon">🏛️</span>
       <span>خدمات حكومية</span>
     </button>
 
-    <button class="btn-custom btn-ecommerce" onclick="comingSoon('التجارة الإلكترونية')">
+    <button class="btn-custom btn-service" onclick="comingSoon('التجارة الإلكترونية')">
       <span class="icon">🛒</span>
       <span>التجارة الإلكترونية</span>
     </button>
 
-    <button class="btn-custom btn-store" onclick="openKunozStore()">
+    <button class="btn-custom btn-service" onclick="openKunozStore()">
       <span class="icon">💎</span>
       <span>متجر كنوز الغرة</span>
     </button>
 
-    <button class="btn-custom btn-other" onclick="comingSoon('خدمات أخرى')">
+    <button class="btn-custom btn-service" onclick="comingSoon('خدمات أخرى')">
       <span class="icon">✨</span>
       <span>خدمات أخرى</span>
     </button>
@@ -344,7 +340,7 @@
   <button onclick="closeStatement()">رجوع</button>
 </div>
 
-  <!-- أزرار الإجراءات السفلية (مربعة) -->
+  <!-- أزرار الإجراءات السفلية -->
   <div style="display: flex; gap: 12px; justify-content: center; margin-top:20px;">
     <button class="btn-custom btn-pdf" style="width: 48%;" onclick="downloadPDF()">
       <span class="icon">📥</span>
