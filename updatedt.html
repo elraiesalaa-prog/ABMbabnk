@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>تعديل بيانات الحساب</title>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
             font-family: Arial, sans-serif;
         }
 
         body {
-            background: #f4f6f9;
+            margin: 0;
+            background: #f3f4f6;
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .container {
@@ -28,16 +32,16 @@
         }
 
         .card {
-            background: #fff;
+            background: white;
             padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
         }
 
         h2 {
             text-align: center;
-            color: #222;
             margin-bottom: 25px;
+            color: #111827;
         }
 
         .form-group {
@@ -47,18 +51,17 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #444;
             font-weight: bold;
+            color: #374151;
         }
 
         input {
             width: 100%;
-            padding: 13px 15px;
-            border: 1px solid #ddd;
+            padding: 13px;
+            border: 1px solid #d1d5db;
             border-radius: 10px;
             font-size: 16px;
             outline: none;
-            transition: 0.2s;
         }
 
         input:focus {
@@ -66,51 +69,40 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        input[readonly] {
-            background: #f1f1f1;
-            color: #777;
-            cursor: not-allowed;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
+        input:disabled {
+            background: #f3f4f6;
+            color: #6b7280;
         }
 
         button {
-            flex: 1;
-            padding: 13px;
+            width: 100%;
             border: none;
+            padding: 14px;
             border-radius: 10px;
             font-size: 16px;
             cursor: pointer;
         }
 
-        .save {
+        .save-btn {
             background: #2563eb;
             color: white;
         }
 
-        .save:hover {
+        .save-btn:hover {
             background: #1d4ed8;
         }
 
-        .cancel {
-            background: #e5e7eb;
-            color: #333;
-        }
-
-        .cancel:hover {
-            background: #d1d5db;
+        .save-btn:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
         }
 
         .message {
-            display: none;
             margin-top: 15px;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
+            display: none;
         }
 
         .success {
@@ -124,124 +116,375 @@
             background: #fee2e2;
             color: #991b1b;
         }
+
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
 <body>
 
 <div class="container">
+
     <div class="card">
 
         <h2>تعديل بيانات الحساب</h2>
 
-        <form id="accountForm">
+        <div id="loading" class="loading">
+            جاري جلب بيانات الحساب...
+        </div>
 
-            <!-- ID للعرض فقط -->
+        <form id="accountForm" style="display:none;">
+
+            <!-- ID -->
             <div class="form-group">
-                <label for="id">رقم الحساب</label>
+                <label>رقم الحساب</label>
+
                 <input
                     type="text"
                     id="id"
-                    value="1"
-                    readonly
+                    disabled
                 >
             </div>
 
-            <!-- الاسم الكامل -->
+            <!-- User ID -->
             <div class="form-group">
-                <label for="full_name">الاسم الكامل</label>
+                <label>معرف المستخدم</label>
+
+                <input
+                    type="text"
+                    id="user_id"
+                    disabled
+                >
+            </div>
+
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="full_name">
+                    الاسم الكامل
+                </label>
+
                 <input
                     type="text"
                     id="full_name"
-                    name="full_name"
-                    value="محمد أحمد"
-                    placeholder="أدخل الاسم الكامل"
                     required
                 >
             </div>
 
-            <!-- اسم الحساب -->
+            <!-- Account Name -->
             <div class="form-group">
-                <label for="account_name">اسم الحساب</label>
+                <label for="account_name">
+                    اسم الحساب
+                </label>
+
                 <input
                     type="text"
                     id="account_name"
-                    name="account_name"
-                    value="حساب محمد"
-                    placeholder="أدخل اسم الحساب"
                     required
                 >
             </div>
 
-            <!-- الرصيد -->
+            <!-- Balance -->
             <div class="form-group">
-                <label for="balance">الرصيد</label>
+                <label for="balance">
+                    الرصيد
+                </label>
+
                 <input
                     type="number"
                     id="balance"
-                    name="balance"
-                    value="1000"
                     step="0.01"
-                    min="0"
-                    placeholder="أدخل الرصيد"
                     required
                 >
             </div>
 
-            <div class="buttons">
-                <button type="submit" class="save">
-                    حفظ التعديلات
-                </button>
-
-                <button type="button" class="cancel" onclick="cancelEdit()">
-                    إلغاء
-                </button>
-            </div>
-
-            <div id="message" class="message"></div>
+            <button
+                type="submit"
+                class="save-btn"
+                id="saveBtn"
+            >
+                حفظ التعديلات
+            </button>
 
         </form>
+
+        <div id="message" class="message"></div>
+
     </div>
+
 </div>
 
+
 <script>
-    const form = document.getElementById("accountForm");
-    const message = document.getElementById("message");
 
-    form.addEventListener("submit", function(event) {
-        event.preventDefault();
+    // ==========================================
+    // بيانات مشروع Supabase
+    // ==========================================
 
-        const fullName = document.getElementById("full_name").value.trim();
-        const accountName = document.getElementById("account_name").value.trim();
-        const balance = document.getElementById("balance").value;
+    const SUPABASE_URL =
+        "https://rahqhfowbphaipiadlkh.supabase.co";
 
-        if (!fullName || !accountName || !balance) {
-            showMessage("يرجى إدخال جميع البيانات المطلوبة", "error");
-            return;
+    const SUPABASE_KEY =
+        "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9";
+
+
+    // إنشاء اتصال Supabase
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    // ==========================================
+    // المتغير الذي يحتوي ID السجل
+    // ==========================================
+
+    let accountId = null;
+
+
+    // ==========================================
+    // جلب بيانات الحساب
+    // ==========================================
+
+    async function loadAccount() {
+
+        try {
+
+            /*
+             * هنا نحدد الحساب المطلوب.
+             *
+             * مثال:
+             * page.html?id=1
+             *
+             * سيجلب الحساب الذي id = 1
+             */
+
+            const params =
+                new URLSearchParams(window.location.search);
+
+            accountId = params.get("id");
+
+
+            if (!accountId) {
+
+                showMessage(
+                    "لم يتم تحديد رقم الحساب. افتح الصفحة بهذا الشكل: ?id=1",
+                    "error"
+                );
+
+                document.getElementById("loading").style.display = "none";
+
+                return;
+            }
+
+
+            // جلب السجل من جدول accounts
+            const { data, error } =
+                await supabaseClient
+                    .from("accounts")
+                    .select(`
+                        id,
+                        user_id,
+                        balance,
+                        created_at,
+                        full_name,
+                        account_name
+                    `)
+                    .eq("id", accountId)
+                    .single();
+
+
+            if (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "حدث خطأ أثناء جلب البيانات: " + error.message,
+                    "error"
+                );
+
+                document.getElementById("loading").style.display = "none";
+
+                return;
+            }
+
+
+            // ==========================================
+            // تعبئة النموذج بالبيانات الحقيقية
+            // ==========================================
+
+            document.getElementById("id").value =
+                data.id ?? "";
+
+            document.getElementById("user_id").value =
+                data.user_id ?? "";
+
+            document.getElementById("full_name").value =
+                data.full_name ?? "";
+
+            document.getElementById("account_name").value =
+                data.account_name ?? "";
+
+            document.getElementById("balance").value =
+                data.balance ?? "";
+
+
+            // إخفاء التحميل
+            document.getElementById("loading").style.display =
+                "none";
+
+
+            // إظهار النموذج
+            document.getElementById("accountForm").style.display =
+                "block";
+
         }
 
-        // هنا ترسل البيانات إلى PHP / Laravel / Node.js / API
-        const data = {
-            id: document.getElementById("id").value,
-            full_name: fullName,
-            account_name: accountName,
-            balance: balance
-        };
+        catch (error) {
 
-        console.log(data);
+            console.error(error);
 
-        showMessage("تم حفظ التعديلات بنجاح", "success");
-    });
+            showMessage(
+                "حدث خطأ غير متوقع: " + error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // حفظ التعديلات
+    // ==========================================
+
+    document
+        .getElementById("accountForm")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+
+            const saveBtn =
+                document.getElementById("saveBtn");
+
+
+            saveBtn.disabled = true;
+
+            saveBtn.textContent =
+                "جاري الحفظ...";
+
+
+            // البيانات الجديدة
+            const updatedData = {
+
+                full_name:
+                    document.getElementById("full_name").value.trim(),
+
+                account_name:
+                    document.getElementById("account_name").value.trim(),
+
+                balance:
+                    Number(
+                        document.getElementById("balance").value
+                    )
+
+            };
+
+
+            try {
+
+                /*
+                 * UPDATE accounts
+                 * WHERE id = accountId
+                 */
+
+                const { data, error } =
+                    await supabaseClient
+                        .from("accounts")
+                        .update(updatedData)
+                        .eq("id", accountId)
+                        .select();
+
+
+                if (error) {
+
+                    console.error(error);
+
+                    showMessage(
+                        "فشل حفظ التعديلات: " + error.message,
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                console.log(
+                    "تم تحديث البيانات:",
+                    data
+                );
+
+
+                showMessage(
+                    "تم تحديث بيانات الحساب بنجاح ✅",
+                    "success"
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "حدث خطأ: " + error.message,
+                    "error"
+                );
+
+            }
+
+            finally {
+
+                saveBtn.disabled = false;
+
+                saveBtn.textContent =
+                    "حفظ التعديلات";
+
+            }
+
+        });
+
+
+    // ==========================================
+    // الرسائل
+    // ==========================================
 
     function showMessage(text, type) {
+
+        const message =
+            document.getElementById("message");
+
         message.textContent = text;
-        message.className = "message " + type;
+
+        message.className =
+            "message " + type;
+
     }
 
-    function cancelEdit() {
-        window.history.back();
-    }
+
+    // ==========================================
+    // تشغيل جلب البيانات
+    // ==========================================
+
+    loadAccount();
+
 </script>
 
 </body>
+
 </html>
