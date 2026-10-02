@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل بيانات الحساب</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input[readonly] {
+            background: #f1f1f1;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .save {
+            background: #2563eb;
+            color: white;
+        }
+
+        .save:hover {
+            background: #1d4ed8;
+        }
+
+        .cancel {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .cancel:hover {
+            background: #d1d5db;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <h2>تعديل بيانات الحساب</h2>
+
+        <form id="accountForm">
+
+            <!-- ID للعرض فقط -->
+            <div class="form-group">
+                <label for="id">رقم الحساب</label>
+                <input
+                    type="text"
+                    id="id"
+                    value="1"
+                    readonly
+                >
+            </div>
+
+            <!-- الاسم الكامل -->
+            <div class="form-group">
+                <label for="full_name">الاسم الكامل</label>
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    value="محمد أحمد"
+                    placeholder="أدخل الاسم الكامل"
+                    required
+                >
+            </div>
+
+            <!-- اسم الحساب -->
+            <div class="form-group">
+                <label for="account_name">اسم الحساب</label>
+                <input
+                    type="text"
+                    id="account_name"
+                    name="account_name"
+                    value="حساب محمد"
+                    placeholder="أدخل اسم الحساب"
+                    required
+                >
+            </div>
+
+            <!-- الرصيد -->
+            <div class="form-group">
+                <label for="balance">الرصيد</label>
+                <input
+                    type="number"
+                    id="balance"
+                    name="balance"
+                    value="1000"
+                    step="0.01"
+                    min="0"
+                    placeholder="أدخل الرصيد"
+                    required
+                >
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="save">
+                    حفظ التعديلات
+                </button>
+
+                <button type="button" class="cancel" onclick="cancelEdit()">
+                    إلغاء
+                </button>
+            </div>
+
+            <div id="message" class="message"></div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById("accountForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const fullName = document.getElementById("full_name").value.trim();
+        const accountName = document.getElementById("account_name").value.trim();
+        const balance = document.getElementById("balance").value;
+
+        if (!fullName || !accountName || !balance) {
+            showMessage("يرجى إدخال جميع البيانات المطلوبة", "error");
+            return;
+        }
+
+        // هنا ترسل البيانات إلى PHP / Laravel / Node.js / API
+        const data = {
+            id: document.getElementById("id").value,
+            full_name: fullName,
+            account_name: accountName,
+            balance: balance
+        };
+
+        console.log(data);
+
+        showMessage("تم حفظ التعديلات بنجاح", "success");
+    });
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message " + type;
+    }
+
+    function cancelEdit() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>
