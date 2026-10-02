@@ -2,16 +2,21 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>إدارة المستخدمين</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -39,15 +44,12 @@
 
         .header h1 {
             margin: 0 0 8px;
+            color: #111827;
         }
 
         .header p {
             margin: 0;
             color: #6b7280;
-        }
-
-        button {
-            cursor: pointer;
         }
 
         .refresh-btn {
@@ -57,6 +59,11 @@
             border-radius: 9px;
             background: #111827;
             color: white;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: #374151;
         }
 
         .table-container {
@@ -84,7 +91,7 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        tr:hover {
+        tbody tr:hover {
             background: #f9fafb;
         }
 
@@ -99,6 +106,11 @@
             border-radius: 8px;
             background: #2563eb;
             color: white;
+            cursor: pointer;
+        }
+
+        .edit-btn:hover {
+            background: #1d4ed8;
         }
 
         .loading,
@@ -114,18 +126,28 @@
             border-radius: 10px;
             background: #fee2e2;
             color: #991b1b;
+            line-height: 1.8;
         }
 
-        /* Modal */
+
+        /* ==============================
+           Modal
+        ============================== */
 
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,.55);
+
+            background:
+                rgba(0,0,0,.55);
+
             display: none;
+
             align-items: center;
             justify-content: center;
+
             padding: 20px;
+
             z-index: 9999;
         }
 
@@ -136,183 +158,332 @@
         .modal-content {
             width: 100%;
             max-width: 520px;
+
             max-height: 90vh;
             overflow-y: auto;
+
             background: white;
+
             border-radius: 18px;
+
             padding: 28px;
+
+            box-shadow:
+                0 20px 60px
+                rgba(0,0,0,.25);
         }
 
         .modal-header {
             display: flex;
-            justify-content: space-between;
+
             align-items: center;
+            justify-content: space-between;
+
             margin-bottom: 25px;
         }
 
         .modal-header h2 {
             margin: 0;
+            color: #111827;
         }
 
         .close-btn {
             border: none;
             background: transparent;
-            font-size: 30px;
+
             color: #6b7280;
+
+            font-size: 30px;
+
+            cursor: pointer;
         }
+
+        .close-btn:hover {
+            color: #111827;
+        }
+
+
+        /* ==============================
+           Form
+        ============================== */
 
         .form-group {
             margin-bottom: 18px;
         }
 
-        label {
+        .form-group label {
             display: block;
+
             margin-bottom: 8px;
+
             font-weight: bold;
+
+            color: #374151;
         }
 
-        input {
+        .form-group input {
             width: 100%;
-            padding: 13px;
-            border: 1px solid #d1d5db;
+
+            padding: 13px 14px;
+
+            border:
+                1px solid #d1d5db;
+
             border-radius: 9px;
+
             font-size: 15px;
+
             outline: none;
+
             direction: ltr;
             text-align: left;
         }
 
-        input:focus {
+        .form-group input:focus {
             border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,.10);
         }
 
         .hint {
             display: block;
+
             margin-top: 6px;
+
             font-size: 12px;
+
             color: #6b7280;
+
             direction: rtl;
             text-align: right;
         }
 
+
+        /* ==============================
+           Save
+        ============================== */
+
         .save-btn {
             width: 100%;
+
             padding: 14px;
+
             border: none;
+
             border-radius: 10px;
+
             background: #16a34a;
+
             color: white;
+
             font-size: 16px;
+
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #15803d;
         }
 
         .save-btn:disabled {
             background: #9ca3af;
+            cursor: not-allowed;
         }
+
+
+        /* ==============================
+           Messages
+        ============================== */
 
         #message {
             display: none;
+
             margin-top: 15px;
+
             padding: 13px;
+
             border-radius: 9px;
+
             text-align: center;
+
+            line-height: 1.7;
         }
 
         #message.success {
             display: block;
+
             background: #dcfce7;
             color: #166534;
         }
 
         #message.error {
             display: block;
+
             background: #fee2e2;
             color: #991b1b;
         }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                margin: 15px auto;
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
+
+
+    <!-- ==============================
+         Header
+    =============================== -->
 
     <div class="header">
 
-        <h1>إدارة المستخدمين</h1>
+        <h1>
+            إدارة المستخدمين
+        </h1>
 
         <p>
-            بيانات المستخدمين الموجودة في جدول accounts
+            بيانات المستخدمين من جدول accounts
         </p>
 
         <button
             class="refresh-btn"
-            onclick="loadAccounts()">
+            onclick="loadAccounts()"
+        >
             تحديث البيانات
         </button>
 
     </div>
 
 
+    <!-- ==============================
+         Table
+    =============================== -->
+
     <div class="table-container">
 
-        <div id="loading" class="loading">
-            جاري جلب البيانات...
+
+        <div
+            id="loading"
+            class="loading"
+        >
+            جاري جلب بيانات المستخدمين...
         </div>
+
 
         <table
             id="accountsTable"
-            style="display:none;">
+            style="display:none;"
+        >
 
             <thead>
+
                 <tr>
+
                     <th>ID</th>
+
                     <th>User ID</th>
+
                     <th>الاسم الكامل</th>
+
                     <th>اسم الحساب</th>
+
                     <th>الرصيد</th>
+
                     <th>تاريخ الإنشاء</th>
+
                     <th>الإجراء</th>
+
                 </tr>
+
             </thead>
 
-            <tbody id="accountsBody"></tbody>
+
+            <tbody
+                id="accountsBody"
+            ></tbody>
+
 
         </table>
+
 
         <div
             id="empty"
             class="empty"
-            style="display:none;">
-            لا توجد بيانات.
+            style="display:none;"
+        >
+            لا توجد بيانات في جدول accounts.
         </div>
 
-        <div id="errorBox"></div>
+
+        <div
+            id="errorBox"
+        ></div>
+
 
     </div>
+
 
 </div>
 
 
-<!-- نافذة التعديل -->
 
-<div id="editModal" class="modal">
+<!-- ==============================
+     Edit Modal
+================================ -->
+
+<div
+    id="editModal"
+    class="modal"
+>
+
 
     <div class="modal-content">
 
+
         <div class="modal-header">
 
-            <h2>تعديل بيانات الحساب</h2>
+            <h2>
+                تعديل بيانات الحساب
+            </h2>
+
 
             <button
                 type="button"
                 class="close-btn"
-                onclick="closeModal()">
+                onclick="closeModal()"
+            >
                 ×
             </button>
 
         </div>
 
 
-        <form id="editForm">
+        <form
+            id="editForm"
+        >
 
 
             <!-- ID -->
@@ -326,17 +497,17 @@
                 <input
                     type="text"
                     id="editId"
-                    required>
+                    required
+                >
 
                 <span class="hint">
-                    يجب أن يكون UUID مثل:
-                    550e8400-e29b-41d4-a716-446655440000
+                    يجب إدخال القيمة بنفس نوع ID الموجود في قاعدة البيانات.
                 </span>
 
             </div>
 
 
-            <!-- User ID -->
+            <!-- USER ID -->
 
             <div class="form-group">
 
@@ -347,17 +518,17 @@
                 <input
                     type="text"
                     id="editUserId"
-                    required>
+                    required
+                >
 
                 <span class="hint">
-                    يجب أن يكون UUID إذا كان العمود
-                    user_id من نوع UUID.
+                    يتم قبول User ID كما هو معرف في قاعدة البيانات.
                 </span>
 
             </div>
 
 
-            <!-- Full Name -->
+            <!-- FULL NAME -->
 
             <div class="form-group">
 
@@ -368,12 +539,13 @@
                 <input
                     type="text"
                     id="editFullName"
-                    required>
+                    required
+                >
 
             </div>
 
 
-            <!-- Account Name -->
+            <!-- ACCOUNT NAME -->
 
             <div class="form-group">
 
@@ -384,12 +556,13 @@
                 <input
                     type="text"
                     id="editAccountName"
-                    required>
+                    required
+                >
 
             </div>
 
 
-            <!-- Balance -->
+            <!-- BALANCE -->
 
             <div class="form-group">
 
@@ -401,7 +574,8 @@
                     type="number"
                     id="editBalance"
                     step="0.01"
-                    required>
+                    required
+                >
 
             </div>
 
@@ -409,33 +583,41 @@
             <button
                 type="submit"
                 class="save-btn"
-                id="saveBtn">
-
+                id="saveBtn"
+            >
                 حفظ التعديلات
-
             </button>
 
 
-            <div id="message"></div>
+            <div
+                id="message"
+            ></div>
+
 
         </form>
+
 
     </div>
 
 </div>
 
 
+
 <script>
 
-/* ============================================
+
+/* ==================================================
    Supabase
-============================================ */
+================================================== */
+
 
 const SUPABASE_URL =
     "https://rahqhfowbphaipiadlkh.supabase.co";
 
+
 const SUPABASE_KEY =
     "sb_publishable_WAA4kMqzeM2_S6Mxi9t9kg_hbLIjbh9";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -444,61 +626,76 @@ const supabaseClient =
     );
 
 
-/* ============================================
+
+/* ==================================================
    ID القديم
-============================================ */
+================================================== */
+
 
 let currentOldId = null;
 
 
-/* ============================================
-   التحقق من UUID
-============================================ */
 
-function isValidUUID(value) {
+/* ==================================================
+   جلب البيانات من accounts
+================================================== */
 
-    const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-    return uuidRegex.test(value);
-
-}
-
-
-/* ============================================
-   جلب الحسابات
-============================================ */
 
 async function loadAccounts() {
 
+
     const loading =
-        document.getElementById("loading");
+        document.getElementById(
+            "loading"
+        );
+
 
     const table =
-        document.getElementById("accountsTable");
+        document.getElementById(
+            "accountsTable"
+        );
+
 
     const body =
-        document.getElementById("accountsBody");
+        document.getElementById(
+            "accountsBody"
+        );
+
 
     const empty =
-        document.getElementById("empty");
+        document.getElementById(
+            "empty"
+        );
+
 
     const errorBox =
-        document.getElementById("errorBox");
+        document.getElementById(
+            "errorBox"
+        );
 
 
-    loading.style.display = "block";
+    loading.style.display =
+        "block";
 
-    table.style.display = "none";
 
-    empty.style.display = "none";
+    table.style.display =
+        "none";
 
-    body.innerHTML = "";
 
-    errorBox.innerHTML = "";
+    empty.style.display =
+        "none";
+
+
+    body.innerHTML =
+        "";
+
+
+    errorBox.innerHTML =
+        "";
 
 
     try {
+
 
         const {
             data,
@@ -525,95 +722,155 @@ async function loadAccounts() {
 
 
         if (error) {
+
             throw error;
+
         }
 
 
-        loading.style.display = "none";
+        console.log(
+            "بيانات accounts:",
+            data
+        );
 
 
-        if (!data || data.length === 0) {
+        loading.style.display =
+            "none";
 
-            empty.style.display = "block";
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            empty.style.display =
+                "block";
 
             return;
+
         }
 
 
-        data.forEach(account => {
-
-            const row =
-                document.createElement("tr");
+        data.forEach(
+            account => {
 
 
-            const createdAt =
-                account.created_at
-                    ? new Date(
-                        account.created_at
-                    ).toLocaleString("ar")
-                    : "-";
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
 
 
-            row.innerHTML = `
-
-                <td>
-                    ${escapeHtml(account.id)}
-                </td>
-
-                <td>
-                    ${escapeHtml(account.user_id)}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        account.full_name || "-"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        account.account_name || "-"
-                    )}
-                </td>
-
-                <td class="balance">
-                    ${escapeHtml(
-                        account.balance ?? "0"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(createdAt)}
-                </td>
-
-                <td>
-                    <button
-                        class="edit-btn"
-                        type="button"
-                        onclick='openEditModal(
-                            ${JSON.stringify(account)}
-                        )'>
-
-                        تعديل
-
-                    </button>
-                </td>
-
-            `;
+                const createdAt =
+                    account.created_at
+                        ? new Date(
+                            account.created_at
+                        ).toLocaleString(
+                            "ar"
+                        )
+                        : "-";
 
 
-            body.appendChild(row);
+                /*
+                    نضع بيانات الحساب
+                    في dataset بدل وضع JSON
+                    داخل onclick.
+                */
 
-        });
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(
+                            account.id
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            account.user_id
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            account.full_name || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            account.account_name || "-"
+                        )}
+                    </td>
+
+                    <td class="balance">
+                        ${escapeHtml(
+                            account.balance ?? "0"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            createdAt
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="edit-btn"
+                        >
+                            تعديل
+                        </button>
+
+                    </td>
+
+                `;
 
 
-        table.style.display = "table";
+                /*
+                    زر التعديل
+                */
+
+                const editButton =
+                    row.querySelector(
+                        ".edit-btn"
+                    );
+
+
+                editButton.addEventListener(
+                    "click",
+                    function() {
+
+                        openEditModal(
+                            account
+                        );
+
+                    }
+                );
+
+
+                body.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        table.style.display =
+            "table";
+
 
     }
 
     catch (error) {
 
-        loading.style.display = "none";
+
+        loading.style.display =
+            "none";
+
 
         errorBox.innerHTML = `
 
@@ -626,7 +883,8 @@ async function loadAccounts() {
                 <br><br>
 
                 ${escapeHtml(
-                    error.message
+                    error.message ||
+                    "خطأ غير معروف"
                 )}
 
             </div>
@@ -638,135 +896,244 @@ async function loadAccounts() {
 }
 
 
-/* ============================================
-   فتح التعديل
-============================================ */
+
+/* ==================================================
+   فتح نافذة التعديل
+================================================== */
+
 
 function openEditModal(account) {
 
-    currentOldId = account.id;
+
+    /*
+        الاحتفاظ بالـ ID القديم
+    */
+
+    currentOldId =
+        account.id;
 
 
-    document.getElementById("editId").value =
-        account.id || "";
+    /*
+        تعبئة ID
+    */
+
+    document.getElementById(
+        "editId"
+    ).value =
+        account.id ?? "";
 
 
-    document.getElementById("editUserId").value =
-        account.user_id || "";
+    /*
+        تعبئة User ID
+    */
+
+    document.getElementById(
+        "editUserId"
+    ).value =
+        account.user_id ?? "";
 
 
-    document.getElementById("editFullName").value =
-        account.full_name || "";
+    /*
+        الاسم
+    */
+
+    document.getElementById(
+        "editFullName"
+    ).value =
+        account.full_name ?? "";
 
 
-    document.getElementById("editAccountName").value =
-        account.account_name || "";
+    /*
+        اسم الحساب
+    */
+
+    document.getElementById(
+        "editAccountName"
+    ).value =
+        account.account_name ?? "";
 
 
-    document.getElementById("editBalance").value =
+    /*
+        الرصيد
+    */
+
+    document.getElementById(
+        "editBalance"
+    ).value =
         account.balance ?? "";
 
 
-    document.getElementById("message").style.display =
+    /*
+        إزالة الرسالة القديمة
+    */
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.style.display =
         "none";
 
 
+    message.textContent =
+        "";
+
+
+    message.className =
+        "";
+
+
+    /*
+        إظهار النافذة
+    */
+
     document
-        .getElementById("editModal")
-        .classList.add("show");
+        .getElementById(
+            "editModal"
+        )
+        .classList.add(
+            "show"
+        );
 
 }
 
 
-/* ============================================
-   إغلاق
-============================================ */
+
+/* ==================================================
+   إغلاق النافذة
+================================================== */
+
 
 function closeModal() {
 
     document
-        .getElementById("editModal")
-        .classList.remove("show");
+        .getElementById(
+            "editModal"
+        )
+        .classList.remove(
+            "show"
+        );
 
 }
 
 
-/* ============================================
-   حفظ
-============================================ */
+
+/* ==================================================
+   حفظ التعديلات
+================================================== */
+
 
 document
-    .getElementById("editForm")
+    .getElementById(
+        "editForm"
+    )
     .addEventListener(
         "submit",
         async function(event) {
 
+
             event.preventDefault();
 
 
+            /*
+                ID الجديد
+            */
+
             const newId =
                 document
-                    .getElementById("editId")
+                    .getElementById(
+                        "editId"
+                    )
                     .value
                     .trim();
 
+
+            /*
+                User ID الجديد
+
+                لا يوجد تحقق UUID هنا
+            */
 
             const newUserId =
                 document
-                    .getElementById("editUserId")
+                    .getElementById(
+                        "editUserId"
+                    )
                     .value
                     .trim();
 
+
+            /*
+                الاسم
+            */
 
             const fullName =
                 document
-                    .getElementById("editFullName")
+                    .getElementById(
+                        "editFullName"
+                    )
                     .value
                     .trim();
 
+
+            /*
+                اسم الحساب
+            */
 
             const accountName =
                 document
-                    .getElementById("editAccountName")
+                    .getElementById(
+                        "editAccountName"
+                    )
                     .value
                     .trim();
+
+
+            /*
+                الرصيد
+            */
+
+            const balanceText =
+                document
+                    .getElementById(
+                        "editBalance"
+                    )
+                    .value;
 
 
             const balance =
                 Number(
-                    document
-                        .getElementById("editBalance")
-                        .value
+                    balanceText
                 );
 
 
-            /* -------------------------
-               التحقق من ID
-            ------------------------- */
+            /*
+                التحقق
+            */
 
-            if (!isValidUUID(newId)) {
+            if (!newId) {
 
                 showMessage(
-                    "ID غير صحيح. يجب إدخال UUID صالح.",
+                    "ID مطلوب.",
                     "error"
                 );
 
                 return;
+
             }
 
 
-            /* -------------------------
-               التحقق من User ID
-            ------------------------- */
-
-            if (!isValidUUID(newUserId)) {
+            if (!newUserId) {
 
                 showMessage(
-                    "User ID غير صحيح. يجب إدخال UUID صالح.",
+                    "User ID مطلوب.",
                     "error"
                 );
 
                 return;
+
             }
 
 
@@ -778,6 +1145,7 @@ document
                 );
 
                 return;
+
             }
 
 
@@ -789,10 +1157,14 @@ document
                 );
 
                 return;
+
             }
 
 
-            if (isNaN(balance)) {
+            if (
+                balanceText === "" ||
+                isNaN(balance)
+            ) {
 
                 showMessage(
                     "الرصيد غير صحيح.",
@@ -800,8 +1172,28 @@ document
                 );
 
                 return;
+
             }
 
+
+            if (
+                currentOldId === null ||
+                currentOldId === undefined
+            ) {
+
+                showMessage(
+                    "لم يتم تحديد الحساب.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            /*
+                زر الحفظ
+            */
 
             const saveBtn =
                 document.getElementById(
@@ -809,7 +1201,9 @@ document
                 );
 
 
-            saveBtn.disabled = true;
+            saveBtn.disabled =
+                true;
+
 
             saveBtn.textContent =
                 "جاري الحفظ...";
@@ -818,9 +1212,15 @@ document
             try {
 
 
-                /* -------------------------
-                   تحديث السجل
-                ------------------------- */
+                /*
+                    UPDATE
+
+                    نبحث عن السجل باستخدام
+                    ID القديم.
+
+                    ثم نغير ID و User ID
+                    وبقية البيانات.
+                */
 
                 const {
                     data,
@@ -831,15 +1231,20 @@ document
 
                     .update({
 
-                        id: newId,
+                        id:
+                            newId,
 
-                        user_id: newUserId,
+                        user_id:
+                            newUserId,
 
-                        full_name: fullName,
+                        full_name:
+                            fullName,
 
-                        account_name: accountName,
+                        account_name:
+                            accountName,
 
-                        balance: balance
+                        balance:
+                            balance
 
                     })
 
@@ -851,6 +1256,10 @@ document
                     .select();
 
 
+                /*
+                    التحقق من Supabase
+                */
+
                 if (error) {
 
                     throw error;
@@ -859,22 +1268,38 @@ document
 
 
                 console.log(
-                    "Updated:",
+                    "تم التحديث:",
                     data
                 );
 
 
+                /*
+                    نجاح
+                */
+
                 showMessage(
-                    "تم تعديل بيانات الحساب بنجاح ✓",
+                    "تم تعديل بيانات المستخدم بنجاح ✓",
                     "success"
                 );
 
 
+                /*
+                    إعادة تحميل الجدول
+                */
+
                 await loadAccounts();
 
 
+                /*
+                    إغلاق النافذة
+                */
+
                 setTimeout(
-                    closeModal,
+                    function() {
+
+                        closeModal();
+
+                    },
                     1000
                 );
 
@@ -883,55 +1308,73 @@ document
 
             catch (error) {
 
-                console.error(error);
+
+                console.error(
+                    "Update Error:",
+                    error
+                );
 
 
-                let message =
+                let errorMessage =
                     error.message ||
                     "حدث خطأ أثناء الحفظ";
 
 
-                if (
-                    message.includes(
-                        "duplicate"
-                    ) ||
-                    message.includes(
-                        "unique"
-                    )
-                ) {
-
-                    message =
-                        "الـ ID أو User ID الذي أدخلته موجود مسبقًا.";
-
-                }
-
+                /*
+                    أخطاء UUID
+                */
 
                 if (
-                    message.includes(
-                        "foreign key"
-                    )
-                ) {
-
-                    message =
-                        "User ID غير موجود في الجدول المرتبط به.";
-
-                }
-
-
-                if (
-                    message.includes(
+                    errorMessage.includes(
                         "invalid input syntax for type uuid"
                     )
                 ) {
 
-                    message =
-                        "قيمة ID أو User ID ليست UUID صحيحة.";
+                    errorMessage =
+                        "إحدى القيم التي أدخلتها يجب أن تكون UUID لأن نوع العمود في قاعدة البيانات UUID.";
+
+                }
+
+
+                /*
+                    تكرار القيمة
+                */
+
+                else if (
+                    errorMessage.includes(
+                        "duplicate"
+                    ) ||
+                    errorMessage.includes(
+                        "unique"
+                    )
+                ) {
+
+                    errorMessage =
+                        "القيمة الجديدة لـ ID أو User ID موجودة مسبقًا.";
+
+                }
+
+
+                /*
+                    Foreign Key
+                */
+
+                else if (
+                    errorMessage.toLowerCase()
+                        .includes(
+                            "foreign key"
+                        )
+                ) {
+
+                    errorMessage =
+                        "User ID الجديد غير مقبول بسبب علاقة مرتبطة بجدول آخر.";
 
                 }
 
 
                 showMessage(
-                    message,
+                    "فشل حفظ التعديلات: " +
+                    errorMessage,
                     "error"
                 );
 
@@ -939,7 +1382,10 @@ document
 
             finally {
 
-                saveBtn.disabled = false;
+
+                saveBtn.disabled =
+                    false;
+
 
                 saveBtn.textContent =
                     "حفظ التعديلات";
@@ -950,14 +1396,17 @@ document
     );
 
 
-/* ============================================
+
+/* ==================================================
    الرسائل
-============================================ */
+================================================== */
+
 
 function showMessage(
     text,
     type
 ) {
+
 
     const message =
         document.getElementById(
@@ -979,17 +1428,22 @@ function showMessage(
 }
 
 
-/* ============================================
+
+/* ==================================================
    حماية HTML
-============================================ */
+================================================== */
+
 
 function escapeHtml(value) {
+
 
     if (
         value === null ||
         value === undefined
     ) {
+
         return "";
+
     }
 
 
@@ -1023,13 +1477,43 @@ function escapeHtml(value) {
 }
 
 
-/* ============================================
-   تشغيل الصفحة
-============================================ */
+
+/* ==================================================
+   إغلاق عند الضغط خارج النافذة
+================================================== */
+
+
+document
+    .getElementById(
+        "editModal"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target ===
+                this
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+
+/* ==================================================
+   تشغيل
+================================================== */
+
 
 loadAccounts();
 
 </script>
 
 </body>
+
 </html>
